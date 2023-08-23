@@ -1,0 +1,165 @@
+<!--
+* 
+* @ Name 	:	IP_CreateChildIPRight
+* @ Purpose : 	Create Child IP Right Records
+* @ Author	: 	Ch V Lakshminarayana
+*
+*   Date	        |  Developer Name                           |  Version      |  Changes
+* ======================================================================================================
+*   19-04-2021      |  venkat.challagolusula@absyz.com			|  1.0          |  Initial Version
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" 
+                access="global"
+                controller="IP_CreateChildIPRightController">
+    <aura:attribute name="childIPRightList" 
+                    type="Case[]"/>
+    <aura:attribute name="responseChildIPRightList" 
+                    type="Case[]"/>
+    <aura:attribute name="selectedListOfCountries" 
+                    type="List"/>
+    <aura:attribute name="showSpinner" type="Boolean" description="enables or disables spinner" default="false" />
+    <aura:attribute name="saverecord" type="string" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="flag" type="Boolean" default="false"/>
+    <aura:attribute name="flag1" type="Boolean" default="true"/>
+    <aura:attribute name="sObjList" type="IP_Country__mdt"/>
+    <aura:attribute name="fields" type="String[]" default="['IP_Country__c','IP_Type_of_Right__c','ParentId', 'IP_Relationship_to_Parent__c', 'IP_Provisional__c']" />
+    <aura:attribute name="countryMap" type="Map"/>
+    <aura:attribute name="typeOfRightMap" type="Map"/>
+    <aura:attribute name="relationToParentMap" type="Map"/>
+    <aura:attribute name="ObjectName" type="String" default="Case" access="global"/> <!-- Object Name as String-->
+    <aura:attribute name="Country" type="String" default="IP_Country__c" access="global"/>  <!-- Field Name as String-->
+    <aura:attribute name="TypeOfRight" type="String" default="IP_Type_of_Right__c" access="global"/> <!-- Field Name as String-->
+    <aura:attribute name="RelationToParent" type="String" default="IP_Relationship_to_Parent__c" access="global"/> <!-- Field Name as String-->
+    <!-- Custom Lookup -->
+    <aura:attribute name="selectedRecord" type="sObject" default="{}" description="Use,for store SELECTED sObject Record"/>
+    <aura:attribute name="listOfSearchRecords" type="List" description="Use,for store the list of search records which returns from apex class"/>
+    <aura:attribute name="SearchKeyWord" type="string"/>
+    <aura:attribute name="objectAPIName" type="string" default="IP_Country__mdt"/>
+    <aura:attribute name="IconName" type="string" default="IP_Country__mdt"/>
+    <aura:attribute name="label" type="string" default=""/>
+    <aura:attribute name="Message" type="String" default=""/>
+    <!-- New Values -->
+    <aura:attribute name="SelectedCountry" type="String"/>
+    <aura:attribute name="currentIPRightRec" type="Case"/>
+    <aura:attribute name="noOfRecordsSelected" type="Integer" default="0"/>
+    <aura:attribute name="countryCountMap" type="Map" />
+    <!-- End -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="oSelectedRecordEvent" event="c:IP_CustomLookupEvent" action="{!c.handleComponentEvent}"/>
+    <aura:handler name="DeleteRowEvt" event="c:IP_DeleteRowEvt" action="{!c.removeDeletedRow}"/>    
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+        .slds-modal__container{
+        max-width: 90rem !important;
+        width:90% !important;
+        }
+    </aura:html>
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner />
+    </aura:if>
+    <div class="modal-header slds-modal__header">
+        <h2 class="slds-text-heading_medium slds-hyphenate">Create Child Record(s)</h2>
+    </div>
+	<aura:if isTrue="{!v.flag1}">
+    <lightning:card>
+        <div class="slds-p-around_medium">
+            <lightning:messages aura:id="ErrorMessage" closable="true"/>  
+            <lightning:layout multipleRows="true">
+                <lightning:layoutItem size="3">
+                    <div onmouseleave="{!c.onblur}" aura:id="searchRes" class="slds-form-element slds-lookup" data-select="single">
+                        <label class="slds-form-element__label" for="lookup-348">Add Countries</label>
+                        <!--This part is for display search bar for lookup-->  
+                        <div class="slds-form-element__control">
+                            
+                            <div class="slds-input-has-icon slds-input-has-icon--right">
+                                <div aura:id="lookupField" class="slds-show">
+                                    <lightning:icon class="slds-input__icon slds-show" iconName="utility:search" size="x-small" alternativeText="search"/>
+                                    <span class="slds-icon_container  slds-combobox__input-entity-icon" title="record">
+                                        <lightning:icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" iconName="{!v.IconName}" size="x-small" alternativeText="icon"/>
+                                        <span class="slds-assistive-text"></span>
+                                    </span>
+                                    <ui:inputText click="{!c.onfocus}" updateOn="keyup" keyup="{!c.keyPressController}" class="slds-lookup__search-input slds-input leftPaddingClass" value="{!v.SearchKeyWord}" placeholder="Search Countries"/>
+                                </div>   
+                            </div>
+                        </div>
+                        <!--This part is for Display typehead lookup result List-->  
+                        <ul style="min-height:40px;margin-top:0px !important" class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-lookup__menu slds" role="listbox">
+                            <lightning:spinner class="slds-hide" variant="brand" size="small" aura:id="mySpinner"/>
+                            <center> {!v.Message}</center>
+                            <aura:iteration items="{!v.listOfSearchRecords}" var="singleRec">
+                                <c:IP_CustomLookupDisplay childRecord="{!singleRec}" flag2="true" IconName="{!v.IconName}"/>
+                            </aura:iteration>
+                        </ul> 
+                    </div>
+                </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+        <div class="slds-scrollable_y"  style="height: 15rem">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-no-row-hover slds-max-medium-table_stacked-horizontal" role="grid">
+                <thead>
+                    <tr class="slds-text-title--caps">
+                        <th scope="col">
+                            <div class="slds-truncate" title="Country">Country</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Type Of Right">Type Of Right</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Relationship To Parent">Relationship To Parent</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="IP Right ID">IP Right ID  </div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Law Firm Reference">Law Firm Reference</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Firm Attorney">Law Firm Attorney</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Law Firm">Law Firm</div>
+                        </th>
+                        <th scope="col">
+                            <div class="slds-truncate" title="Delete Row"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <aura:iteration items="{!v.childIPRightList}" var="ipRight" indexVar="index">
+                        <c:IP_CreateChildIPRightTable caseInstance="{!ipRight}" rowIndex="{!index}"
+                                                      typeOfRightMap="{!v.typeOfRightMap}" relationToParentMap="{!v.relationToParentMap}"
+                                                      parentIPRight="{!v.currentIPRightRec}" countryCountMap="{!v.countryCountMap}"/>
+                    </aura:iteration>
+                </tbody>
+            </table>
+        </div>
+    </lightning:card>
+    <aura:set attribute="else">
+        <lightning:card>
+            <c:IP_DisplayCreatedChildRecodList insertedChildIPRightList="{!v.responseChildIPRightList}"/>
+        </lightning:card>
+        </aura:set>
+    </aura:if>
+    <aura:if isTrue="{!v.flag1}">
+        <div horizontalAlign="right" class="modal-footer slds-modal__footer">
+            <lightning:button  label="Close" title="Close" type="text" onclick="{!c.handleCancel}"/>
+            <lightning:button variant="brand" label="Create Child Records" title="Create Child Records" type="submit" onclick="{!c.handleCreateChild}"/>
+        </div>
+        <aura:set attribute="else">
+            <div horizontalAlign="right" class="modal-footer slds-modal__footer">
+                <lightning:button  label="Close" title="Close" type="text" onclick="{!c.handleCancel}"/>
+            </div>
+        </aura:set>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,71 @@
+<apex:page standardController="Scan__c" extensions="SG_WF_PARSE_SCAN_XML" action="{!populate}">
+    
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<apex:stylesheet value="{!URLFOR($Resource.SFLIGHTNINGDESIGN, 'assets/styles/salesforce-lightning-design-system-vf.css')}" >
+<div class="SFLIGHTNINGDESIGN">
+    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<apex:stylesheet value="{!URLFOR($Resource.SFLIGHTNINGDESIGN, 'assets/styles/salesforce-lightning-design-system-vf.css')}" >
+	<div class="SFLIGHTNINGDESIGN">
+    
+    <apex:form >
+        
+        
+        <apex:pageBlock >
+        <apex:pageBlockButtons >
+         <apex:commandButton value="Save"
+            action="{!save}" rendered="false"/>
+            <apex:commandButton value="Send To SAP"
+            action="{!write}" rendered="false"/>
+            <apex:commandButton value="SAP Call"
+            action="{!sapCall}" rendered="false"/>
+        </apex:pageBlockButtons>
+     
+        <apex:pageBlockSection title="XML Deatils "  collapsible="true" columns="3">
+        <apex:inputText ID="Field1" value="{!INV_AMOUNT}" label="AMOUNT"   />
+        <apex:inputText ID="Field2" value="{!INV_CURRENCY}" label="CURRENCY" />
+        <apex:inputText ID="Field3" value="{!INV_NET_AMOUNT1}" label="NET_AMOUNT1" />
+        <apex:inputText ID="Field4" value="{!INV_NET_AMOUNT2}" label="NET_AMOUNT2"  />
+        <apex:inputText ID="Field5" value="{!INV_NET_AMOUNT3}" label="NET_AMOUNT3"   />
+        <apex:inputText ID="Field6" value="{!INV_NUMMER}" label="NUMMER" />
+        <apex:inputText ID="Field7" value="{!INV_DATE}" label="DATE" />
+        <apex:inputText ID="Field8" value="{!INV_TAX_AMOUNT1}" label="TAX_AMOUNT1"  />
+        <apex:inputText ID="Field9" value="{!INV_TAX_AMOUNT2}" label="TAX_AMOUNT2"  />
+        <apex:inputText ID="Field10" value="{!INV_TAX_AMOUNT3}" label="TAX_AMOUNT3"  />
+        <apex:inputText ID="Field11" value="{!INV_TAX_RATE1}" label="TAX_RATE1"  />
+        <apex:inputText ID="Field12" value="{!INV_TAX_RATE2}" label="TAX_RATE2"  />    
+        <apex:inputText ID="Field13" value="{!INV_TAX_RATE3}" label="TAX_RATE3"  />
+        <apex:inputText ID="Field14" value="{!INV_UNPL_DEL_AMOUNT}" label="UNPL_DEL_AMT"  />
+        <apex:inputText ID="Field15" value="{!INV_UNPL_DEL_TAX_RATE}" label="UNPL_DEL_TXRT"  />
+        <apex:inputText ID="Field16" value="{!VE_VENDOR_NO}" label="VENDOR_NO"  />
+        <apex:inputText ID="Field17" value="{!RE_RECIEPIENT_NO}" label="RE_RECIEPIENT_NO"  />
+        
+        </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock title="Invoice Items Values">
+      		<apex:pageBlockTable value="{!indexes}" var="i" >
+                 <apex:column value="{!INVI_POS_NO}" headerValue="POS_NO" />
+                 <apex:column value="{!INVI_ORI_ARTICLE_NO}"    headerValue="ORI_ARTICLE_NO"/>  
+                 <apex:column value="{!INVI_ORI_DESCRIPTION}" headerValue="ORI_DESCRIPTION"/>
+                 <apex:column value="{!INVI_QUANTITY}" headerValue="QUANTITY"/>
+                 <apex:column value="{!INVI_QUANTITY_UNIT}" headerValue="QUANTt_UNIT"/>
+                 <apex:column value="{!INVI_SINGLE_NET_PRICE}" headerValue="SINGLE_NET_PRC"/>
+                 <apex:column value="{!INVI_SINGLE_NET_PER_UNIT}" headerValue="INVI_SINGLE_NET_PER_UNIT"/>
+                 <apex:column value="{!INVI_TOTAL_NET_PRICE}" headerValue="TOTAL_NET_PRC"/>
+      		</apex:pageBlockTable>
+   		</apex:pageBlock>
+        	<apex:outputField value="{!Scan__c.name}"/> This xml file is coming from ReissWolf: <p/>
+        	<apex:outputPanel >
+        	<apex:outputtext value="{!xmlshow}" style="white-space:pre;"  /> <p/> 
+            <apex:inputfield value="{!Scan__c.XML_Store__c}" style="white-space:pre;" rendered="false" /> <p/> 
+            </apex:outputPanel>
+        
+        
+    		</apex:form>
+    	</div>
+    </apex:stylesheet>
+    </html>
+    </div>
+    </apex:stylesheet>
+   </html>
+</apex:page>

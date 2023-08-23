@@ -1,0 +1,2 @@
+<apex:page standardController="Task" action="{!URLFOR('/00t/e?')}">
+</apex:page>

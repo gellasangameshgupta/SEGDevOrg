@@ -1,0 +1,6 @@
+<apex:page standardcontroller="Case" extensions="IP_InventionImageUploadCtrl" lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+     <apex:include pagename="IP_InventionDisclosureFileUpload"/>
+   <!-- <apex:include pagename="IP_InventionDisclosureViewFiles"/>-->
+    
+   
+</apex:page>

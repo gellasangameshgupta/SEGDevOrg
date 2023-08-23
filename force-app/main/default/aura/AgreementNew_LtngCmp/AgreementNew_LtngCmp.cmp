@@ -1,0 +1,57 @@
+<!--
+* @ Name 	:	AgreementNew_LtngCmp
+* @ Purpose : 	Override New Agreement page
+* @ Author	: 	Absyz
+*
+*   Date	        |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   03-03-2022      |  anoop.ravindran@absyz.com  	|  1.0          |  Initial Version
+*
+-->
+
+
+<aura:component controller="AgreementNew_ltngCmpController" implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:lightningQuickAction,lightning:actionOverride,lightning:hasPageReference" access="global" >
+    <aura:attribute name="recordId" type="String"></aura:attribute>
+    <aura:attribute name="recordTypeId" type="String"></aura:attribute>
+    <aura:attribute name="fieldSetName" type="String" default="Apttus__AgreementNewFieldSet"></aura:attribute>
+    <aura:attribute name="fieldList" type="Object[]" default="[]"></aura:attribute>
+    
+    <!-- Attributes Alert message and spinner -->
+    <aura:attribute name="alertMessage" type="String[]"/>
+    <aura:attribute name="isAlert" type="Boolean" />
+    <aura:attribute name="showSpinner" type="Boolean" />
+    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"></aura:handler>
+    
+    <!--Spinner-->
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner></lightning:spinner>
+    </aura:if>
+    
+    <lightning:card title="New Agreement">
+    
+    <!-- Dynamic form displayed using Fieldset-->
+        <lightning:recordEditForm objectApiName="Apttus__APTS_Agreement__c" recordId="{!v.recordId}" recordTypeId="{!v.recordTypeId}"
+                                    onsubmit="{!c.handleSubmit}"     onsuccess="{!c.handleSuccess}">
+            <lightning:messages />
+            <lightning:layout  verticalAlign="center" multipleRows="true">
+                <aura:iteration items="{!v.fieldList}" var="field">
+                    <lightning:layoutItem flexibility="auto" size="6" class="slds-p-around_medium">
+                        <lightning:inputField fieldName="{!field.name}" name="inputField" disabled = "{!field.readOnly}" required="{!field.required}" />
+                    </lightning:layoutItem>
+                </aura:iteration>
+                
+            </lightning:layout>
+            <lightning:layout horizontalAlign="center" verticalAlign="center">
+                <lightning:button type="submit" name="continue" label="Continue" class="slds-m-top_medium"/>
+                <lightning:button name="cancel" label="Cancel" onclick="{!c.handleCancel}" class="slds-m-top_medium"/>
+            </lightning:layout>
+            
+        </lightning:recordEditForm>
+                
+        
+
+    </lightning:card>
+                    
+</aura:component>

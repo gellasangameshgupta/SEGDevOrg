@@ -1,0 +1,5 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId,force:appHostable">
+ 
+  <iframe width="720" height="480" src="https://www.youtube.com/embed/45JRuZOBIKk"></iframe>
+ 
+</aura:component>

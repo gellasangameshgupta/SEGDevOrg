@@ -1,0 +1,373 @@
+<!--
+* 
+* @ Name    :   b2b_contactSetupAssistant
+* @ Purpose :   This is a generic component for assisting Portal User creation
+* @ Author  :   Pradeep Chary
+*
+*   Date            |  Developer Name                 |  Version      |  Changes
+* ======================================================================================================
+*   09-07-2021      |  pradeep.chary@absyz.com        |  1.0          |  Initial Version
+*
+-->
+<template>
+    <template if:true={blnShowSpinner}>
+        <lightning-spinner alternative-text="Loading" variant="brand" size="medium"></lightning-spinner>
+    </template>
+    <ol class="slds-setup-assistant">
+        <li if:true={blnShowAccountAvialability} class="slds-setup-assistant__item">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <template if:true={blnAccountAvailable}>
+                        <lightning-icon icon-name="action:approval" alternative-text="Completed" title="Completed"
+                            size="x-small" class="b2b-icon"></lightning-icon>
+                    </template>
+                    <template if:false={blnAccountAvailable}>
+                        <div class="slds-progress-ring slds-progress-ring_large">
+                            <span class="slds-progress-ring__content">!</span>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-media">
+                        <div class="slds-setup-assistant__step-summary-content slds-media__body">
+                            <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
+                                {label.CLB2B00029}
+                            </h3>
+                            <p>
+                                {label.CLB2B00030}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li if:true={blnShowEnableBuyerAccount} class="slds-setup-assistant__item">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <div class="slds-progress-ring slds-progress-ring_large">
+                        <div class="slds-progress-ring__content">
+                            <template if:true={handleBuyerAccountEnabled}>
+                                <lightning-icon icon-name="action:approval" alternative-text="Completed"
+                                    title="Completed" size="x-small" class="b2b-icon"></lightning-icon>
+                            </template>
+                            <template if:false={handleBuyerAccountEnabled}>!</template>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-media">
+                        <div class="slds-setup-assistant__step-summary-content slds-media__body">
+                            <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
+                                {label.CLB2B00031}
+                            </h3>
+                            <p>
+                                {label.CLB2B00032}
+                            </p>
+                        </div>
+                        <div class="slds-media__figure slds-media__figure_reverse">
+                            <lightning-button label={label.CLB2B00033} title={label.CLB2B00033}
+                                onclick={enableBuyerAccount} disabled={handleBuyerAccountEnabled}></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li if:true={blnShowAddBuyerGroup} class="slds-setup-assistant__item">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <div class="slds-progress-ring slds-progress-ring_large">
+                        <div class="slds-progress-ring__content">
+                            <template if:true={blnBuyerGroupAvailable}>
+                                <lightning-icon icon-name="action:approval" alternative-text="Completed"
+                                    title="Completed" size="x-small" class="b2b-icon"></lightning-icon>
+                            </template>
+                            <template if:false={blnBuyerGroupAvailable}>!</template>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-media">
+                        <div class="slds-setup-assistant__step-summary-content slds-media__body">
+                            <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
+                                {label.CLB2B00034}
+                            </h3>
+                            <p>
+                                {label.CLB2B00035}
+                            </p>
+                        </div>
+                        <div class="slds-media__figure slds-media__figure_reverse">
+                            <lightning-button label={label.CLB2B00036} title={label.CLB2B00036}
+                                onclick={handleBuyerGroupButtonClick} disabled={handleBuyerGroupEnabled}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li if:true={blnShowAddContactPointAddresses} class="slds-setup-assistant__item">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <div class="slds-progress-ring slds-progress-ring_large">
+                        <div class="slds-progress-ring__content">
+                            <template if:true={blnContactPointAddressesAvailable}>
+                                <lightning-icon icon-name="action:approval" alternative-text="Completed"
+                                    title="Completed" size="x-small" class="b2b-icon"></lightning-icon>
+                            </template>
+                            <template if:false={blnContactPointAddressesAvailable}>!</template>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-media">
+                        <div class="slds-setup-assistant__step-summary-content slds-media__body">
+                            <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
+                                {label.CLB2B00039}
+                            </h3>
+                            <p>
+                                {label.CLB2B00040}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="slds-media__figure slds-media__figure_reverse slds-var-p-top_large">
+                        <lightning-button-group>
+                            <lightning-button label={label.CLB2B00041} title={label.CLB2B00041}
+                                onclick={handleContactPointBillingButtonClick}></lightning-button>
+                            <lightning-button label={label.CLB2B00042} title={label.CLB2B00042}
+                                onclick={handleContactPointShippingButtonClick}></lightning-button>
+                        </lightning-button-group>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li if:true={blnShowEnableCustomer} class="slds-setup-assistant__item">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <div class="slds-progress-ring slds-progress-ring_large">
+                        <div class="slds-progress-ring__content">
+                            <template if:true={blnCustomerUserEnabled}>
+                                <lightning-icon icon-name="action:approval" alternative-text="Completed"
+                                    title="Completed" size="x-small" class="b2b-icon"></lightning-icon>
+                            </template>
+                            <template if:false={blnCustomerUserEnabled}>!</template>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-media">
+                        <div class="slds-setup-assistant__step-summary-content slds-media__body">
+                            <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
+                                {label.CLB2B00037}
+                            </h3>
+                            <p>
+                                {label.CLB2B00038}
+                            </p>
+                        </div>
+                        <div class="slds-media__figure slds-media__figure_reverse">
+                            <div class="slds-form-element">
+                                <lightning-button-icon-stateful icon-name="utility:refresh" selected={refreshState}
+                                    onclick={doInit} alternative-text="Refresh">
+                                </lightning-button-icon-stateful>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li if:true={blnShowSetSharingRule} class="slds-setup-assistant__item">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <div class="slds-progress-ring slds-progress-ring_large">
+                        <div class="slds-progress-ring__content"><template if:true={blnAccountSharingRuleEnabled}>
+                                <lightning-icon icon-name="action:approval" alternative-text="Completed"
+                                    title="Completed" size="x-small" class="b2b-icon"></lightning-icon>
+                            </template>
+                            <template if:false={blnAccountSharingRuleEnabled}>!</template>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-media">
+                        <c-b2b_set-sharing-rules record-id={recordId}></c-b2b_set-sharing-rules>
+                        <div class="slds-setup-assistant__step-summary-content slds-media__body">
+                            <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
+                                {label.CLB2B00043}
+                            </h3>
+                        </div>
+                        <div class="slds-media__figure slds-media__figure_reverse">
+                            <lightning-button label={label.CLB2B00044} title={label.CLB2B00044}
+                                onclick={handleSetSharingButtonClick}
+                                disabled={handleSharingAccountAndPermissionRuleEnabled}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <li if:true={blnShowResetPassword} class="slds-setup-assistant__item">
+            <div class="slds-media">
+                <div class="slds-media__figure">
+                    <div class="slds-progress-ring slds-progress-ring_large">
+                        <div class="slds-progress-ring__content">!</div>
+                    </div>
+                </div>
+                <div class="slds-media__body">
+                    <div class="slds-media">
+                        <div class="slds-setup-assistant__step-summary-content slds-media__body">
+                            <h3 class="slds-setup-assistant__step-summary-title slds-text-heading_small">
+                                {label.CLB2B00045}
+                            </h3>
+                        </div>
+                        <div class="slds-media__figure slds-media__figure_reverse">
+                            <lightning-button label={label.CLB2B00046} title={label.CLB2B00046}
+                                onclick={handleResetButtonClick}></lightning-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ol>
+
+    <!-- Add Buyer Group in Modal -->
+    <c-b2b_modal bln-show-modal={blnModalContainerBuyerGroup} bln-show-footer=true bln-show-close-icon=true
+        str-header-text="Add Buyer Group" str-negative-button-label="Close" str-positive-button-label="Add"
+        onpositive={handleAddBuyerGroup} onnegative={handleBuyerGroupNegativeAction}
+        onclose={handleBuyerGroupNegativeAction}>
+        <div slot="body">
+            <div class="slds-var-p-bottom_xx-large">
+                <p class="slds-form-element__label">
+                    <span class="requiredAsterisk">*</span>
+                    Buyer Group Search
+                </p>
+                <div class="slds-var-p-bottom_xx-large">
+                    <div class="slds-combobox_container" aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                            <!-- Search Input Box -->
+                            <template if:false={showPill}>
+                                <lightning-input onchange={searchRecords} onclick={showRecords} onblur={blurEvent}
+                                    class="inputBox" type="search" autocomplete="off" variant="label-hidden"
+                                    placeholder="Search Buyer Group"></lightning-input>
+                            </template>
+
+                            <!-- Selected Value Pill -->
+                            <div if:true={showPill} class="pillContainer">
+                                <lightning-pill class="fullWidth" label={selectedRecord.strLabel}
+                                    name={selectedRecord.strValue} onremove={removeItem}>
+                                    <lightning-icon icon-name="utility:groups" alternative-text="icon" size="x-small">
+                                    </lightning-icon>
+                                </lightning-pill>
+                            </div>
+
+                            <!-- Dropdown List -->
+                            <template if:true={showDropdown}>
+                                <div class="slds-dropdown slds-dropdown_length-5">
+                                    <ul class="slds-listbox slds-listbox_vertical recordListBox">
+                                        <template if:false={message}>
+                                            <template for:each={recordsList} for:item="record">
+                                                <li key={record.strValue} data-key={record.strValue}
+                                                    class="slds-listbox__item eachItem"
+                                                    onmousedown={handleSelectedItem}>
+                                                    <div class="slds-media slds-listbox__option_entity">
+                                                        <lightning-icon icon-name="utility:groups"
+                                                            alternative-text="icon" size="small"></lightning-icon>
+                                                        <span class="verticalAlign slds-truncate">{record.strLabel}</span>
+                                                    </div>
+                                                </li>
+                                            </template>
+                                        </template>
+                                        <template if:true={message}>
+                                            <li class="slds-listbox__item">
+                                                <span class="slds-media slds-listbox__option_entity">{message}</span>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+                <template if:true={blnBuyerGroupAvailable}>
+                    <lightning-datatable key-field="id" columns={list_columns} data={list_buyerAccountRecords}
+                        hide-checkbox-column>
+                    </lightning-datatable>
+                </template>
+            </div>
+        </div>
+    </c-b2b_modal>
+
+
+    <!-- Add Contact Point  Address in Modal   -->
+    <c-b2b_modal bln-show-modal={blnModalContainerContactPoint} bln-show-close-icon=true
+        str-header-text="Create Contact Point Address" onclose={handleContactPointNegativeAction}>
+        <div slot="body">
+            <lightning-record-edit-form object-api-name={strSFDCContactPointAddressObjectApiName}
+                onsuccess={handleSuccess}>
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                        large-device-size="6">
+                        <lightning-input-field field-name="Name" value={strContactPointAddressName}>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                        large-device-size="6">
+                        <lightning-input-field field-name="AddressType" value={strAddressType}></lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                        large-device-size="6">
+                        <lightning-input-field id="IsDefault" field-name="IsDefault"></lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                        large-device-size="6">
+                        <lightning-input-field id="IsPrimary" field-name="IsPrimary"></lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                        large-device-size="6">
+                        <lightning-input-field data-field="Street" field-name="Street" value={objContactAddressStreet}>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                        large-device-size="6">
+                        <lightning-input-field data-field="City" field-name="City" value={objContactAddressCity}>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                        large-device-size="6">
+                        <lightning-input-field data-field="State" field-name="State" value={objContactAddressState}>
+                        </lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                        large-device-size="6">
+                        <lightning-input-field data-field="PostalCode" field-name="PostalCode"
+                            value={objContactAddressPostalCode}></lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                        large-device-size="6">
+                        <lightning-input-field data-field="Country" field-name="Country"
+                            value={objContactAddressCountry}></lightning-input-field>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-hide">
+                        <lightning-input-field field-name="ParentId" value={strAccountId}></lightning-input-field>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <div class="slds-var-m-top_medium slds-text-align_right slds-page-header">
+                    <lightning-button label="Cancel" title="Cancel" icon-position="right"
+                        class="slds-var-p-left_x-small" onclick={handleContactPointNegativeAction}>
+                    </lightning-button>
+                    <lightning-button label="Save" title="Save" icon-position="right" variant="brand"
+                        class="slds-var-p-left_small" type="submit">
+                    </lightning-button>
+                </div>
+                <template if:true={blnShowExistingContactPointAddresses}>
+                    <div class="slds-var-p-vertical_x-large">
+                        <h2 id="AddressTable" class="slds-text-heading_medium slds-var-m-bottom_xx-small">
+                            List of {strAddressType} Addresses
+                        </h2>
+                    </div>
+                
+                    <lightning-datatable key-field="id" columns={list_AddressColumns} data={list_AddressRecords}
+                        hide-checkbox-column>
+                    </lightning-datatable>
+                </template>
+            </lightning-record-edit-form>
+        </div>
+    </c-b2b_modal>
+</template>

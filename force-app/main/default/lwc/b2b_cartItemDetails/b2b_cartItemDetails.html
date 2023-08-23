@@ -1,0 +1,27 @@
+<!--
+* 
+* @ Name    :   b2b_cartItemDetail
+* @ Purpose :   This component is used to display the Cart Items of ShopMe Orders.
+* @ Author  :   Prathiksha Suvarna
+*
+*   Date            |  Developer Name                 |  Version      |  Changes
+* ======================================================================================================
+*   23-03-2023      |  prathiksha.suvarna@absyz.com   |  1.0          |  Initial Version
+*
+-->
+<template>
+    <lightning-layout>
+        <lightning-layout-item>
+            <h2>{label.CLB2B00076}</h2>
+        </lightning-layout-item>
+        <lightning-layout-item>
+        </lightning-layout-item>
+    </lightning-layout> 
+    <lightning-layout>
+        <lightning-layout-item size="12">
+            <template for:each={list_CartItems} for:item="objCart">
+                <c-b2b_cart-item key={objCart.Id} cart-information={objCart}></c-b2b_cart-item>
+            </template>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

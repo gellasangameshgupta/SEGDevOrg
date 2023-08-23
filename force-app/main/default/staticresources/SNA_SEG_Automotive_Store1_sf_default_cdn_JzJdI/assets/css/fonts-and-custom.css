@@ -1,0 +1,298 @@
+/** Product Detail page - Hiding the Product SKU **/
+b2b_buyer_product_details-heading div:nth-child(2) {
+    display: none;
+}
+/** Product Detail page - Hiding the last Div of the modal **/
+lightning-record-edit-form form div div div:last-child div lightning-output-field {
+    display: none;
+}
+/** Product Detail page - Changing the Buttons view **/
+b2b_buyer_product_details-purchase-options .quantity-list-action {
+    display: contents !important;
+}
+/** Product Detail page - Setting height of the View Modal **/
+c-b2b_generic-data-table-by-field-set .slds-modal__content {
+    min-height: 100px;
+}
+/** Product Detail page - Button arrangement **/
+@media only screen and (min-width: 400px) {
+    .container b2b_buyer_cart-constrained-quantity-selector {
+        height: 3rem !important;
+    }
+}
+/** Product Catalog page - Setting border to the filters **/
+b2b_search_results_tiles-results-tiles .filters-panel {
+    border-right: 1px solid #d2d2d2;
+    font-size: 16px;
+    padding-right: 10px;
+}
+/** Product Catalog page - Setting border to the filters **/
+b2b_search_results_tiles-results-tiles .results-layout {
+    padding-left: 10px;
+}
+/** Product Catalog page - Setting border to the filters **/
+b2b_search_facets-filters-panel section {
+    border-top: none !important;
+}
+/** Product Catalog page - Setting border to the filters **/
+b2b_search_facets-filters-panel .category-tree-section {
+    display: none;
+}
+/** Product Catalog page - Setting border to the filters **/
+b2b_search_facets-filters-panel section b2b_search_facets-facet .facet-header {
+    font-weight: bold;
+}
+/** Product Catalog page - Setting border to the filters **/
+b2b_search_facets-input-facet b2b_search_facets-facet-item .slds-truncate {
+    font-size: 16px;
+    white-space: pre-wrap;
+}
+/** Product Catalog page - Setting border to the filters **/
+b2b_search_facets-facet .facet-body {
+    max-height: 1000px;
+    overflow-y: auto;
+}
+/** Login page - Setting the color of the Hyperlink **/
+#LoginNew .inverseTextColor {
+    color: rgb(64, 146, 101);
+}
+/** Login page - Setting the color of the Hyperlink **/
+#LoginNew .inverseTextColor:hover {
+    color: rgb(24, 83, 134);
+}
+/** Login page - Dummy Div, hiding the HTML Editor **/
+.seg-b2b-rich-text-to-be-hidden {
+    visibility: hidden;
+}
+/** Body component **/
+.siteforceB2bBody>.body.isPageWidthFixed-true {
+    min-height: 68vh;
+}
+/** Order Summary Page **/
+.forceCommunityRelatedList .forceListViewManager .forceListViewManagerHeader div:nth-child(2) {
+    display: none;
+}
+/** Setting Page **/
+.forceCommunityUserSettingsInternal div .slds-m-top--medium {
+    display: none;
+}
+/** Wishlist page **/
+b2b_buyer_wishlists-manager footer b2b_buyer_cart-add-all-items-to-cart-button {
+    display: none !important;
+}
+b2b_buyer_wishlists-desktop-view-contents lightning-button-group lightning-button:nth-child(2) {
+    padding-left: 10px;
+}
+/** buttons **/
+.slds-button_brand {
+    border-radius: 23px !important;
+    text-transform: uppercase;
+}
+.slds-button_neutral {
+    border-radius: 23px !important;
+    text-transform: uppercase;
+}
+/** Global search input **/
+b2b_search_suggestions-input div div:first-child {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+}
+/** Cart Icon **/
+b2b_buyer_cart-badge svg {
+    fill: #7C8B9C !important;
+}
+/** Cart Icon badge **/
+b2b_buyer_cart-badge .slds-notification-badge {
+    background: #009164;
+    padding: 0 10px 0 10px;
+    right: 6px;
+    top: -8px;
+}
+/** Custom font **/
+@font-face {
+    font-family: 'TitilliumWeb-Regular';
+    src: url(../resource/B2B_TitilliumWebFont/TitilliumWebFont/titillium-web-regular.woff) format('woff');
+}
+@font-face {
+    font-family: 'TitilliumWeb-200';
+    src: url(../resource/B2B_TitilliumWebFont/TitilliumWebFont/titillium-web-200.woff) format('woff');
+}
+@font-face {
+    font-family: 'TitilliumWeb-300';
+    src: url(../resource/B2B_TitilliumWebFont/TitilliumWebFont/titillium-web-300.woff) format('woff');
+}
+/** Product detail - Text Fonts **/
+lightning-accordion-section lightning-formatted-rich-text {
+    font-size: 16px;
+    line-height: 24px;
+}
+b2b_buyer_product_details-heading p, b2b_buyer_product_details-heading span, b2b_buyer_product_details-heading lightning-formatted-number {
+    font-size: 16px;
+}
+/** Product catalog **/
+b2b_search_product_card-product-card a div:first-child b2b_search_product_card-product-field div {
+    color: #000000;
+    font-size: 30px !important;
+}
+/** Order detail page **/
+b2b_buyer_orders-group-section span, b2b_buyer_orders-group-section lightning-formatted-number,
+b2b_buyer_orders-group-section b2b_buyer_pricing-formatted-price {
+    font-size: 16px;
+}
+b2b_buyer_orders-product-title h3 {
+    font-size: 22px;
+}
+b2b_buyer_orders-details span, b2b_buyer_orders-details a, b2b_buyer_orders-details lightning-formatted-date-time, b2b_buyer_orders-details h3 {
+    font-size: 16px;
+}
+b2b_buyer_orders-totals span , b2b_buyer_orders-totals h3, b2b_buyer_orders-totals b2b_buyer_pricing-formatted-price {
+    font-size: 16px;
+}
+/** navigation bar **/
+community_navigation-multi-level-navigation li:hover {
+    background: #FFFFFF !important;
+    border-bottom: 8px solid #009164;
+}
+community_navigation-multi-level-navigation li a:hover {
+    text-decoration: none;
+}
+/** For all Buttons **/
+button {
+    border-radius: 23px !important;
+    text-transform: uppercase;
+    font-size: 16px !important;
+}
+.salesforceIdentityLoginForm2 button.uiButton:hover {
+    background-color: #A7D4B9 !important;
+    border-color: #A7D4B9 !important;
+}
+.salesforceIdentityLoginBody2 a {
+    color: #005286 !important;
+    font-size: 16px !important;
+    text-decoration: underline !important;
+}
+button:focus {
+    box-shadow: none !important;
+}
+/** For all H1's **/
+.b2b-home-content, .ordersummary-container h1, b2b_search_results_tiles-list-header h1, .userDetailHeader h1 span,
+.forceCommunityUserSettingsCustomizable h1, b2b_buyer_wishlists-header h2, b2b_buyer_cart-contents h1,
+.forceListViewManager .firstHeaderRow nav ol li, b2b_buyer_product_details-heading h1:first-child {
+    font-size: 40px !important;
+    line-height: 50px !important;
+    color: #000000;
+}
+.b2b-home-content::after, .ordersummary-container h1 span:nth-child(2)::after, b2b_search_results_tiles-list-header h1::after,
+.userDetailHeader h1 span::after, .forceCommunityUserSettingsCustomizable h1::after, b2b_buyer_wishlists-header h2::after,
+b2b_buyer_cart-contents h1::after, .forceListViewManager .firstHeaderRow nav ol li::after {
+    background-color: #bec8d4;
+    content: "";
+    height: 2px;
+    margin-left: 27px;
+    margin-top: 24px;
+    position: absolute;
+    width: 100px;
+}
+/** Defining Font-sizes over community **/
+.comm-layout-column {
+    font-size: 16px;
+}
+input, label, p, ul, .horizontalMenuItem, .line-item-properties, .slds-form-element__label, .slds-form-element__static,
+.slds-listbox, .uiInputSelect, .inputLabel, .select-options li a, .forceCommunityUserSettingsInternal .uiOutputText,
+commerce_checkout-checkout-summary div div {
+    font-size: 16px !important;
+}
+community_user-user-profile-menu p {
+    color: #000000;
+    line-height: 18px !important;
+}
+.slds-form-element__label, .uiOutputText {
+    line-height: 24px;
+}
+/** Product Catalog Filters **/
+b2b_search_facets-filters-panel button, b2b_buyer_cart-managed-contents button {
+    color: #005286 !important;
+    text-decoration: underline !important;
+    text-transform: uppercase !important;
+}
+/** Product Catalog Sort By **/
+.sortByLabel[b2b_search_results_tiles-sortMenu_sortMenu] {
+    right: 42px !important;
+    top: 28px !important;
+}
+/** Checkout flow **/
+commerce_checkout-checkout-summary > * {
+    font-size: 16px !important;
+}
+commerce_checkout-order-address h2, commerce_checkout-delivery-method h2, commerce_checkout-checkout-summary h2 {
+    font-size: 20px !important;
+    line-height: 30px !important;
+}
+.forceCommunityCheckoutFlow flowruntime-lwc-field header {
+    padding: 0.5rem !important;
+    font-size: 20px !important;
+    line-height: 30px !important;
+}
+.siteforceB2bBody p, .forceCommunityRelatedList .listViewContainer {
+    font-size: 16px;
+    line-height: 24px;
+}
+.userDetailHeader {
+    padding-bottom: 30px !important;
+    padding-top: 0;
+}
+.userDetailHeader .slds-align-top {
+    align-self: center;
+    vertical-align: middle;
+}
+.forceActionsContainer {
+    text-transform: uppercase;
+}
+h3 a, h3 span {
+    color: #000000;
+    font-size: 22px !important;
+    line-height: 28px;
+}
+/** Registration Screen */
+flowruntime-list-container flowruntime-screen-field:nth-child(6) flowruntime-list-container flowruntime-screen-field:first-child,
+flowruntime-list-container flowruntime-screen-field:nth-child(7) flowruntime-list-container flowruntime-screen-field:first-child {
+    width: 2.5% !important;
+}
+flowruntime-list-container flowruntime-screen-field:nth-child(6) div,
+flowruntime-list-container flowruntime-screen-field:nth-child(7) div {
+    align-items: baseline !important;
+}
+flowruntime-list-container flowruntime-screen-field:nth-child(6) div lightning-formatted-rich-text,
+flowruntime-list-container flowruntime-screen-field:nth-child(7) div lightning-formatted-rich-text {
+    white-space: nowrap !important;
+}
+/** Generic */
+lightning-base-formatted-text {
+    word-break: break-word;
+}
+/** Checkout delivery method screen */
+commerce_checkout-delivery-method h2,
+.forceCommunityCheckoutFlow flowruntime-list-container flowruntime-screen-field:nth-child(3) h2 {
+    position: relative;
+    visibility: hidden;
+}
+commerce_checkout-delivery-method h2:after {
+    content: "SHIPPING COSTS";
+    left: 0;
+    top: 0;
+    position: absolute;
+    visibility: visible;
+}
+.forceCommunityCheckoutFlow flowruntime-list-container flowruntime-screen-field:nth-child(3) {
+    display: none;
+}
+/** Product detail Page - Pricing */
+b2b_buyer_product_details-purchase-options b2b_buyer_pricing-product-price:after {
+    content: "Price does not include VAT and Shipping Costs";
+}
+/** Product detail Page - Availability Fields short */
+b2b_buyer_product_details-expandable-section lightning-formatted-rich-text img {
+	margin-bottom: 7px !important;
+}
+:root { --dxp-c-section-columns-max-width: 1170px; }

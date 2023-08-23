@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+    <defs>
+        <style>
+            .cls-1 {
+                fill: #7c8b9c;
+            }
+
+            .cls-2 {
+                fill: #7C8B9C;
+            }
+            
+            .cls-2:hover {
+                fill: #009164;
+            }
+        </style>
+    </defs>
+    <title>ic-linked</title>
+    <g id="Ebene_2" data-name="Ebene 2">
+        <g id="ic-linked">
+            <g id="ic-linked-line">
+                <path id="ic-linked-2" data-name="ic-linked" class="cls-1" d="M15,30A15,15,0,1,1,30,15,15,15,0,0,1,15,30ZM15,1A14,14,0,1,0,29,15,14,14,0,0,0,15,1Z" />
+                <path id="ic-linked-3" data-name="ic-linked" class="cls-2" d="M9.36,20.53h2.48V13.07H9.36ZM10.62,9.47a1.29,1.29,0,1,0,0,2.58h0a1.29,1.29,0,1,0,0-2.58Zm10.17,6.78v4.28H18.31v-4c0-1-.36-1.69-1.26-1.69a1.36,1.36,0,0,0-1.27.91,1.7,1.7,0,0,0-.08.6v4.17H13.21s0-6.76,0-7.46h2.48v1.06l0,0h0v0a2.46,2.46,0,0,1,2.24-1.23C19.56,12.89,20.79,14,20.79,16.25Z" />
+            </g>
+        </g>
+    </g>
+</svg>

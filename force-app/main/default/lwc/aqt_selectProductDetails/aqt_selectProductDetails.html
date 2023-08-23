@@ -1,0 +1,272 @@
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<!-- sldsValidatorIgnore -->
+<!--
+*
+* @ Name    :   aqt_selectProductDetail
+* @ Purpose :   This component is to search product,add product
+* @ Author  :   Khushmeet Kaur
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   22-03-2022      |  khushmeet.kaur@absyz.com     |  1.0          |  Initial Version
+*
+-->
+<template>
+    <template if:true={blnSpinner}>
+        <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+    </template>
+
+    <lightning-button-icon icon-name="utility:back" alternative-text="Back" variant="bare" title="Back"
+        onclick={handlePreviousScreen} class="slds-float_right">
+    </lightning-button-icon>
+
+    <lightning-tabset active-tab-value="" class="tab-active">
+        <!--hide product not found for the quote line item-->
+        <template if:false={blnQuoteRecord}>
+            <lightning-tab label="Products Not Found" value="ProductNotFound">
+                <template if:true={list_productNotFound}>
+                    <div>
+                        <lightning-datatable key-field="id" data={list_productNotFound} show-row-number-column
+                            row-number-offset={rowOffset} columns={objColumnProductNotFound} draft-values
+                            onsave={handleSaveNotFoundData} hide-checkbox-column>
+                        </lightning-datatable>
+                    </div>
+                </template>
+            </lightning-tab>
+        </template>
+
+        <lightning-tab label="Products Found" value="ProductFound">
+            <template if:true={list_productFound}>
+                <lightning-layout multiple-rows>
+                    <template if:false={blnQuoteRecord}>
+                        <lightning-layout-item size="12" small-device-size="12" large-device-size="2"
+                            medium-device-size="2" padding="around-small">
+                            <div class="slds-form-element slds-form-element_readonly">
+                                <span class="slds-form-element__label">Account</span>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">
+                                        <a href="#" onclick={redirectAccountRecord}>{strSelectedAccountName}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" small-device-size="12" large-device-size="2"
+                            medium-device-size="2" padding="around-small">
+                            <div class="slds-form-element slds-form-element_readonly">
+                                <span class="slds-form-element__label">Contact</span>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">
+                                        <a href="#" onclick={redirectContactRecord}>{strSelectedContactName}</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </lightning-layout-item>
+                    </template>
+                    <template if:true={blnQuoteRecord}>
+                        <lightning-layout-item size="12" small-device-size="12" large-device-size="4"
+                            medium-device-size="2">
+                        </lightning-layout-item>
+                    </template>
+
+                    <lightning-layout-item size="12" small-device-size="1" large-device-size="2" medium-device-size="2"
+                        padding="around-small">
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" large-device-size="2" medium-device-size="3"
+                        padding="around-small">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label">Enter Quantity (final)</label>
+                            <lightning-helptext icon-name="utility:info"
+                                content="Select the rows and to apply the entered quantity"></lightning-helptext>
+                            <lightning-input type="number" name="quantity" label="Enter quantity(final)" min="0"
+                                onchange={handleQuantityAllChange} value="" variant="label-hidden">
+                            </lightning-input>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" large-device-size="2" medium-device-size="3"
+                        padding="around-small">
+                        <div class="slds-form-element">
+                            <label class="slds-form-element__label">Enter Discount</label>
+                            <lightning-helptext icon-name="utility:info"
+                                content="Select the rows and to apply the entered discount"></lightning-helptext>
+                            <lightning-input type="number" name="discount" label="Enter discount" min="0" max="100"
+                                onchange={handleDiscountAllChange} value="" variant="label-hidden" step=".01">
+                            </lightning-input>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" small-device-size="12" large-device-size="2" medium-device-size="2"
+                        padding="around-small" style="margin-top:25px">
+                        <lightning-button variant="neutral" label="Apply Max Discount" title="Apply Max Discount"
+                            onclick={handleUpdateMaxDiscount} style="margin-top:9%">
+                        </lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+
+                <div style="min-height:300px">
+                    <lightning-layout horizontal-align="start"
+                        class="slds-border_top slds-border_bottom slds-color__background_gray-4 slds-var-p-vertical_x-small">
+                        <lightning-layout-item class="slds-var-p-left_large">
+                            <lightning-input type="checkbox" title="Select" variant="label-hidden"
+                                onchange={handleAllSelectionChange}></lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item>
+                            <lightning-button-icon size="x-small" icon-name="utility:chevronright"
+                                class="slds-var-p-around_xx-small" alternative-text="Expand All"
+                                onclick={handleRecordExpandAll}>
+                            </lightning-button-icon>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item size="12" large-device-size="11">
+                            <lightning-layout>
+                                <template for:each={gridColumns} for:item="column">
+                                    <div key={column.apiName} class={headerColumnClass}
+                                        style="border-right: 1px solid #B0ADAB;font-weight:bold">
+                                        <span title={column.label}>{column.label}</span>
+                                    </div>
+                                </template>
+                            </lightning-layout>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <div>
+                        <template for:each={recordIds} for:item="recordId" for:index="intIndex">
+                            <c-aqt_tree-structure-data-table key={recordId} record-id={recordId}
+                                fields-information={productRecordById} is-parent-checked={blnIsParentChecked}
+                                column-class={bodyColumnClass} column-wrap-class={columnWrapClass}
+                                grid-child-header={gridChildColumns} grid-header={gridColumns}
+                                onupdatelistprice={handleListPriceChange}
+                                grid-level-child2-header={gridLevelChild2Column}
+                                ongridrecordselected={handleGridRecordSelection}
+                                onapprovalrequired={handleQuoteApprovalRequired} index={intIndex}>
+                            </c-aqt_tree-structure-data-table>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="slds-border_top slds-border_bottom slds-var-p-vertical_small">
+                    <lightning-layout class="slds-var-p-around_xx-small" multiple-rows="true">
+                        <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                            large-device-size="6">
+                            <lightning-layout horizontal-align="start" class="slds-var-p-top_x-small">
+                                <lightning-button variant="neutral" label="Remove Selected" title="Remove Selected"
+                                    onclick={handleRemoveSelected}>
+                                </lightning-button>
+                            </lightning-layout>
+                            <lightning-layout horizontal-align="start" class="slds-var-p-top_x-small">
+                                <lightning-button variant="neutral" label="Save As Draft" title="Save As Draft"
+                                    onclick={handleGenerateQuote} name="SaveAsDraft">
+                                </lightning-button>
+                            </lightning-layout>
+                            <lightning-layout horizontal-align="start" class="slds-var-p-top_x-small">
+                                <lightning-button variant="brand" label={strGenerateQuoteLabel}
+                                    title={strGenerateQuoteLabel} disabled={blnGenerateQuoteDisable}
+                                    onclick={handleGenerateQuote} name="generateQuote">
+                                </lightning-button>
+                            </lightning-layout>
+                            <lightning-layout horizontal-align="start" class="slds-var-p-top_x-small">
+                                <template if:false={blnQuoteRecord}>
+                                    <lightning-button variant="neutral" label="Generate Quote & Send Approval"
+                                        title="Generate Quote & Send Approval" onclick={handleGenerateQuote}
+                                        name="approvalRequest">
+                                    </lightning-button>
+                                </template>
+                            </lightning-layout>
+                            <lightning-layout horizontal-align="start" class="slds-var-p-top_x-small">
+                                <template if:false={blnQuoteRecord}>
+                                    <lightning-button variant="neutral" label="Preview PDF" title="Preview PDF"
+                                        onclick={handleGeneratePDF}>
+                                    </lightning-button>
+                                </template>
+                            </lightning-layout>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" small-device-size="12" medium-device-size="6"
+                            large-device-size="6">
+                            <lightning-layout horizontal-align="end" vertical-align="center"
+                                class="slds-border_bottom slds-var-p-top_x-small">
+                                <lightning-layout-item size="3"
+                                    class="slds-var-p-horizontal_medium slds-text-align_right">
+                                    <span>Total Amount</span>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="3" class="slds-text-align_right" style="font-size: 20px;">
+                                    <lightning-formatted-number value={decTotalPrice} format-style="currency"
+                                        currency-code="EUR">
+                                    </lightning-formatted-number>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout horizontal-align="end" vertical-align="center"
+                                class="slds-border_bottom slds-var-p-top_x-small">
+                                <lightning-layout-item size="3"
+                                    class="slds-var-p-horizontal_medium slds-text-align_right">
+                                    <span>Total Discount</span>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="3" class="slds-text-align_right" style="font-size: 20px;">
+                                    <lightning-formatted-number value={decTotalDiscount} min="0" max="100"
+                                        format-style="percent" maximum-fraction-digits="2"></lightning-formatted-number>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <lightning-layout horizontal-align="end" vertical-align="center"
+                                class="slds-border_bottom slds-var-p-top_x-small">
+                                <lightning-layout-item size="3"
+                                    class="slds-var-p-horizontal_medium slds-text-align_right">
+                                    <span>Net Amount</span>
+                                </lightning-layout-item>
+                                <lightning-layout-item size="3" class="slds-text-align_right" style="font-size: 20px;">
+                                    <lightning-formatted-number value={decNetAmount} format-style="currency"
+                                        currency-code="EUR"></lightning-formatted-number>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </template>
+        </lightning-tab>
+
+        <!--Search Product-->
+        <lightning-tab label="Search Products" value="SearchProduct">
+            <div class="slds-border_bottom slds-var-p-bottom_large">
+                <lightning-layout vertical-align="end">
+                    <lightning-layout-item size="4" padding="around-small">
+                        <c-aqt_custom-lookup object-name="Product2" search-placeholder="Search"
+                            icon-name="standard:product" str-label="Product" bln-required="false"
+                            onlookupselected={handleProductSelection} strfilter='' onlookupremove={handleProductRemove}>
+                        </c-aqt_custom-lookup>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="2" padding="around-small">
+                        <lightning-button variant="neutral" label="Search" title="Search" onclick={handleSearchProduct}>
+                        </lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+
+            <template if:true={blnSearchProductDataExist}>
+                <c-aqt_quantity-target-price-table search-product-data={list_searchProductResult}
+                    onaddproduct={handleAddProduct} str-button-label="Add">
+                </c-aqt_quantity-target-price-table>
+            </template>
+        </lightning-tab>
+    </lightning-tabset>
+
+    <lightning-card if:true={blnModalVisible}>
+        <div class="slds-container_small">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{strTitle}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+                        <p>{strMessage}</p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button variant="neutral" name="cancel" label="Cancel" title="Cancel"
+                            onclick={handleCancel} style="padding-right:10px"></lightning-button>
+
+                        <lightning-button variant="brand" name="confirm" label={strConfirmLabel} title={strConfirmLabel}
+                            onclick={handleConfirm}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </lightning-card>
+</template>

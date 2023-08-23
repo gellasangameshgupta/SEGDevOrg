@@ -1,0 +1,198 @@
+<!--
+* 
+* @ Name    :   aqt_createAccount
+* @ Purpose :   This is a component for create new account,selecting account,upload excel file and enter partNumebers
+* @ Author  :   Khushmeet Kaur
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   24-02-2022      |  khushmeet.kaur@absyz.com     |  1.0          |  Initial Version
+*
+-->
+<template>
+    <template if:true={blnSpinner}>
+        <lightning-spinner style="z-index: 9999;" alternative-text="Loading" size="medium" variant="brand">
+        </lightning-spinner>
+    </template>
+    <div class="slds-border_bottom slds-var-p-around_large">
+        <lightning-layout vertical-align="end">
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="1" medium-device-size="1"
+                class="slds-show_medium">
+            </lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="4" medium-device-size="5"
+                padding="around-small">
+                <c-aqt_custom-lookup object-name="Account" search-placeholder="Search" icon-name="standard:account"
+                    str-label="Account" onlookupselected={handleAccountSelection} onlookupremove={handleLookupRemove}
+                    strfilter={strAccountRecordType} bln-required={blnAccountRequired}
+                    str-selected-record-id={strSelectedAccountId} str-selected-record-name={strSelectedAccountName}>
+                </c-aqt_custom-lookup>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="4" medium-device-size="5"
+                padding="around-small">
+                <lightning-button variant="neutral" label="Choose Exisiting Draft" title="Choose Exisiting Draft"
+                    onclick={handleFetchQuoteRecord}>
+                </lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+
+        <lightning-layout vertical-align="end">
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="1" medium-device-size="1"
+                class="slds-show_medium">
+            </lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="4" medium-device-size="5"
+                padding="around-small">
+                <c-aqt_custom-lookup object-name="Contact" search-placeholder="Search" icon-name="standard:contact"
+                    str-label="Contact" bln-required={blnContactRequired} onlookupselected={handleContactSelection}
+                    onlookupremove={handleLookupRemove} strfilter={strContactFilter}
+                    str-selected-record-id={strSelectedContactId} str-selected-record-name={strSelectedContactName}>
+                </c-aqt_custom-lookup>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+
+    <div class="slds-border_bottom">
+        <lightning-layout multiple-rows="true" class="slds-var-p-around_large">
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="1" medium-device-size="1"
+                class="slds-show_medium"></lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="4" medium-device-size="5"
+                padding="around-small">
+                <!--PartNumber-->
+                <div class="slds-form-element">
+                    <label class="slds-form-element__label" for="text-input-id-47">Enter Partnumbers</label>
+                    <lightning-helptext icon-name="utility:info" content={label.CLAQT00001}>
+                    </lightning-helptext>
+                    <lightning-textarea name="inputPartNumber" variant="label-hidden" label="Enter Partnumbers"
+                        placeholder="Type here..."
+                        value={strPartnumber}>
+                    </lightning-textarea>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="1" medium-device-size="1"
+                class="slds-show_medium slds-border_right">
+            </lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="1" medium-device-size="1"
+                class="slds-show_medium">
+            </lightning-layout-item>
+            <!--Upload XLXS File-->
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="3" medium-device-size="4"
+                padding="around-small">
+                <lightning-input type="file" label="Upload XLSX" name="fileUploader" accept={strAcceptedFormats}
+                    onchange={handleUploadFinished}>
+                </lightning-input>
+                <p>{strUploadFileName}</p>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="12" large-device-size="2" medium-device-size="1"
+                padding="around-small">
+                <span style="text-align:right">
+                    <a href={strSampleOrderTemplateDownload}
+                        title="This is the sample template for uploading sales order.">Sales Order Template</a>
+                </span>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+
+    <div class="slds-border_bottom">
+        <lightning-layout horizontal-align="center" class="slds-var-p-around_large">
+            <lightning-layout-item size="12" small-device-size="6" large-device-size="1" medium-device-size="1"
+                class="slds-text-align_center">
+                <lightning-button variant="brand" label="Analyze" title="Analyze" disabled={blnDisableAnalyzeButton}
+                    onclick={handleAnalyze}>
+                </lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" small-device-size="6" large-device-size="1" medium-device-size="1"
+                class="slds-text-align_center">
+                <lightning-button variant="neutral" label="Cancel" title="Cancel" onclick={handleCancel}>
+                </lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+
+    <template if:true={blnShowModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <lightning-icon style="--sds-c-icon-color-foreground-default: white;"
+                    class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                    icon-name="utility:close" alternative-text="Close" title="Close" onclick={handleCloseModal}
+                    size="small"></lightning-icon>
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">{strModalHeader}
+                    </h1>
+                </div>
+                <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+                    <template if:true={blnShowQuantityPartNumberTable}>
+                        <c-aqt_quantity-target-price-table search-product-data={list_requestPartNumber}
+                            str-button-label="Next" onaddproduct={handleAddProduct}
+                            onremoveproduct={handleRemoveProduct}>
+                        </c-aqt_quantity-target-price-table>
+                    </template>
+                    <template if:true={blnShowExistingQuoteRecord}>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="slds-text-align_right" scope="col" style="width:3.25rem">
+                                        <div class="slds-truncate slds-assistive-text" id="column-group-header"
+                                            title="Choose a row to select">Choose a row to select</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Name">Name</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Account Name">Account Name</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Contact Name">Contact Name</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Total Discount">Total Discount</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Net Amount">Net Amount</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={data} for:item="quoteRecord">
+                                    <tr class="slds-hint-parent" key={quoteRecord.Id}>
+                                        <td class="slds-text-align_right" role="gridcell">
+                                            <input type="radio" id={quoteRecord.Id} name="radionButton"
+                                                value={quoteRecord.Id}>
+                                        </td>
+                                        <td data-label="Name">
+                                            <div class="slds-truncate" title={quoteRecord.Name}>{quoteRecord.Name}</div>
+                                        </td>
+                                        <td data-label="Account Name">
+                                            <div class="slds-truncate" title={quoteRecord.AccountName}>
+                                                {quoteRecord.AccountName}</div>
+                                        </td>
+                                        <td data-label="Contact Name">
+                                            <div class="slds-truncate" title={quoteRecord.ContactName}>
+                                                {quoteRecord.ContactName}</div>
+                                        </td>
+                                        <td data-label="Total Discount">
+                                            <div class="slds-truncate" title={quoteRecord.TotalDiscount__c}>
+                                                {quoteRecord.TotalDiscount__c} %
+                                            </div>
+                                        </td>
+                                        <td data-label="Net Amount">
+                                            <div class="slds-truncate" title={quoteRecord.NetAmount__c}>
+                                                <lightning-formatted-number value={quoteRecord.NetAmount__c}
+                                                    format-style="currency" currency-code="EUR">
+                                                </lightning-formatted-number>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                        <br />
+                        <lightning-button variant="brand" label="Analyze" title="Analyze"
+                            onclick={handleQuoteRecordAnalyze} class="slds-align_absolute-center">
+                        </lightning-button>
+                    </template>
+                </div>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+    </template>
+</template>

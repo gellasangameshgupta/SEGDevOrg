@@ -1,0 +1,36 @@
+<!--
+* 
+* @ Name    :   b2b_navigationMenu
+* @ Purpose :   A basic controller for fetching NavigationMenuItems.
+* @ Author  :   Pradeep Chary
+*
+*   Date            |  Developer Name                 |  Version      |  Changes
+* ======================================================================================================
+*   18-07-2021      |  pradeep.chary@absyz.com        |  1.0          |  Initial Version
+*
+-->
+<template>
+
+    <template if:true={blnIsLoaded}>
+        <template if:true={blnShowHeader}>
+            <h2>{strHeaderTitle}</h2>
+        </template>
+
+        <div class="slds-grid slds-grid_vertical">
+            <div class="slds-col slds-var-p-top_small">
+                <span>
+                    <nav role="navigation">
+                        <ul class="slds-nav-vertical slds-has-block-links_space">
+                            <template for:each={list_menuItems} for:item="item">
+
+                                <li key={item.id} class="navbar-items slds-var-p-horizontal_large">
+                                    <c-b2b_navigation-menu-item item={item}></c-b2b_navigation-menu-item>
+                                </li>
+                            </template>
+                        </ul>
+                    </nav>
+                </span>
+            </div>
+        </div>
+    </template>
+</template>

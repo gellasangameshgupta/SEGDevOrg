@@ -1,0 +1,21 @@
+<!--
+* 
+* @ Name    :   b2b_finishRegistration
+* @ Purpose :   This is a component for displaying the finish registration screen and its content 
+                used on B2B Registration flow
+* @ Author  :   Aseem Doddamani
+*
+*   Date            |  Developer Name                 |  Version      |  Changes
+* ======================================================================================================
+*   21-05-2021      |  aseem.doddamani@absyz.com      |  1.0          |  Initial Version
+*
+-->
+<template>
+    <lightning-card>
+        <p>{label.CLB2B00011}</p>
+        <div slot="footer">
+            <lightning-button variant="brand" label={label.CLB2B00012} onclick={redirectToLogin}
+                class="slds-var-p-left_x-small"></lightning-button>
+        </div>
+    </lightning-card>
+</template>

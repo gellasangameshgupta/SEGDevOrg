@@ -1,0 +1,210 @@
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" controller="IP_InventionDisclosureController">
+    <aura:attribute name="ProductTypeOptions" type="list"/>    
+    <aura:attribute name="filetype" type="List" default="['.png', '.jpg', '.jpeg']" />
+    <aura:attribute name="multiple" type="Boolean" default="true" />
+    <aura:attribute name="disabled" type="Boolean" default="true" />
+    <aura:attribute name="data" type="object"/>
+    <aura:attribute name="fillOrUploadForm" type="boolean" default="false"/>
+    <aura:attribute name="fillOrUploadFormrow" type="boolean" default="false"/>
+    <aura:attribute name="isAllFieldsValid" type="boolean" default="true"/>
+    <aura:attribute name="mapOfControlanddependent" type="Map"/>
+    <aura:attribute name="selectedLookUpRecords" type="Object[]" default="[]"/>
+    <aura:attribute name="selectedInventors" type="sObject[]" default="[]"/>
+    <aura:attribute name="shareArray" type="User[]" default="[]"/>
+    <aura:attribute name="inventorsTable" type="boolean" />
+    <aura:attribute name="myInvention" type="boolean" default="false"/>
+    <aura:attribute name="myInventionRec" type="case" />
+    <aura:attribute name="isDisabled" type="boolean" default="false"/>
+    <aura:attribute name="inventionCreatedasPartofWork" type="list"/>
+    <aura:attribute name="isthereContributionoftheCompany" type="list"/>
+    <aura:attribute name="saveRecord" type="string" />
+    <aura:attribute name="submitRecord" type="string" />
+    <aura:attribute name="specialPointstobeConsidered" type="list"/>
+    <aura:attribute name="fillOrUploadFormopts" type="list"/>
+    <aura:attribute name="inventionPartofEntrustedResearchOptions" type="list"/>
+    <aura:attribute name="listDependingValues" type="list" default="['--- None ---']" description="to store dependent field values"/>
+    <aura:attribute name="bDisabledDependentFld" type="boolean" default="true"/> 
+    <aura:attribute name="selectedProductVal" type="string"/>
+    <aura:attribute name="IsSpinner" type="Boolean" default="false"/>
+    <aura:attribute name="attachmentCount" type="Integer" default="0"/>
+    <aura:attribute name="selected" type="string"/>
+    <aura:attribute name="isAttachmentValid" type="String" default="blank"/>
+    <aura:attribute name="saveWithFile" type="boolean" default="false"/>
+    <aura:attribute name="saveWithoutFile" type="boolean" default="false"/>
+    <aura:attribute name="ShareOnLoad" type="string" default=""/>
+    
+    <aura:handler name="change" value="{!v.submitRecord}" action="{!c.handleNewUpload}" />
+    <aura:handler name="change" value="{!v.saveWithFile}" action="{!c.handleSaveWithFile}" />
+    <aura:handler name="change" value="{!v.saveWithoutFile}" action="{!c.handleSaveWithoutFile}" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.getinventors}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.fetchmessages}"/>
+    
+    <aura:handler name="selectedInventorsEvent" event="c:IP_SelectedInventorsEvent" action="{!c.handleComponentEvent}"/>
+    
+    <lightning:card >    
+        
+        <aura:if isTrue="{!v.IsSpinner}">
+            <lightning:spinner variant="brand"  size="medium" alternativeText="Loading" />
+        </aura:if> 
+        <div class="slds-grid slds-wrap" style="padding-left:5%">
+            <div class="">
+                <img src="{!$Resource.IP_CompanyLogo}"/>
+            </div>
+            <div class="slds_size_10-of-12" style="padding-left:60%"></div>
+            <div class=""><img src="{!$Resource.IP_IDFPortalLogo}"/></div>
+        </div><br/>
+        <div class="slds-p-around_small">
+            <lightning:button variant="brand" label="Back" onclick="{!c.goback}"/><br/>
+        </div>
+        <div style="width:80%;padding-left:15%">
+            <div>
+                <ui:outputText class="title" value="{!$Label.c.IP_IdfHeadlineForNewIDF}"/><br/>
+                <p><lightning:formattedRichText value="{!$Label.c.IP_IdfInstructionsNewIDF}"/></p>
+            </div><br/>
+            
+            <div class="" >
+                <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.titleLabel}</span>&nbsp;<span style="color:red">*</span><lightning:helptext content="Maximum characters are 255" iconName="utility:info"/><br/>{!v.data.titleHelptext}</label><br/>
+                <lightning:input  aura:id="title" name="input1" disabled="{!v.isDisabled}" value="{!v.myInventionRec.Subject}" label="" type="text" variant="label-hidden" maxlength="255"/><br/>
+                <!--label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"--><span style="color:#005286;font-size:13px;">{!v.data.productTypeLabel}</span>&nbsp;<span style="color:red">*</span><!--/label-->
+                <lightning:select  label="" disabled="{!v.isDisabled}"  value="{!v.myInventionRec.IP_Product_Type__c}" aura:id="productType" name="select1" variant="label-hidden" class="nolabel" onchange="{!c.productTypeChange}">
+                    <aura:iteration items="{!v.ProductTypeOptions}" var="item" >
+                        <option value="{!item.value}" >{!item.label}</option>
+                    </aura:iteration>
+                </lightning:select><br/>
+                <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">Product Subcategories</span>&nbsp;<span style="color:red">*</span></label>
+                <lightning:select variant="label-hidden" class="nolabel" aura:id="subCateogory"  value="{!v.myInventionRec.IP_Product_Subcategories__c}" name="controllerFld" disabled="{!v.bDisabledDependentFld}">
+                    <!--option value="{!v.myInventionRec.IP_Product_Subcategories__c}"  >{!v.myInventionRec.IP_Product_Subcategories__c}</option-->
+                    <aura:iteration items="{!v.listDependingValues}" var="val" >
+                        <option value="{!val}">{!val}</option>	
+                    </aura:iteration>
+                </lightning:select><br/>
+                <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.inventionCreatedasPartofWorkLabel}</span>&nbsp;<span style="color:red">*</span><br/>{!v.data.inventionCreatedasPartofWorkHelptext}</label>
+                <lightning:select  disabled="{!v.isDisabled}"  value="{!v.myInventionRec.IP_Invention_Created_as_Part_of_Work__c}"  aura:id="inventionCreatedasPartofWork" variant="label-hidden" name="select2" class="nolabel">
+                    <!--aura:iteration items="{!v.ProductTypeOptions}" var="item"-->
+                    <aura:iteration items="{!v.inventionCreatedasPartofWork}" var="val">
+                        <option value="{!val}" >{!val}</option>
+                    </aura:iteration>
+                </lightning:select><br/>
+                <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.whoInitiatedtheSubjectLabel}</span>&nbsp;<span style="color:red">*</span><lightning:helptext content="Maximum characters are 32768" iconName="utility:info"/><br/>{!v.data.whoInitiatedtheSubjectHelptext}</label><br/>
+                <lightning:textarea disabled="{!v.isDisabled}" value="{!v.myInventionRec.IP_Who_Initiated_the_Subject__c}" aura:id="whoInitiatedtheSubject" variant="label-hidden" name="input1" label="" maxlength="32768"/><br/>
+                <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.reasonforWorkingonThatSubjectLabel}</span>&nbsp;<span style="color:red">*</span><lightning:helptext content="Maximum characters are 255" iconName="utility:info"/><br/>{!v.data.reasonforWorkingonThatSubjectHelptext}</label><br/>
+                <lightning:textarea  disabled="{!v.isDisabled}" value="{!v.myInventionRec.IP_Reason_for_Working_on_That_Subject__c}" aura:id="reasonforWorkingonThatSubject" variant="label-hidden" name="input1" label="Reason for Working on That Subject?" maxlength="255"/><br/>
+                <label class="slds-form-element__label"  style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.inventionPartofEntrustedResearchLabel}</span>&nbsp;<span style="color:red">*</span><br/>{!v.data.inventionPartofEntrustedResearchHelptext}</label>
+                <lightning:select  disabled="{!v.isDisabled}" aura:id="inventionPartofEntrustedResearch" value="{!v.myInventionRec.IP_Invention_Part_of_Entrusted_Research__c}" variant="label-hidden" name="select2" class="nolabel">
+                    <aura:iteration  items="{!v.inventionPartofEntrustedResearchOptions}" var="item">
+                        <option value="{!item}">{!item}</option>
+                    </aura:iteration>
+                </lightning:select><br/>
+                <label class="slds-form-element__label"  style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.isthereContributionoftheCompanyLabel}</span>&nbsp;<span style="color:red">*</span><br/>{!v.data.isthereContributionoftheCompanyHelptext}</label><br/>
+                <lightning:select  disabled="{!v.isDisabled}"   value="{!v.myInventionRec.IP_Is_there_Contribution_of_the_Company__c}" aura:id="isthereContributionoftheCompany" variant="label-hidden" name="select2" class="nolabel">
+                    <aura:iteration items="{!v.isthereContributionoftheCompany}" var="item">
+                        <option value="{!item}">{!item}</option>
+                    </aura:iteration>
+                </lightning:select><br/>
+                
+                <label class="slds-form-element__label"  style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.specialPointstobeConsideredLabel}</span>&nbsp;<span style="color:red">*</span><br/>{!v.data.specialPointstobeConsideredHelptext}</label>
+                <lightning:select disabled="{!v.isDisabled}" value="{!v.myInventionRec.IP_Special_Points_to_be_Considered__c}" aura:id="specialPointstobeConsidered" onchange="{!c.onChangeValue}" variant="label-hidden" name="select2" class="nolabel">
+                    <aura:iteration items="{!v.specialPointstobeConsidered}" var="item">
+                        <option value="{!item}">{!item}</option>
+                    </aura:iteration>
+                </lightning:select><br/>
+                
+                <aura:if isTrue="{!v.selected == 'Yes'}">
+                    <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.explanationofSpecialPointsLabel}</span>&nbsp;<span style="color:red">*</span><lightning:helptext content="Maximum characters are 10000" iconName="utility:info"/><br/>{!v.data.explanationofSpecialPointsHelptext}</label><br/>
+                    <lightning:textarea disabled="{!v.isDisabled}" value="{!v.myInventionRec.IP_Explanation_of_Special_Points__c}" aura:id="explanationofSpecialPoints" variant="label-hidden" name="input1" label="Explanation of Special Points" placeholder="{!v.data.explanationofSpecialPointsPlaceholderText}" maxlength="10000"/><br/>
+                </aura:if>
+                
+                <label class="slds-form-element__label"  style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.InventorsLabel}</span>&nbsp;<span style="color:red">*</span><br/>{!v.data.InventorsHelptext}</label>
+                <c:IP_CustomLookup objectAPIName="User"
+                                IconName="standard:user"
+                                lstSelectedRecords="{!v.selectedLookUpRecords}"
+                                disable="{!v.isDisabled}"
+                                />
+                <!--<lightning:textarea disabled="true" value="{!v.myInventionRec.IP_Inventors__c}" aura:id="Inventors" variant="label-hidden" name="input1"  /><br/>-->
+                <aura:if isTrue="{!v.inventorsTable}">
+                    <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                        <thead>
+                            <tr class="slds-text-title_caps">
+                                <!--header checkbox for select all-->
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Name">Name</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Phone">Email</div>
+                                </th>
+                                <th scope="col">
+                                    <div class="slds-truncate" title="Share of Invention">Share of Invention (in %)</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.selectedLookUpRecords}" var="obj">
+                                <tr>
+                                    <th scope="row">
+                                        <div class="slds-truncate" title="{!obj.Name}">
+                                            {!obj.Name}
+                                        </div>
+                                    </th> 
+                                    <th scope="row">
+                                        <div class="slds-truncate" title="{!obj.Email}">
+                                            {!obj.Email}
+                                        </div>
+                                    </th>
+                                    <th scope="row">
+                                        <div class="slds-truncate" >
+                                            <lightning:input autocomplete="off" disabled="{!v.isDisabled}" type="number" name="{!obj.Name+';'+obj.Email+';'+obj.Id}" label="" value="{!obj.share}" onblur="{!c.inventionShareChange}" aura:id="shareInp"/>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table><br/>
+                </aura:if>
+                <label class="slds-form-element__label" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.IamemployedatSEGAutomotiveGermanyLabel}</span>&nbsp;</label><br/>
+                <lightning:input disabled="{!v.isDisabled}" value="{!v.myInventionRec.IP_am_employed_at_SEG_Automotive_Germany__c}" checked="{!v.myInventionRec.IP_am_employed_at_SEG_Automotive_Germany__c}" aura:id="IamemployedatSEGAutomotiveGermanyLabel"  type="checkbox" variant="label-hidden" name="input1"/><br/>
+                <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">Fill Form or Upload IDF</span>&nbsp;<span style="color:red">*</span></label>
+                <lightning:select disabled="{!v.isDisabled}"   value="{!v.myInventionRec.IP_Fill_Form_or_Upload_IDF__c}" variant="label-hidden" aura:id="fillOrUploadForm" name="select3" label="" onchange="{!c.fillOrUploadForm}" class="nolabel"><br/>
+                    <aura:iteration items="{!v.fillOrUploadFormopts}" var ="item">
+                        <option value="{!item}">{!item}</option><br/>
+                    </aura:iteration>
+                </lightning:select><br/>
+                <aura:if isTrue="{!v.fillOrUploadForm}">
+                    <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.priorartLabel}</span>&nbsp;<span style="color:red">*</span><lightning:helptext content="Maximum characters are 10000" iconName="utility:info"/><br/>{!v.data.priorartHelptext}</label>
+                    <lightning:textarea disabled="{!v.isDisabled}" value="{!v.myInventionRec.IP_Prior_Art__c}"  variant="label-hidden" aura:id="priorart" name="input1" label="" maxlength="10000"/><br/>
+                    <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.problemSolvedLabel}</span>&nbsp;<span style="color:red">*</span><lightning:helptext content="Maximum characters are 32768" iconName="utility:info"/><br/>{!v.data.problemSolvedHelptext}</label>
+                    <lightning:textarea disabled="{!v.isDisabled}" value="{!v.myInventionRec.IP_Problem_Solved__c}"  aura:id="problemSolved" variant="label-hidden" name="input1" label="" maxlength="32768"/><br/>
+                    <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.inventionDescriptionLabel}</span>&nbsp;<span style="color:red">*</span><lightning:helptext content="Maximum characters are 130000" iconName="utility:info"/><br/>{!v.data.inventionDescriptionHelptext}</label>
+                    <lightning:textarea disabled="{!v.isDisabled}" value="{!v.myInventionRec.IP_Invention_Description__c}"  aura:id="inventionDescription" variant="label-hidden" name="input1" label="" maxlength="130000"/><br/>
+                    <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.proveofInventiononCompetitorProductLabel}</span>&nbsp;<span style="color:red">*</span><lightning:helptext content="Maximum characters are 32768" iconName="utility:info"/><br/>{!v.data.proveofInventiononCompetitorProductHelptext}</label>
+                    <lightning:textarea disabled="{!v.isDisabled}" value="{!v.myInventionRec.IP_Proveof_Invention_onCompetitorProduct__c}"  aura:id="proveofInventiononCompetitorProduct" variant="label-hidden" name="input1" label="" maxlength="32768"/><br/>
+                    <label class="slds-form-element__label" required="true" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">{!v.data.useofInventionbyUsLabel}</span>&nbsp;<span style="color:red">*</span><lightning:helptext content="Maximum characters are 32768" iconName="utility:info"/><br/>{!v.data.useofInventionbyUsHelptext}</label>
+                    <lightning:textarea disabled="{!v.isDisabled}" value="{!v.myInventionRec.IP_Use_of_Invention_by_Us__c}"  aura:id="useofInventionbyUs" variant="label-hidden" name="input1" label="" maxlength="32768"/><br/>
+                </aura:if>
+                <a download="SEG Invention Report.docx" href="{!$Resource.SEGInventionReport}" target="_blank">SEG Invention Report</a><br/><br/>
+                
+                <label class="slds-form-element__label" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;font-weight: 600;">Attachments</span></label><br/>
+                <aura:if isTrue="{!v.isDisabled}">
+                    <iframe width="1000" height="auto" src="{!$Label.c.IP_IDFFileViewURL+v.myInventionRec.Id}" style="border:white;"/>
+                    <aura:set attribute="else">
+                        <iframe id="vfFrame" width="1000" height="auto" src="{!$Label.c.IP_IDFFileUploadURL}" style="border:white;"/>
+                        <iframe width="1000" height="auto" src="{!$Label.c.IP_IDFFileViewURL+v.myInventionRec.Id}" style="border:white;"/>
+                    </aura:set>
+                </aura:if>
+                <br/>
+            </div>
+            <aura:if isTrue="{!v.isDisabled}">
+                <aura:set attribute="else">
+                    <lightning:layout horizontalAlign="center">
+                        <lightning:layoutItem padding="around-small">
+                            <lightning:button variant="brand-outline" label="Save" title="Save" onclick="{!c.handleSave}" />
+                        </lightning:layoutItem>
+                        <lightning:layoutItem padding="around-small">
+                            <lightning:button variant="brand" label="Submit for Review" title="Submit for Review" onclick="{!c.handleSubmit}" />
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </aura:set>
+            </aura:if>
+        </div>
+    </lightning:card> 
+</aura:component>

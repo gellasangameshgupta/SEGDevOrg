@@ -1,0 +1,1538 @@
+<!-----------------------------------------------------------------------------------
+    Page Name       :SEGTS_EditTestDetails
+    Purpose         :Page for editing existing Test Details on click on "Edit" button
+    Created By      :RBEI
+    Created Date    :Feb 2019
+------------------------------------------------------------------------------------>
+<apex:page controller="SEGTS_EditTestDetailsCtrl" doctype="html-5.0" lightningStylesheets="true">
+  <html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+  <!--<title>Json To Form</title>-->
+  <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>-->
+  <apex:stylesheet value="{!URLFOR($Resource.SEGTS_TestDetailsCSS)}"/>
+    <style>
+    *{
+      margin:0;
+      box-sizing:border-box;
+    }
+    
+    .container-fluid{
+
+      padding:60px;
+     // padding-top: 0px;
+      //border: 1px solid #000000;
+    }
+     .subheading,.heading{
+    display: inline-block;
+    padding-bottom: 6px;
+    margin: 0;
+    font-weight: 700;
+    font-size: .75rem;
+    line-height: 1.25;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+    color: rgb(8, 7, 7);
+    -webkit-tap-highlight-color: transparent;
+    }
+
+    table thead tr th{
+    font-weight: 700;
+    line-height: 1.25;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+    color: rgb(8, 7, 7);
+    -webkit-tap-highlight-color: transparent;
+    //text-transform: uppercase;
+    letter-spacing: 0.0625rem;
+    font-size: .75rem;
+    
+    }
+    .picklistvalue{
+    font-weight: 400;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+    color: rgb(8, 7, 7);
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: 0.0625rem;
+    font-size: .75rem;
+    }
+   .subblock{
+    border: 0;
+    //border-top: 1px solid rgb(221, 219, 218);
+    //border-bottom: 1px solid rgb(221, 219, 218);
+    margin-top:8px;
+    }
+    .subblock .subheading{
+    font-weight: 700;
+    //text-transform: uppercase;
+    letter-spacing: 0.0625rem;
+    font-size: .75rem;
+    }
+
+    .test-section-btn{
+      display: inline-block;
+      float: right;
+    }
+    .inner-btn{
+      margin-left: 10px;
+    }
+    .btn{
+      -webkit-appearance: none;
+    position: relative;
+    display: inline-block;
+    border: 1px solid transparent;
+    padding: 0;
+    font-size: .75rem;
+    line-height: 1.875rem;
+    text-decoration: none;
+    white-space: normal;
+    border-radius: .25rem;
+    background: transparent;
+    background-clip: border-box;
+    color: rgba(27, 82, 151, 1);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: color .05s linear,background-color .05s linear;
+    transition: color .05s linear,background-color .05s linear;
+    padding-left: .5rem;
+    padding-right: .5rem;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid rgb(221, 219, 218);
+    -webkit-transition: border 0.15s linear;
+    transition: border 0.15s linear;
+    border-color: rgb(221, 219, 218);
+    background-color: rgb(255, 255, 255);
+    }
+    .innerblock{
+  
+      padding: 0px;
+      border: 1px solid #000000;
+      margin-top:5px;
+      padding-top: 0px;
+
+    }
+    .table-block{
+      
+      padding:5px 10px 10px 10px;
+      border: 1px solid #000000;
+      margin-top:5px;
+      
+    }
+    .main-form-layout, .innerblock, .table-block{
+    margin-bottom: 1rem;
+    border: 1px solid rgb(221, 219, 218);
+    border-radius: .25rem;
+    background: rgb(255, 255, 255);
+   /* -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.10);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.10);*/
+    background-clip: padding-box;
+    }
+    .generated-innerblock,.test-section{
+      padding:9px;
+     // border: 1px solid #cec3c3;
+    }
+    .block-input-box{
+      width:25%;
+      display: inline-block;
+      height: 20px;
+      margin: 5px;
+      font-size: 0.8rem;
+      border: 1px solid rgb(221, 219, 218);
+    max-width: 100%;
+    border-radius: .25rem;
+    background-color: rgb(255, 255, 255);
+    color: rgb(8, 7, 7);
+    -webkit-transition: border .1s linear,background-color .1s linear;
+    transition: border .1s linear,background-color .1s linear;
+    display: inline-block;
+    padding: 0 1rem 0 .75rem;
+    min-height: calc(1.875rem + (1px * 2));
+    line-height: 1.875rem;
+    }
+    .inner-table-form table tbody tr:first-child .button-table-remove,
+    .innerblock .generated-innerblock:first-child .button-block-remove,
+    .mainadddiv .mainfieldouter:first-child .test-section-remove{
+
+      pointer-events: none;
+      opacity: 0.4;
+      
+    }
+
+    .designation-block{
+      width:160px;
+      font-weight: 400;
+      font-family: 'Salesforce Sans',Arial,sans-serif;
+      color: rgb(8, 7, 7);
+      -webkit-tap-highlight-color: transparent;
+      letter-spacing: 0.0625rem;
+      font-size: .75rem;
+     
+    }
+    .size-block {
+      width:90px;
+      font-weight: 400;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+    color: rgb(8, 7, 7);
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: 0.0625rem;
+    font-size: .75rem;
+    }
+    .condition-block{
+      width:70px;
+      font-weight: 400;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+    color: rgb(8, 7, 7);
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: 0.0625rem;
+    font-size: .75rem;
+    }
+    .volume-block{
+      width:80px;
+      font-weight: 400;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+    color: rgb(8, 7, 7);
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: 0.0625rem;
+    font-size: .75rem;
+    }
+    .unit-block{
+      width:90px;
+      font-weight: 400;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+    color: rgb(8, 7, 7);
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: 0.0625rem;
+    font-size: .75rem;
+    }
+    .remark-block{
+      width:170px;
+      font-weight: 400;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+    color: rgb(8, 7, 7);
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: 0.0625rem;
+    font-size: .75rem;
+    }
+    .interface-block{
+      width:160px;
+      font-weight: 400;
+    font-family: 'Salesforce Sans',Arial,sans-serif;
+    color: rgb(8, 7, 7);
+    -webkit-tap-highlight-color: transparent;
+    letter-spacing: 0.0625rem;
+    font-size: .75rem;
+    }
+    /* March 9 - 2019 */
+    .innerbloc,.mainadddiv,tbody{
+      cursor:grab;
+    }
+    .customButton{
+       background-color: #2574a9;
+       color: #fff; 
+    }
+     .inner-table-form .table td{
+       padding : 0.20rem;
+       column-width: 100px;
+    }
+     .mainadddiv > fieldset {
+       padding: 9px;
+       border: 1px solid #cec3c3;
+    }    
+     .form-control {
+        height: 31px;
+    }
+     #formsubmit, .btn
+    {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        text-align: center;
+        vertical-align: middle;
+        border: 1px solid #dddbda;
+        -webkit-transition: border 0.15s linear;
+        transition: border 0.15s linear;
+        //background-color: rgba(27, 82, 151, 1);
+       // border-color: #0070d2;
+        color: #fff;
+        background-color: rgba(27, 82, 151, 1);
+        border-color: rgba(27, 82, 151, 1);
+    }
+    
+    #formsubmit:hover{
+    background-color: rgba(0, 68, 135, 1);
+    border-color: rgba(0, 68, 135, 1);
+    color: rgb(255, 255, 255);
+    }
+     #discard, .btn-danger123, .btn-danger123123{
+       background-color:#fff;
+       border: 1px solid #dddbda;
+       color: rgba(27, 82, 151, 1);
+    }
+    
+     #discard:hover{
+    background-color:#f0f0f0 !important;
+    border-color:#f0f0f0 !important;
+    }
+    .btn-danger123123:hover{
+    background-color:#f0f0f0 !important;
+    }
+     .btn-danger123:hover{
+    background-color:#f0f0f0 !important;
+    }
+    
+    
+    .btn-plus{
+        //background-color:#fff;
+        //border: 1px solid #dddbda;
+        //color: rgba(27, 82, 151, 1);
+        color: #fff;
+        background-color: rgba(27, 82, 151, 1);
+        border-color: rgba(27, 82, 151, 1);
+       }
+       .btn-plus:hover{
+       background-color: rgba(0, 68, 135, 1);
+    border-color: rgba(0, 68, 135, 1);
+    color: rgb(255, 255, 255);
+       }
+       
+       
+       
+    input[type="text"]:active{
+        border-color: #1589ee !important;
+        background-color: #fff;
+        -webkit-box-shadow: 0 0 3px #0070D2 !important;
+        box-shadow: 0 0 3px #0070D2 !important;
+    }
+    .help-block {
+  color: #C23933;
+  font-size: 0.8rem;
+  border-color: #C23933;
+
+  
+  }
+  tr#spanhide {
+  background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+  display:block;
+}
+        .jconfirm-buttons button{
+        color: #fff;
+       background-color: rgba(27, 82, 151, 1);
+    border-color: rgba(27, 82, 151, 1);
+        }
+.btn.btn-my {
+    background-color: white;
+    border: 1px solid #dddbda !important;
+    color: rgb(27, 82, 151);
+    font-size: 11px!important;
+    height: 32px;
+    text-transform: capitalize!important;
+}
+.jconfirm-buttons > .btn {
+  font-size: 13px!important;
+  text-transform: capitalize!important;
+   font-weight: normal!important;
+}
+.jconfirm-title {
+  font-size: 16px!important;
+}
+
+.inner-table-form .table td {
+ column-width:auto !important;
+}
+  </style>
+  </head> 
+  
+  
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css"></link>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+        
+    <div class="container-fluid" id="fullform" style="display:none">
+    <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 test-section qst_opt_val">
+        <form id="dataform" action="" method="post">
+          <input type="hidden" value="1" id="countmaindiv"/>
+          <div class="mainadddiv" id="finalresult">
+  
+          </div>
+          <div style="margin-top: 25px;" align="center">
+          <input id="formsubmit" title="Save" class="btn btn-plus" onclick="checkform()" value="Save" type="submit"/>
+          <input title="Cancel" value="Cancel" style="background-color:white;" type="submit" id="discard"  formnovalidate="formnovalidate"/>
+          
+          <!--<input type="button" value = "Test the alert" onclick="alert('This is a custom alert dialog that was created by over-riding the window.alert method.');" />-->
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  
+  <div id="showalert" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      
+      <div class="modal-body">
+         <div class="row">
+            
+                 <div class="col-md-12 form-group">
+                  The fields with <span style="color:#C23933"><b>*</b></span> are mandatory. Please fill the mandatory fields and click save.
+                </div>
+                
+  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="cancelpopup" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      
+      <div class="modal-body">
+         <div class="row">
+            
+                 <div class="col-md-12 form-group">
+                  Are you sure you want to cancel?
+                </div>
+                
+  </div>
+      </div>
+      <div class="modal-footer">
+        <button type = "submit" class="btn btn-primary" onclick="cancelYes()">Ok</button>
+        <input title="Cancel" value="Cancel" style="background-color:white;" type="submit" data-dismiss="modal"/>
+        <!--<button type="button" class="btn btn-default" style="background-color:white;color:blue" data-dismiss="modal">Cancel</button>-->
+      </div>
+    </div>
+
+  </div>
+</div>
+<div id="confirm" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      
+      <div class="modal-body">
+         <div class="row">
+            
+                 <div class="col-md-12 form-group">
+                 Are you sure, you want to delete?
+                </div>
+                
+  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-primary" id="delete">Delete</button>
+        <input title="Cancel" value="Cancel" style="background-color:white;" type="submit" data-dismiss="modal"/>
+    <!--<button type="button" data-dismiss="modal" class="btn">Cancel</button>-->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+  <apex:includeScript value="{!$Resource.SEGTS_TestDetails1}"/>
+  <apex:includeScript value="{!$Resource.SEGTS_TestDetails2}"/>
+  <apex:includeScript value="{!$Resource.SEGTS_TestDetails3}"/>
+  <apex:includeScript value="{!$Resource.SEGTS_TestDetails4}"/>
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.9.0/jquery.serializejson.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>-->
+  <!-----------All Jquery of form process------------>
+  
+  <script>
+  
+  
+  // Enter your json here
+    var jsondata='{!JSONData}';
+  
+   try{
+    var obj = jQuery.parseJSON(jsondata);
+    //console.log(obj);
+    var html='';
+    
+    $('#countmaindiv').val(obj.request.length)
+    for (var i = 0; i < obj.request.length; i++) {
+      var mainrequest=obj.request[i];
+      var getmaincount=i+parseInt(1);
+      html+='<fieldset class="mainfield mainfieldouter" id="mainfield'+getmaincount+'">\
+              <input type="hidden" class="notpassingcls" id="ownmainid'+getmaincount+'" value="'+getmaincount+'">\
+              <h6 class="heading">Test Section </h6>\
+              <div class="test-section-btn">\
+                   <button onclick="rotate(this)" type="button" data-toggle="collapse" data-cst-mde="Section" title="Collapse Section" data-target="#innerdiv'+getmaincount+'" class="colscls btn btn-plus colpasdiv"> ^ </button>\
+                <button onclick="addfulldiv('+getmaincount+'); return false;" title="Add Section" class="btn btn-plus">+</button>\
+                <button onclick="removethisdiv(\'mainfield'+getmaincount+'\'); return false;" title="Remove Section" class="btn btn-danger123 test-section-remove">-</button>\
+              </div>\
+              <div class="subblock">\
+                <h6 class="subheading">Headline<span style="color:#C23933">*</span></h6>\
+                <span><input required="true" name="request['+i+'][testSectionHeader]" class="form-control block-input-box blocksection" type="text"\
+                    placeholder="Enter test section headline" value="'+mainrequest.testSectionHeader+'">\
+                  <input name="request['+i+'][sortOrder]" class="form-control block-input-box" type="hidden" value="1">\
+                </span>\
+              </div>\
+                \
+              <div class="innerblock collapse show"  id="innerdiv'+getmaincount+'" rel=\''+mainrequest.level2.length+'\'>';
+             var levelhtml=''; var ilevel=0;
+              if(mainrequest.level2.length==0)
+              {  
+                 var get_table_striped_rel=ilevel+parseInt(1);
+                 levelhtml+='<fieldset class="static-test-block collapse show generated-innerblock">\
+                  <h6 class="heading">Test Block </h6>\
+                  <div class="test-section-btn">\
+                   <button onclick="rotate(this)" type="button" data-toggle="collapse" data-cst-mde="Block"  data-target="#maininnerdiv'+getmaincount+ilevel+'" class="colscls btn btn-plus">^</button>\
+                    <button onclick="addinnerdiv(\'innerdiv'+getmaincount+'\','+getmaincount+'); return false;" title="Add Block" class="btn btn-plus addinnerdivd">+</button>\
+                    <button onclick="removefullblock(this); return false;" class="btn btn-danger123 button-block-remove" title="Remove Block">-</button>\
+                  </div>\
+                   <div class="subblock">\
+                    <h6 class="subheading">Headline</h6>\
+                    <span><input '+(mainrequest.level2.length > 1  ? 'requried="true"' : '' )+' name="request['+i+'][level2]['+ilevel+'][testBlockHeader]" class="form-control block-input-box blocksection"\
+                        type="text" placeholder="Enter test block headline" value="">\
+                      <input name="request['+i+'][level2]['+ilevel+'][sortOrder]" class="form-control block-input-box" type="hidden"\
+                        value="1">\
+                    </span>\
+                  </div>\
+                   <fieldset class="mainfield table-block inner-table-form collapse show" id="maininnerdiv'+getmaincount+ilevel+'">\
+                    <table style="border-top-style:hidden" id="innertr'+getmaincount+ilevel+'" rel=\"'+get_table_striped_rel+'\" class="table table-striped collapse show">\
+                      <thead>\
+                        <tr>\
+                          <th>Designation <span style="color:#C23933"><b>*</b></span></th>\
+                          <th>Variable</th>\
+                          <th>Condition</th>\
+                          <th>Value/Tolerance</th>\
+                          <th>Unit</th>\
+                          <th>Remarks</th>\
+                          <th>Interface</th>\
+                          <th>Action</th>\
+                        </tr>\
+                      </thead><tbody>';
+                         levelhtml+= '</table>\
+                    <button style="float:right" onclick="addinnertable(\'innertr'+getmaincount+ilevel+'\','+getmaincount+',1); return false;" class="btn btn-plus addmorerow" title="Add Test Conditions">+</button>\
+                  </fieldset>\
+                   </fieldset>';
+              }else{
+            for (var ilevel = 0; ilevel < mainrequest.level2.length; ilevel++) {
+                  var mainlevels=mainrequest.level2[ilevel];
+                  var get_table_striped_rel=ilevel+parseInt(1);
+               levelhtml+='<fieldset class="static-test-block collapse show generated-innerblock">\
+                  <h6 class="heading">Test Block</h6>\
+                  <div class="test-section-btn">\
+                   <button onclick="rotate(this)" type="button" data-toggle="collapse" data-cst-mde="Block"  data-target="#maininnerdiv'+getmaincount+ilevel+'" class="colscls btn btn-plus">^</button>\
+                    <button onclick="addinnerdiv(\'innerdiv'+getmaincount+'\','+getmaincount+'); return false;" title="Add Block" class="btn btn-plus addinnerdivd">+</button>\
+                    <button onclick="removefullblock(this); return false;" class="btn btn-danger123 button-block-remove" title="Remove Block">-</button>\
+                  </div>\
+                  <div class="subblock">\
+                    <h6 class="subheading">Headline</h6>\
+                    <span><input '+(mainlevels.level3.length > 1  ? 'requried="true"' : '' )+' name="request['+i+'][level2]['+ilevel+'][testBlockHeader]" class="form-control block-input-box blocksection"\
+                        type="text" placeholder="Enter test block headline" value="'+mainlevels.testBlockHeader+'">\
+                      <input name="request['+i+'][level2]['+ilevel+'][sortOrder]" class="form-control block-input-box" type="hidden"\
+                        value="1">\
+                    </span>\
+                  </div>\
+                  <fieldset class="mainfield table-block inner-table-form collapse show" id="maininnerdiv'+getmaincount+ilevel+'">\
+                    <table style="border-top-style:hidden" id="innertr'+getmaincount+ilevel+'" rel=\"'+get_table_striped_rel+'\" class="table table-striped collapse show">\
+                      <thead>\
+                        <tr>\
+                          <th>Designation</th>\
+                          <th>Variable</th>\
+                          <th>Condition</th>\
+                          <th>Value/Tolerance</th>\
+                          <th>Unit</th>\
+                          <th>Remarks</th>\
+                          <th>Interface</th>\
+                          <th>Action</th>\
+                        </tr>\
+                      </thead><tbody>';
+                      var level3html='';
+                     if(mainlevels.level3.length > 1){ var checkreq='required'; }else{ var checkreq=''; }
+               for (var ilevel3 = 0; ilevel3 < mainlevels.level3.length; ilevel3++) {
+                  var mainlevel3s=mainlevels.level3[ilevel3];
+                      level3html+='<tr id="intr111">\
+                        <td>\
+                          <select '+checkreq+' class="form-control designation-block changename" name="request['+i+'][level2]['+ilevel+'][level3]['+ilevel3+'][designation]">\
+                          <option value="'+mainlevel3s.designation+'" selected>'+mainlevel3s.designation+'</option>\
+                          <apex:repeat value="{!DesignationOptionList}" var="designation"><option value="{!designation.value}">{!designation.label}</option></apex:repeat>\
+                        </td>\
+                        <td>\
+                          <select class="form-control  size-block changename" name="request['+i+'][level2]['+ilevel+'][level3]['+ilevel3+'][size]">\
+                          <option value="'+mainlevel3s.size+'" selected>'+mainlevel3s.size+'</option>\
+                            <apex:repeat value="{!SizeOptionList}" var="size"><option value="{!size.value}">{!size.label}</option></apex:repeat>\
+                          </select>\
+                        </td>\
+                        <td>\
+                          <select class="form-control condition-block changename" name="request['+i+'][level2]['+ilevel+'][level3]['+ilevel3+'][condition]">\
+                          <option value="'+mainlevel3s.condition+'" selected>'+mainlevel3s.condition+'</option>\
+                            <apex:repeat value="{!ConditionOptionList}" var="condition"><option value="{!condition.value}">{!condition.label}</option></apex:repeat>\
+                          </select>\
+                        </td>\
+                        <td>\
+     <input type="text" width="20" value="'+mainlevel3s.volume+'" class="form-control volume-block changename" name="request['+i+'][level2]['+ilevel+'][level3]['+ilevel3+'][volume]">\
+                        </td>\
+                        <td>\
+                          <select class="form-control unit-block changename" name="request['+i+'][level2]['+ilevel+'][level3]['+ilevel3+'][unit]">\
+                          <option value="'+mainlevel3s.unit+'" selected>'+mainlevel3s.unit+'</option>\
+                           <apex:repeat value="{!UnitOptionList}" var="unit"><option value="{!unit.value}">{!unit.label}</option></apex:repeat>\
+                          </select>\
+                        </td>\
+                        <td>\
+                          <input type="text" width="50" value="'+mainlevel3s.remark+'" class="form-control remark-block changename" name="request['+i+'][level2]['+ilevel+'][level3]['+ilevel3+'][remark]"/>\
+                        </td>\
+                        <td>\
+                          <select class="form-control interface-block changename" name="request['+i+'][level2]['+ilevel+'][level3]['+ilevel3+'][interfacec]">\
+                          <option value="'+mainlevel3s.interfacec+'" selected>'+mainlevel3s.interfacec+'</option>\
+                            <apex:repeat value="{!InterfaceOptionList}" var="interface"><option value="{!interface.value}">{!interface.label}</option></apex:repeat>\
+                          </select>\
+                        </td>\
+                        <td>\
+                          <button onclick="closethis(this); return false;" class="btn btn-danger123 button-table-remove" title="Remove Test Conditions">-</button></td>\
+                        </tr>';
+                      }
+                       levelhtml+=level3html;
+                         levelhtml+= '</table>\
+                    <button style="float:right" onclick="addinnertable(\'innertr'+getmaincount+ilevel+'\','+getmaincount+',1); return false;" class="btn btn-plus addmorerow" title="Add Test Conditions">+</button>\
+                  </fieldset>\
+                </fieldset>';
+                }
+                }
+              html+=levelhtml;
+              html+='</div>\
+            </fieldset>';
+     
+    }
+    $('#fullform').show();
+    $('#finalresult').html(html);
+    }
+    catch(err){
+  alert("Please Enter a Valid Json");
+}
+
+</script>
+
+<apex:includeScript value="{!$Resource.SEGTS_TestDetails5}"/>
+<apex:includeScript value="{!$Resource.SEGTS_TestDetails6}"/>
+<apex:includeScript value="{!$Resource.SEGTS_TestDetails7}"/>
+ <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.9.0/jquery.serializejson.min.js"></script>-->
+
+  <script>
+  function rotate(e){
+   console.log($(e).text());
+    var current_sym = $(e).text();
+    var div = $(e).attr("data-cst-mde");
+    
+    if(current_sym == "v" )
+    {
+      $(e).text("^");
+      $(e).attr("title","Collapse " + div );
+    }
+    else 
+    {
+      $(e).text("v");
+      $(e).attr("title","Expand " + div );
+    }
+   }
+
+   
+    var countBlock ='0';
+    var countSection ='0';
+    
+     $('#discard').on('click', function(evt)
+    {
+        evt.preventDefault();
+        $('#cancelpopup').modal(); 
+        //return false;  
+        
+    }); 
+   
+    function cancelYes()
+    {
+        var id='{!pid}';
+        window.location.replace('/'+id);
+    }
+
+    function addinnertable(innertrid, mainid, innerid) {
+      var getOwncount = $('#ownmainid' + mainid).val();
+      var innrerel = $('#innerdiv' + innerid).attr('rel');
+      var innrertrel = $('#' + innertrid).attr('rel');
+      var createNewinnretrrel = parseInt(innrertrel) + 1;
+      var countTr = $('#'+innertrid+' tr').length-1;
+      if(isNaN(createNewinnretrrel)){
+        createNewinnretrrel=2;
+      }
+      
+      var countBlock=parseInt(innrertrel)-1;
+      var countSection=parseInt(getOwncount)-1;
+      $('#' + innertrid).closest('fieldset').parent().children('.subblock').find('input.blocksection').attr("required", true);
+      
+      
+      $('#' + innertrid +' >tbody >tr').each(function(){
+          $('td', this).each(function() {
+            //$(this).find('input.volume-block').attr('required',true);
+            $(this).find('select.designation-block').attr('required',true)
+          });
+     });
+     
+      var counttr= $('#' + innertrid +' >tbody >tr').length;
+      if(counttr>0){  var addtrreq='required'; }else { var addtrreq=''; }
+
+      
+      $('#' + innertrid).append('<tr id="intr' + getOwncount + innrerel + createNewinnretrrel + '">\
+            <td><select '+addtrreq+' class="form-control designation-block changename" name="request['+countSection+'][level2]['+countBlock+'][level3]['+countTr+'][designation]"><apex:repeat value="{!DesignationOptionList}" var="designation"><option value="{!designation.value}">{!designation.label}</option></apex:repeat></select></td>\
+            <td><select class="form-control size-block changename" name="request['+countSection+'][level2]['+countBlock+'][level3]['+countTr+'][size]"><apex:repeat value="{!SizeOptionList}" var="size"><option value="{!size.value}">{!size.label}</option></apex:repeat></select></td>\
+            <td><select class="form-control condition-block changename" name="request['+countSection+'][level2]['+countBlock+'][level3]['+countTr+'][condition]"><apex:repeat value="{!ConditionOptionList}" var="condition"><option value="{!condition.value}">{!condition.label}</option></apex:repeat></select></td>\
+            <td><input type="text" width="20" value="{!testspec.Value_Toleran__c}" class="form-control changename volume-block" name="request['+countSection+'][level2]['+countBlock+'][level3]['+countTr+'][volume]"></td>\
+            <td><select class="form-control unit-block changename" name="request['+countSection+'][level2]['+countBlock+'][level3]['+countTr+'][unit]"><apex:repeat value="{!UnitOptionList}" var="unit"><option value="{!unit.value}">{!unit.label}</option></apex:repeat></select></td>\
+            <td><input  type="text" width="50" value="{!testspec.Remark__c}" class="form-control remark-block changename" name="request['+countSection+'][level2]['+countBlock+'][level3]['+countTr+'][remark]"/></td>\
+            <td><select class="form-control interface-block changename" name="request['+countSection+'][level2]['+countBlock+'][level3]['+countTr+'][interfacec]"><apex:repeat value="{!InterfaceOptionList}" var="interface"><option value="{!interface.value}">{!interface.label}</option></apex:repeat></select></td>\
+            <td>\
+              <button onclick="closethis(this); return false;" class="btn btn-danger123 button-table-remove" title="Remove Test Conditions">-</button></td>\
+            </tr>');
+      // $('tbody').sortable();
+    }
+
+    function addinnerdiv(innerid, id) {
+
+      var getOwncount = $('#ownmainid' + id).val();
+
+      var innrerel = $('#' + innerid).attr('rel');
+      var createNewinnrerel = parseInt(innrerel) + 1;
+      $('#' + innerid).attr('rel', createNewinnrerel);
+      if(countSection>0){  
+        var innrertrel = $('#innertr' + createNewinnrerel).attr('rel');
+      } else { 
+        var innrertrel = $('#innertr' + getOwncount + createNewinnrerel).attr('rel');
+      }
+     
+      var createNewinnretrrel = parseInt(innrertrel) + 1;
+      var setrequest=parseInt(getOwncount)-1;
+
+     // countBlock = innrertrel;
+      countBlock = innrerel;
+
+      $('#' + innerid).append(' <fieldset class="mainfield generated-innerblock">\
+              <h6 class="heading">Test Block </h6>\
+              <div class="test-section-btn">\
+                <button onclick="rotate(this)" type="button" class="colscls btn btn-plus" data-toggle="collapse" data-target="#maininnerdiv'+ getOwncount + createNewinnrerel + '" data-cst-mde="Block"> ^ </button>\
+                <button onclick="addinnerdiv(\''+ innerid + '\',' + getOwncount + '); return false;" class="btn btn-plus addinnerdivd" title="Add Block">+</button>\
+                <button onclick="removefullblock(this); return false;" class="btn btn-danger123 button-block-remove" title="Remove Block">-</button>\ </div>\
+                <div class="subblock">\
+                  <h6 class="subheading">Headline</h6>\
+                  <span><input class="form-control block-input-box blocksection" type="text" placeholder="Enter test block headline" name="request['+setrequest+'][level2]['+countBlock+'][testBlockHeader]"><input name="request['+setrequest+'][level2]['+countBlock+'][sortOrder]" class="form-control block-input-box" value="1" type="hidden"></span>\
+                </div>\
+                <fieldset class="mainfield table-block inner-table-form collapse show" id="maininnerdiv'+getOwncount+createNewinnrerel+'">\
+                  <table  style="border-top-style:hidden" id="innertr'+ getOwncount + createNewinnrerel + '" class="table table-striped collapse in show" rel="' + createNewinnrerel + '">\
+                    <thead>\
+                      <tr>\
+                        <th>Designation</th>\
+                        <th>Variable</th>\
+                        <th>Condition</th>\
+                        <th>Value/Tolerance</th>\
+                        <th>Unit</th>\
+                        <th>Remarks</th>\
+                        <th>Interface</th>\
+                        <th>Action</th>\
+                      </tr>\
+                    </thead>\
+                    <tbody>\
+                      <tr id="intr'+ getOwncount + innrerel + createNewinnretrrel + '">\
+                        <td><select class="form-control designation-block" name="request['+setrequest+'][level2]['+countBlock+'][level3][0][designation]"><apex:repeat value="{!DesignationOptionList}" var="designation"><option value="{!designation.value}">{!designation.label}</option></apex:repeat></select></td>\
+                        <td><select class="form-control  size-block" name="request['+setrequest+'][level2]['+countBlock+'][level3][0][size]"><apex:repeat value="{!SizeOptionList}" var="size"><option value="{!size.value}">{!size.label}</option></apex:repeat></select></td>\
+                        <td><select class="form-control condition-block" name="request['+setrequest+'][level2]['+countBlock+'][level3][0][condition]"><apex:repeat value="{!ConditionOptionList}" var="condition"><option value="{!condition.value}">{!condition.label}</option></apex:repeat></select></td>\
+                        <td><input type="text" width="20" value="{!testspec.Value_Toleran__c}" class="form-control volume-block" name="request['+setrequest+'][level2]['+countBlock+'][level3][0][volume]"></td>\
+                        <td><select class="form-control unit-block" name="request['+setrequest+'][level2]['+countBlock+'][level3][0][unit]"><apex:repeat value="{!UnitOptionList}" var="unit"><option value="{!unit.value}">{!unit.label}</option></apex:repeat></select></td>\
+                        <td><input  type="text" width="50" value="{!testspec.Remark__c}" class="form-control remark-block" name="request['+setrequest+'][level2]['+countBlock+'][level3][0][remark]"/></td>\
+                        <td><select class="form-control interface-block" name="request['+setrequest+'][level2]['+countBlock+'][level3][0][interfacec]"><apex:repeat value="{!InterfaceOptionList}" var="interface"><option value="{!interface.value}">{!interface.label}</option></apex:repeat></select></td>\
+                        <td>\
+                          <button onclick="closethis(this); return false;" class="btn btn-danger123 button-table-remove" title="Remove Test Conditions">-</button></td>\
+                        </tr>\
+                      </tbody>\
+                    </table>\
+                          <button style="float:right" onclick="addinnertable(\'innertr'+ getOwncount + createNewinnrerel + '\',' + getOwncount + ',' + createNewinnrerel + '); return false;" class="btn btn-plus addmorerow" title="Add Test Conditions">+</button>\
+                  </fieldset>\
+                </div>\
+              </fieldset>');
+
+
+      $('.innerblock').sortable({
+    stop: function(event, ui){ 
+        var cnt = 0; var newrel=0;
+        $(this).children('fieldset').each(function(){
+         newrel=cnt+1;
+         $(this).find('table.table-striped').attr('rel',newrel);
+        var $inp = $(this).find('input');
+        var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[3]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+            var $inp1 = $(this).find('select');
+            var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[3]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+    
+             cnt++;
+        });
+    }
+});
+      $('tbody').sortable({
+    stop: function(event, ui){ 
+        var cnt = 0;
+        $(this).children('tr').each(function(){
+        
+        var $inp = $(this).find('input');
+        var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[5]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+        var $inp1 = $(this).find('select');
+        var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[5]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+    
+             cnt++;
+        });
+    }
+});
+
+
+  <!---------------For refreshing blocks------------------>
+    var cntref = 0; var newrelref=0;
+    $('#' + innerid).children('fieldset').each(function(){
+        newrelref=cntref+1;
+         $(this).find('table.table-striped').attr('rel',newrelref);
+        var $inp = $(this).find('input');
+        var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[3]=cntref; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+        var $inp1 = $(this).find('select');
+        var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[3]=cntref; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+        
+             cntref++;
+        });
+  
+  <!-----------------End refreshing----------------------->
+  
+    }
+
+    function addfulldiv(countn) {
+      // main own count
+      var getOwncount = $('#ownmainid' + countn).val();
+      // next div count
+      var getDivcount = $('#countmaindiv').val();
+      var createNewcount = parseInt(getDivcount) + 1
+      var createNewowncount = parseInt(getOwncount) + 1
+      $('#countmaindiv').val(createNewcount);
+
+      var innrerel = $('#innerdiv' + getDivcount).attr('rel');
+      var createNewinnrerel = parseInt(innrerel) + 1;
+
+      
+      countSection = createNewcount-1;
+      
+      $('.mainadddiv').append(
+        '<fieldset class="mainfieldouter" id="mainfield' + createNewcount + '">\
+          <input type="hidden" class="notpassingcls" id="ownmainid'+ createNewcount + '" value="' + createNewcount + '">\
+          <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 test-section">\
+            <h6 class="heading">Test Section </h6>\
+            <div class="test-section-btn">\
+              <button onclick="rotate(this)" type="button" class="colscls btn btn-plus colpasdiv" data-toggle="collapse" data-target="#innerdiv'+ createNewcount + '" data-cst-mde="Section" > ^ </button>\
+              <button onclick="addfulldiv('+ createNewcount + '); return false;" class="btn btn-plus" title="Add Section">+</button>\
+              <button onclick="removethisdiv(\'mainfield'+ createNewcount + '\'); return false;" class="btn btn-danger123 test-section-remove" title="Remove Section">-</button>\
+            </div>\
+            <div class="subblock">\
+              <h6 class="subheading">Headline<span style="color:#C23933">*</span></h6>\
+              <span><input required="true" name="request['+countSection+'][testSectionHeader]" class="form-control block-input-box blocksection" type="text" placeholder="Enter test section headline" name="request['+countSection+'][testSectionHeader]"><input name="request['+countSection+'][sortOrder]" class="form-control block-input-box" type="hidden" value="1"></span>\
+            </div>\
+            <div class="innerblock collapse in show" id="innerdiv'+ createNewcount + '" rel="1">\
+              <fieldset class="mainfield  generated-innerblock">\
+                <h6 class="heading">Test Block </h6>\
+                <div class="test-section-btn">\
+                  <button type="button" onclick="rotate(this)" class="colscls btn btn-plus" data-toggle="collapse" data-target="#maininnerdiv'+ createNewcount + '" data-cst-mde="Block">^</button>\
+                  <button onclick="addinnerdiv(\'innerdiv'+ createNewcount + '\',' + createNewcount + '); return false;" title="Add Block" class="btn btn-plus addinnerdivd">+</button>\
+                  <button onclick="removefullblock(this); return false;" class="btn btn-danger123 button-block-remove" title="Remove Block">-</button>\
+                </div>\
+                <div class="subblock">\
+                  <h6 class="subheading">Headline</h6>\
+                  <span><input class="form-control block-input-box blocksection" type="text" placeholder="Enter test block headline" name="request['+countSection+'][level2][0][testBlockHeader]">\
+                  <input name="request['+countSection+'][level2][0][sortOrder]" class="form-control block-input-box" type="hidden" value="1"></span>\
+                </div>\
+                <fieldset class="mainfield table-block inner-table-form collapse show" id="maininnerdiv'+createNewcount+'">\
+                  <table style="border-top-style:hidden" id="innertr'+ createNewcount + '" class="table table-striped collapse in show" rel="1">\
+                    <thead>\
+                      <tr>\
+                        <th>Designation</th>\
+                        <th>Variable</th>\
+                        <th>Condition</th>\
+                        <th>Value/Tolerance</th>\
+                        <th>Unit</th>\
+                        <th>Remarks</th>\
+                        <th>Interface</th>\
+                        <th>Action</th>\
+                      </tr>\
+                    </thead>\
+                  </tbody>\
+                  <tr id="intr'+ getOwncount + innrerel + createNewinnrerel + '">\
+                    <td><select  class="form-control designation-block" name="request['+countSection+'][level2][0][level3][0][designation]"><apex:repeat value="{!DesignationOptionList}" var="designation"><option value="{!designation.value}">{!designation.label}</option></apex:repeat></select></td>\
+                    <td><select class="form-control  size-block" name="request['+countSection+'][level2][0][level3][0][size]"><apex:repeat value="{!SizeOptionList}" var="size"><option value="{!size.value}">{!size.label}</option></apex:repeat></select></td>\
+                    <td><select class="form-control condition-block" name="request['+countSection+'][level2][0][level3][0][condition]"><apex:repeat value="{!ConditionOptionList}" var="condition"><option value="{!condition.value}">{!condition.label}</option></apex:repeat></select></td>\
+                    <td><input type="text" width="20" value="{!testspec.Value_Toleran__c}" class="form-control volume-block" name="request['+countSection+'][level2][0][level3][0][volume]"></td>\
+                    <td><select class="form-control unit-block" name="request['+countSection+'][level2][0][level3][0][unit]"><apex:repeat value="{!UnitOptionList}" var="unit"><option value="{!unit.value}">{!unit.label}</option></apex:repeat></select></td>\
+                    <td><input type="text" width="50" value="{!testspec.Remark__c}" class="form-control remark-block" name="request['+countSection+'][level2][0][level3][0][remark]"/></td>\
+                    <td><select class="form-control interface-block" name="request['+countSection+'][level2][0][level3][0][interfacec]"><apex:repeat value="{!InterfaceOptionList}" var="interface"><option value="{!interface.value}">{!interface.label}</option></apex:repeat></select></td>\
+                    <td><button onclick="closethis(this); return false;" class="btn btn-danger123 button-table-remove" title="Remove Test Conditions">-</button></td>\
+                    </tr>\
+                  </tbody>\
+                </table>\
+                 <button style="float:right" onclick="addinnertable(\'innertr'+ createNewcount + '\','+createNewcount+',' + getOwncount + '); return false;" class="btn btn-plus addmorerow" title="Add test Conditions">+</button>\
+              </fieldset>\
+            </fieldset>\
+          </div>\
+        </fieldset>'
+      );
+      $('.innerblock').sortable({
+    stop: function(event, ui){ 
+        var cnt = 0; var newrel=0;
+        $(this).children('fieldset').each(function(){
+        newrel=cnt+1;
+         $(this).find('table.table-striped').attr('rel',newrel);
+        var $inp = $(this).find('input');
+        var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[3]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        var $inp1 = $(this).find('select');
+        var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[3]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+             cnt++;
+        });
+    }
+});
+      $('.mainadddiv').sortable({
+     
+    stop: function(event, ui){ 
+        var cnt = 0; var changemaindiv=0;
+        $(this).children('fieldset').each(function(){
+        
+         changemaindiv=cnt+1;
+         
+         $(this).find('button.colpasdiv').attr('data-target','#innerdiv'+changemaindiv);
+         $(this).find('input.notpassingcls').val(changemaindiv);
+         $(this).find('input.notpassingcls').attr('id','ownmainid'+changemaindiv);
+         $(this).find('.innerblock').attr('id','innerdiv'+changemaindiv);
+         $(this).find('.addinnerdivd').attr('onclick','addinnerdiv("innerdiv'+changemaindiv+'",'+changemaindiv+');  return false;');
+         
+    //   $(this).find('.addmorerow').attr('onclick','addinnertable("innerdiv'+changemaindiv+'",'+changemaindiv+');  return false;');
+        var str = $(this).find('.addmorerow').attr('onclick');   
+        var params = str.split("addinnertable(");
+        var params = params[1].split(",");
+        var getlast=params[2].split(")");
+        $(this).find('.addmorerow').attr('onclick','addinnertable('+params[0]+','+changemaindiv+','+getlast[0]+'); return false;');
+        //0=>'innertr4'
+        //1=>422222
+        //2=>422222
+        
+        //addinnertable('innertr4',422222,1)
+
+        var $inp = $(this).find('input').not(".notpassingcls");
+         var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+         
+             result;
+             parts[1]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+        var $inp1 = $(this).find('select');
+        var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+         
+             result;
+             parts1[1]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+        
+             cnt++;
+        });
+    }
+});
+      $('tbody').sortable({
+    stop: function(event, ui){ 
+        var cnt = 0;
+        $(this).children('tr').each(function(){
+        
+        var $inp = $(this).find('input');
+        var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[5]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+        var $inp1 = $(this).find('select');
+        var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[5]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+    
+             cnt++;
+        });
+    }
+});
+
+      //   $('tbody').sortable();
+
+    }
+    
+   // for removing main div
+    function removethisdiv(id) { 
+      $.confirm({
+        title: 'Are you sure, you want to delete?',
+        content: '',
+        buttons: {
+            confirm :{
+               btnClass: 'btn',
+               action: function () {
+                var getfullhtml=$('#' + id).parent('.mainadddiv');
+      $('#' + id).remove();
+      
+       var cnt = 0; var changemaindiv=0;
+        getfullhtml.children('fieldset').each(function(){
+        
+         changemaindiv=cnt+1;
+         $(this).find('button.colpasdiv').attr('data-target','#innerdiv'+changemaindiv);
+         $(this).find('input.notpassingcls').val(changemaindiv);
+         $(this).find('input.notpassingcls').attr('id','ownmainid'+changemaindiv);
+         $(this).find('.innerblock').attr('id','innerdiv'+changemaindiv);
+         $(this).find('.addinnerdivd').attr('onclick','addinnerdiv("innerdiv'+changemaindiv+'",'+changemaindiv+');  return false;');
+         
+        var $inp = $(this).find('input').not(".notpassingcls");
+        var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[1]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+        var $inp1 = $(this).find('select');
+        var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[1]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+        
+             cnt++;
+        });
+        
+        var getTochange=$('#countmaindiv').val();
+        var newTochange=getTochange-1;
+        $('#countmaindiv').val(newTochange);
+       
+       }
+            },
+            cancel: {
+               btnClass: 'btn btn-my'
+            }
+        }
+    });
+      return false;
+    }
+
+
+    function removeinnerdiv(id) {
+      $('#' + id).remove();
+    }
+
+    function removeinnertable(id) {
+      $('#' + id).remove();
+    }
+
+    function removefullblock(thiss){
+    
+     $.confirm({
+        title: 'Are you sure, you want to delete?',
+       content: '',
+        buttons: {
+           confirm :{
+         btnClass: 'btn',
+               action: function () {
+                 var cnt = 0; var newrel=0;
+      var getfullhtml=$(thiss).closest('div.innerblock');
+      
+      $(thiss).closest('fieldset').remove();
+      
+        getfullhtml.children('fieldset').each(function(){
+        newrel=cnt+1;
+         $(this).find('table.table-striped').attr('rel',newrel);
+        var $inp = $(this).find('input');
+        var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[3]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+        var $inp1 = $(this).find('select');
+        var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[3]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+        
+             cnt++;
+        });
+        }
+            },
+           cancel: {
+               btnClass: 'btn btn-my'
+            }
+        }
+    });
+      return false;
+    }
+
+
+    
+    
+    
+   function closethis(thiss)
+   { 
+        $.confirm({
+        title: 'Are you sure, you want to delete?',
+       content: '',
+        buttons: {
+            confirm :{
+         btnClass: 'btn',
+               action: function () {
+                 var cnt = 0;
+     var getthisdata=$(thiss).parent('td').parent('tr').parent('tbody');
+      $(thiss).closest('tr').remove();
+      getthisdata.children('tr').each(function(){
+        var $inp = $(this).find('input');
+        var result=''; 
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[5]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+         var $inp1 = $(this).find('select');
+         $inp1.each(function () 
+         {
+             parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[5]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+             this.name = result1;              
+        })
+        cnt++;
+      });
+      }
+            },
+            cancel: {
+               btnClass: 'btn btn-my'
+            }
+        }
+    });
+       return false;
+  }
+
+     $('.innerblock').sortable({
+    stop: function(event, ui){ 
+        var cnt = 0; var newrel=0;
+        $(this).children('fieldset').each(function(){
+        newrel=cnt+1;
+         $(this).find('table.table-striped').attr('rel',newrel);
+        var $inp = $(this).find('input');
+        var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[3]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+        var $inp1 = $(this).find('select');
+        var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[3]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+        
+             cnt++;
+        });
+    }
+});
+    
+    $('tbody').sortable({
+    stop: function(event, ui){ 
+        var cnt = 0;
+        $(this).children('tr').each(function(){
+        
+        var $inp = $(this).find('input');
+        var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[5]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+        var $inp1 = $(this).find('select');
+        var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[5]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+    
+             cnt++;
+        });
+    }
+});
+
+    $('.mainadddiv').sortable({
+    stop: function(event, ui){ 
+        var cnt = 0; var changemaindiv=0;
+        $(this).children('fieldset').each(function(){
+        
+         changemaindiv=cnt+1;
+         $(this).find('button.colpasdiv').attr('data-target','#innerdiv'+changemaindiv);
+         $(this).find('input.notpassingcls').val(changemaindiv);
+         $(this).find('input.notpassingcls').attr('id','ownmainid'+changemaindiv);
+         $(this).find('.innerblock').attr('id','innerdiv'+changemaindiv);
+         $(this).find('.addinnerdivd').attr('onclick','addinnerdiv("innerdiv'+changemaindiv+'",'+changemaindiv+');  return false;');
+         
+        var $inp = $(this).find('input').not(".notpassingcls");
+        var result='';
+        $inp.each(function () {
+        
+         parts = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts[1]=cnt; //request,0,level2,0,level3,0,volume
+             result = parts.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result;              
+        })
+        
+        var $inp1 = $(this).find('select');
+        var result='';
+        $inp1.each(function () {
+        
+         parts1 = this.name.split(/[[\]]/).filter(Boolean),
+             result;
+             parts1[1]=cnt; //request,0,level2,0,level3,0,volume
+             result1 = parts1.map((v, i) => i ? `[${v}]` : v).join('');
+            
+            this.name = result1;              
+        })
+        
+             cnt++;
+        });
+    }
+});
+
+
+function checkform() {
+$.validator.messages.required = '';
+  var form = $('#dataform');
+  var error = $('.alert-danger', form);
+  $("#dataform").validate({
+    errorElement: 'span', 
+    errorClass: 'help-block', 
+    focusInvalid: false, 
+    ignore: "",
+    rules: {
+      fill: "required",
+    },
+    invalidHandler: function(form, validator) {
+
+            error.show();
+          /*  var errors = validator.numberOfInvalids();
+            if (errors) {
+                $("html, body").animate({
+                    scrollTop: 200
+                }, 1000);
+            }*/
+            var errors = validator.numberOfInvalids();
+                    if (errors) {
+                         $('#showalert').modal();
+                        //alert(validator.errorList[0].message);  //Only show first invalid rule message!!!
+                        validator.errorList[0].element.focus(); //Set Focus
+                    }
+        },
+    unhighlight: function(element) { 
+      $(element)
+        .closest('.qst_opt_val').removeClass('has-error');
+        
+        var name = $(element).attr("name");
+        $('input[name="'+name+'"]').css('border','');
+        $('input[name="'+name+'"]').removeClass('help-block');
+        if($('select[name="'+name+'"]'))
+        {
+           $('select[name="'+name+'"]').removeClass('help-block');
+        }
+    },
+      showErrors: function(errorMap, errorList) {
+        for (var i = 0; errorList[i]; i++) {
+            var element = this.errorList[i].element;
+            //solves the problem with brute force
+            //remove existing error label and thus force plugin to recreate it
+            //recreation == call to errorplacement function
+            this.errorsFor(element).remove();
+        }
+        this.defaultShowErrors();
+    },
+    errorPlacement: function(error, element) { 
+      var name = $(element).attr("name");
+      $('input[name="'+name+'"]').after(error);
+      $('input[name="'+name+'"]').css('border','1px solid red');
+       
+        var gett=$('input[name="'+name+'"]');
+        if($('select[name="'+name+'"]'))
+        {
+           var for_designation=$('select[name="'+name+'"]');
+           if(for_designation.hasClass('designation-block')==true && for_designation.hasClass('help-block')==true)
+           { 
+           var checkclcollapsed=for_designation.closest('.mainfield').attr('id');
+           var checkcl=$('*[data-target="#'+checkclcollapsed+'"]');
+            
+            $('#'+checkclcollapsed).collapse('show');
+            checkcl.text("v");
+
+           
+          // if(checkcl.hasClass('collapsed')==true)
+           //{
+           //  checkcl.click();
+          // }
+           
+           var forHisParent=for_designation.closest('table').attr('id');
+           $('#'+forHisParent).collapse('show');
+           var checkclparent=$('*[data-target="#'+forHisParent+'"]');
+            checkclparent.text("v");
+           
+           //if(checkclparent.hasClass('collapsed')==true)
+          // { 
+            //  checkclparent.click();
+          // }
+           
+            }
+        }
+        
+        if(gett.hasClass('volume-block')==true)
+        {  
+           var checkclcollapsed=gett.closest('.innerblock').attr('id');
+           
+            $('#'+checkclcollapsed).collapse('show');
+           var checkcl=$('*[data-target="#'+checkclcollapsed+'"]');
+            checkcl.text("v");
+            
+           //var checkcl=$('*[data-target="#'+checkclcollapsed+'"]');
+           //if(checkcl.hasClass('collapsed')==true)
+          // {
+            // checkcl.click();
+           //}
+           
+            var forHisParent=gett.closest('fieldset').attr('id');
+            $('#'+forHisParent).collapse('show');
+           var checkclparent=$('*[data-target="#'+forHisParent+'"]');
+            checkclparent.text("v");
+            
+            
+          
+         // // var checkclparent=$('*[data-target="#'+forHisParent+'"]');
+          // if(checkclparent.hasClass('collapsed')==true)
+         //  { 
+         /// ///    checkclparent.click();
+         /// /// }
+           
+                
+        }
+        
+        
+        if(gett.hasClass('blocksection')==true)
+        { 
+           var checkclcollapsed=gett.closest('.innerblock').attr('id');
+           
+            $('#'+checkclcollapsed).collapse('show');
+           var checkcl=$('*[data-target="#'+checkclcollapsed+'"]');
+            checkcl.text("v");
+            
+            
+           //var checkcl=$('*[data-target="#'+checkclcollapsed+'"]');
+           //if(checkcl.hasClass('collapsed')==true)
+           //{
+           //  checkcl.click();
+           //}
+                
+        }
+
+       
+    },
+
+    submitHandler: function(form) {
+      error.hide();
+      showjson();
+    }
+  });
+
+};
+
+var vfRemoteOptions = { buffer: false, escape: false, timeout: 120000 };
+function showjson()
+{
+  var id='{!pid}';
+        var datastring = $("#dataform").serializeJSON({useIntKeysAsArrayIndex: true});
+      //  var datastring = $("#dataform").serializeJSON();
+          var data=JSON.stringify(datastring);
+          //alert(data);
+          //var jsonObj = JSON.parse(data);
+          SEGTS_EditTestDetailsCtrl.SaveTestDeatils(data,id,partialSaveResponse,vfRemoteOptions);
+        //alert(JSON.stringify(datastring));
+        //console.log(JSON.stringify(datastring));
+        return false;
+}
+function partialSaveResponse(result, event) {
+        window.location.replace('/'+result);
+    } 
+    
+
+
+  </script>
+  
+  
+  
+  <!----------------End Of process Form---------->
+  <apex:includeScript value="{!$Resource.SEGTS_TestDeatil8}"/>
+  <apex:includeScript value="{!$Resource.SEGTS_TestDetails9}"/>
+  <apex:includeScript value="{!$Resource.SEGTS_TestDetails10}"/>
+
+  <!--<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>-->
+
+</html>
+</apex:page>

@@ -1,0 +1,4 @@
+({
+    renderIcon: function(component) {
+    }
+})

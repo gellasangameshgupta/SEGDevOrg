@@ -1,0 +1,87 @@
+<!--
+* 
+* @ Name    :   b2b_cartItem
+* @ Purpose :   This component is used to display the Cart Items of ShopMe Orders.
+* @ Author  :   Prathiksha Suvarna
+*
+*   Date            |  Developer Name                 |  Version      |  Changes
+* ======================================================================================================
+*   23-03-2023      |  prathiksha.suvarna@absyz.com   |  1.0          |  Initial Version
+*
+-->
+<template>
+    <lightning-layout multiple-rows="false" class="slds-border_bottom slds-var-p-bottom_medium" >
+        <lightning-layout-item size="2">
+            <img src={cartInformation.imageUrl} class="b2b-cartImageThumbnail slds-var-p-top_small" ></img>
+        </lightning-layout-item>
+        <lightning-layout-item size="4">
+            <lightning-layout multiple-rows="false" class="slds-var-p-top_small">
+                <lightning-layout-item size="12" class="b2b-cartItemTitle">{cartInformation.Product2.Name}</lightning-layout-item>
+                <lightning-layout-item size="12" class="slds-var-m-top_medium">
+                    <lightning-layout multiple-rows="false" class="slds-p-around_none slds-m-around_none">
+                        <lightning-layout-item size="4">
+                            {label.CLB2B00068}
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4">
+                            {cartInformation.Product2.B2B_ProductType__c}
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout-item>
+                <lightning-layout-item size="12">
+                    <lightning-layout multiple-rows="false" class="slds-p-around_none slds-m-around_none">
+                        <lightning-layout-item size="4">
+                            {label.CLB2B00069}
+                        </lightning-layout-item>
+                        <lightning-layout-item size="4">
+                            <lightning-formatted-number value={cartInformation.SalesPrice} format-style="currency" currency-code="EUR" currency-display-as="symbol">                    
+                            </lightning-formatted-number>                           
+                        </lightning-layout-item>
+                    </lightning-layout> 
+                </lightning-layout-item>
+                <lightning-layout-item size="12">
+                    <lightning-layout multiple-rows="false" class="slds-p-around_none slds-m-around_none">
+                        <lightning-layout-item size="4">
+                            {label.CLB2B00078}
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3">
+                            {cartInformation.PlantName}
+                        </lightning-layout-item>
+                    </lightning-layout> 
+                </lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item>
+        <lightning-layout-item size="3" class="slds-var-p-top_medium">           
+            <lightning-layout multiple-rows="false" class="slds-var-p-top_medium">               
+                    <lightning-layout-item size="12"></lightning-layout-item>               
+                <lightning-layout-item size="12" class="slds-var-m-top_large">
+                    <lightning-layout multiple-rows="false" class="slds-p-around_none slds-m-around_none">
+                        <lightning-layout-item size="3">
+                            {label.CLB2B00070}
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3">
+                            {cartInformation.Quantity}
+                        </lightning-layout-item>
+                    </lightning-layout>   
+                </lightning-layout-item>
+                <lightning-layout-item size="12"></lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item>
+        <lightning-layout-item size="3" class="slds-var-p-top_medium">
+            <lightning-layout multiple-rows="false" class="slds-var-p-top_medium">
+                <lightning-layout-item size="12"></lightning-layout-item>
+                <lightning-layout-item size="12" class="slds-var-m-top_large">
+                    <lightning-layout multiple-rows="false" class="slds-p-around_none slds-m-around_none">
+                        <lightning-layout-item size="5">
+                            {label.CLB2B00071}
+                        </lightning-layout-item>
+                        <lightning-layout-item size="3">
+                            <lightning-formatted-number class="b2b-totalAmountfont" value={cartInformation.TotalAmount} format-style="currency" currency-code="EUR" currency-display-as="symbol">                    
+                            </lightning-formatted-number>                 
+                        </lightning-layout-item>
+                    </lightning-layout>                
+                </lightning-layout-item>
+                <lightning-layout-item size="12"></lightning-layout-item>
+            </lightning-layout>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

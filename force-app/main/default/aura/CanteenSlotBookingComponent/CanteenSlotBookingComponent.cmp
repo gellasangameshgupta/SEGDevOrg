@@ -1,0 +1,157 @@
+<aura:component controller="CanteenSlotBookingController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="showTimeSlots" type="boolean" default="false"/>
+    <aura:attribute name="showBookings" type="boolean" default="false"/>
+    <aura:attribute name="showAddGuestBooking" type="boolean" default="false"/>
+    <aura:attribute name="slotColumns" type="List" />
+    <aura:attribute name="slotData" type="Object[]"/>
+    <aura:attribute name="bookingList" type="Object[]"/>
+    <aura:attribute name="selectedDate" type="Date" />
+    <aura:attribute name='guestBooking'  Type='Static_Content__c'  default="{ 'sobjectType': 'Static_Content__c',
+                                                                'CanteenBooking_Date__c':'',
+                                                                'CanteenBookingTimeSlot__c':'',
+                                                                'CanteenBookingNoOfSlots__c':'',
+                                                                 'availableSlot':'',
+                                                                 }"/>
+    
+    <aura:handler name="change" value="{!v.selectedDate}" action="{!c.dateChange}"/>
+     <aura:attribute name="Spinner" type="boolean" default="false"/>
+        <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+        <aura:if isTrue="{!v.Spinner}">
+    <div aura:id="spinnerId" class="slds-spinner_container">
+       <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+         <span class="slds-assistive-text">Loading</span>
+         <div class="slds-spinner__dot-a"></div>
+         <div class="slds-spinner__dot-b"></div>
+       </div>
+    </div>
+ </aura:if>
+    <article class="slds-card slds-size_2-of-2 ">
+        <!--<div class="slds-card__header">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <lightning:icon iconName="standard:event" alternativeText="SlotBook" title="SlotBooking" />
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <div class="slds-text-heading_medium">Canteen Slot Booking</div>
+                    </h2>
+                </div>
+            </header>
+        </div>-->
+        <div class="slds-card__body slds-card__body_inner slds-grid">
+            <div class="slds-size_1-of-4">  
+                <!--Controller Field-->
+                <lightning:layoutItem size="12">
+                    <div class="row">
+                        <lightning:input type="date" aura:id="mydate" name="input5" label="Select Date" dateStyle="long" required="true" value="{!v.selectedDate}" />
+                    </div>
+                    
+                </lightning:layoutItem>
+                
+            </div>
+        </div>
+        
+        <aura:If isTrue="{!v.showTimeSlots}">
+            <article class="slds-card" style ="background: white; padding-bottom: 20px;; padding-left: 20px;; padding-right: 20px;">
+                <lightning:layout horizontalAlign="spread" verticalAlign="center"  multipleRows="true">
+                    <lightning:layoutItem  flexibility="grow" size="12" mediumDeviceSize="12" largeDeviceSize="12"  >
+                        
+                        <div>
+                            <lightning:datatable
+                                                 name="slotTable"
+                                                 keyField="id"
+                                                 data="{! v.slotData }"
+                                                 columns="{! v.slotColumns }"
+                                                 hideCheckboxColumn="true"
+                                                 resizeColumnDisabled="true"
+                                                 onrowselection="{!c.getSelectedRec}"
+                                                 onrowaction="{! c.handleRowAction }"
+                                                 selectedRows="{! v.selectedRows }"/>
+                        </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </article>
+        </aura:If>
+        
+        
+        <aura:if isTrue="{!v.showBookings}">
+            
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModal }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Booking Details</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <aura:iteration items="{!v.bookingList}" var="booking">
+                        <p>
+                            {!booking.CanteenBookingUser__r.Name} <aura:if isTrue="{!booking.CanteenBookingforGuest__c}"> Guests: {!booking.CanteenBookingNoOfSlots__c} </aura:if><br/>
+                        </p>
+                        </aura:iteration>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="OK"
+                                          title="OK"
+                                          onclick="{! c.closeModal }"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+        
+          <aura:if isTrue="{!v.showAddGuestBooking}">
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModal }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add Booking</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                       <lightning:input type="date" disabled="true" label="Booking Date" name="bookingDate" value="{!v.guestBooking.CanteenBooking_Date__c}"/>
+                       <lightning:input type="text" disabled="true" label="Time Slot" name="TimeSlot" value="{!v.guestBooking.CanteenBookingTimeSlot__c}"/>
+                       <lightning:input required="true" type="number" label="No of Guests" name="noOfSlots" value="{!v.guestBooking.CanteenBookingNoOfSlots__c}"/>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModal }"/>
+                         <lightning:button variant="brand"
+                                          label="Add Guest Booking"
+                                          title="AddGuestBooking"
+                                          onclick="{! c.addBookingGuest }"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+       <!-- <footer >
+            <div class="slds-notify slds-notify_alert" role="alert">
+               
+                <div class="slds-grid">
+                    
+                    <span><p>{!$Label.c.canteen_Booking_privacy_policy} </p><lightning:formattedurl value="https://segautomotive.omniacloud.net/en/home/functions/it/data-protection" label="https://segautomotive.omniacloud.net/en/home/functions/it/data-protection" tooltip="Go to Privacy policy" ></lightning:formattedurl></span>
+            </div> 
+          
+            </div>
+        </footer> -->
+    </article>    
+</aura:component>

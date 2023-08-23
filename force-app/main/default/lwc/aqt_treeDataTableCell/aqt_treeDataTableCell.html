@@ -1,0 +1,66 @@
+<!--
+*
+* @ Name    :   aqt_treeDataTableCell
+* @ Purpose :   This component is on the Generate Quote page
+* @ Author  :   Khushmeet Kaur
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   22-03-2022      |  khushmeet.kaur@absyz.com     |  1.0          |  Initial Version
+*
+-->
+<template>
+    <template if:true={blnIsLoaded}>
+
+        <template if:true={isTextField}>
+            <div title={cellDetail} class={columnWrapClass}>
+                <span>{cellDetail}</span>
+            </div>
+        </template>
+
+        <template if:true={isReferenceField}>
+            <div title={cellDetail} class={columnWrapClass} style="text-align:right;">
+                <a href="#" onclick={redirectCall}>{cellDetail}</a>
+            </div>
+        </template>
+
+        <template if:true={isCurrencyField}>
+            <div title={cellDetail} class={columnWrapClass} style="text-align:right;">
+                <lightning-formatted-number value={cellDetail} format-style="currency" currency-code="EUR">
+                </lightning-formatted-number>
+            </div>
+        </template>
+
+        <template if:true={isEditableField}>
+            <div title={cellDetail} class={columnWrapClass} style="text-align:right;">
+                <lightning-input data-id={index} type="number" formatter="percentage" default="0" variant="label-hidden"
+                    onchange={handleDiscountQuantityChange} value={cellDetail} min="0">
+                </lightning-input>
+            </div>
+        </template>
+
+        <template if:true={isDecimalFieldEditable}>
+            <div title={cellDetail} class={columnWrapClass} style="text-align:right;">
+                <lightning-input data-id={index} type="number" step=".0001" default="0" variant="label-hidden"
+                    onchange={handleDiscountQuantityChange} value={cellDetail} min="0" max="100">
+                </lightning-input>
+            </div>
+        </template>
+
+        <template if:true={isNumberField}>
+            <div title={cellDetail} class={columnWrapClass} style="text-align:right;">
+                <span>{cellDetail}</span>
+            </div>
+        </template>
+
+        <template if:true={isPercentageField}>
+            <div title={cellDetail} class={columnWrapClass} style="text-align:right;">
+                <span>{cellDetail}%</span>
+                <template if:true={isApprovalRequired}>
+                    <span class={approvalRequiredColor}></span>
+                </template>
+            </div>
+        </template>
+
+    </template>
+</template>

@@ -1,0 +1,9 @@
+<aura:documentation>
+	<aura:description>Documentation</aura:description>
+	<aura:example name="ExampleName" ref="exampleComponentName" label="Label">
+	  Page Name       :SEGTS_VersionInfo_Component
+      Purpose         :Component used to View Version info for a Test spec in the Details tab 
+      Created By      :RBEI
+      Created Date    :Feb 2019
+	</aura:example>
+</aura:documentation>

@@ -1,0 +1,15 @@
+<template>
+    <lightning-card title={title}>
+        <lightning-layout multiple-rows="true">
+            <lightning-layout-item size="12">
+                <lightning-file-upload 
+                    name="fileUploader"
+                    label="Upload File"
+                    record-id={recordId}
+                    onuploadfinished={handleFileUpload}
+                >
+                </lightning-file-upload>                
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>

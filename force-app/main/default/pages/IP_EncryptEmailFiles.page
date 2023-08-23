@@ -1,0 +1,95 @@
+<apex:page standardController="Case" lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <apex:includeLightning />
+    <apex:includeScript value="{!$Resource.IP_Crypyo_JS}"/>
+    <script type="text/javascript">__sfdcSessionId = '{!$Api.Session_Id}';</script>
+    <script src="/soap/ajax/48.0/connection.js" type="text/javascript"></script>
+    <apex:slds />
+        
+        <div class="slds-scope">
+            <div id="fileList"></div>
+            </div>
+            <script>
+                window.$Label = window.$Label || {};
+    $Label.IP_SEGPrivateKey = '{!JSENCODE($Label.IP_SEGPrivateKey)}';
+    var tempValue = '{!$CurrentPage.parameters.Id}';
+    console.log('tempValue:: ',tempValue);
+    var contentDocumentLinks = sforce.connection.query("select id, ContentDocumentId from ContentDocumentLink where LinkedEntityId='"+tempValue+"'");
+    console.log('contentDocumentLinksQuery--',contentDocumentLinks);
+    var contentdocId = [];
+    if(contentDocumentLinks!=undefined && parseInt(contentDocumentLinks.size)>0){
+        for(var i=0; i<contentDocumentLinks.getArray('records').length; i++){
+            var contentversions = [];
+            var docId = contentDocumentLinks.getArray('records')[i].ContentDocumentId;
+            var contentversions = sforce.connection.query("select id, Title, PathOnClient,VersionData, FileType,FileExtension, ContentDocumentId,IP_FileFromEmail__c,IP_IsEmailUpload__c from ContentVersion where ContentDocumentId='"+docId+"'");
+            console.log('contentversions--',contentversions);
+            var contentversionsnew = contentversions.getArray('records');
+            console.log('contentversionsnew--',contentversionsnew);
+            if(contentversions!=undefined && parseInt(contentversions.size)>0){
+                console.log('inside if--');
+                for(var k=0; k<contentversions.getArray('records').length; k++){
+                    console.log('inside for--');
+                	if(contentversions.getArray('records')[k].IP_FileFromEmail__c === "true"){
+                        console.log('inside if2---',contentversions.getArray('records')[k]);
+                        //  contentversions.getArray('records')[k].IP_IsEmailUpload__c = true;
+                        emailFileRecords(contentversions.getArray('records')[k]);
+                    }
+                 }
+            }
+        }
+    
+    
+    function emailFileRecords(ContentData){
+        
+        console.log('inside emailFileRecords---',ContentData);
+        var encrypted = CryptoJS.AES.encrypt(ContentData.VersionData, $Label.IP_SEGPrivateKey);
+        var encryptedfilename = CryptoJS.AES.encrypt(ContentData.Title + '.' + ContentData.FileExtension, $Label.IP_SEGPrivateKey);
+        console.log('encryptedfilename---',encryptedfilename);
+        var attachment = new sforce.SObject('contentVersion');
+        attachment.Title = encryptedfilename.toString();
+        attachment.VersionData = encrypted.toString();
+        attachment.PathOnClient=encryptedfilename.toString();
+        attachment.IP_IsEmailUpload__c = true;
+        console.log('PathOnClient--',attachment.PathOnClient);
+        console.log('attachment--',attachment);
+        var result = sforce.connection.create([attachment]);
+        console.log('result---',result);
+        if (result[0].getBoolean("success") && result[0].id!=null) {
+            var contentDocumentId = sforce.connection.query("select id,ContentDocumentId from ContentVersion where id='"+result[0].id+"'");
+            console.log('CD ID inside if---',contentDocumentId);
+            var attachmentLink = new sforce.SObject('contentDocumentLink');
+            attachmentLink.ShareType='V';
+            attachmentLink.LinkedEntityId='{!$CurrentPage.parameters.Id}';
+            attachmentLink.ContentDocumentId=contentDocumentId.getArray("records")[0].ContentDocumentId;
+            var createCDL = sforce.connection.create([attachmentLink]);
+            console.log('createCDL---',createCDL);
+        }
+        var cvForDeletion = [];
+        var cdForDeletion = [];
+        var cdlForDeletion = [];
+        
+        if(ContentData.Id !== null && ContentData.Id !== ' ') {
+            //idsForDeletion.push(ContentData.ContentDocumentId);
+            console.log('verson id for del--',ContentData.Id);
+            console.log('document id for del--',ContentData.ContentDocumentId);
+            cvForDeletion.push(ContentData.Id);
+            cdForDeletion.push(ContentData.ContentDocumentId);
+        }
+        var cdlQuery = 'select id, ContentDocumentId from ContentDocumentLink where ContentDocumentId IN (\'' + cdForDeletion.join('\',\'') + '\')';
+        var cdlQueryRes = sforce.connection.query(cdlQuery);
+        
+        for(var i=0; i<cdlQueryRes.getArray('records').length; i++){
+            cdlForDeletion.push(cdlQueryRes.getArray('records')[i].id);
+        }
+        
+        console.log('cvForDeletion--',cvForDeletion);
+        console.log('cdlForDeletion--',cdlForDeletion);
+        console.log('cdForDeletion--',cdForDeletion);
+        
+        var deletedCD = sforce.connection.deleteIds(cdForDeletion);
+        console.log('deleted CD---',cdForDeletion);
+        
+    }
+    }
+    </script>
+    
+</apex:page>

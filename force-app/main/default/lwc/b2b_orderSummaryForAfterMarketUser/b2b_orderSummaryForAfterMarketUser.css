@@ -1,0 +1,10 @@
+.button {
+    display: flex;
+    justify-content: center; /* center horizontally */
+    align-items: center; /* center vertically */
+    padding: slds-p-top_x-small
+  }
+
+  .wide-select {
+    width: 600px;
+  }

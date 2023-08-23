@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexTestSuite xmlns="http://soap.sforce.com/2006/04/metadata">
+    <testClassName>ContentDocumentLinkTriggerTest</testClassName>
+    <testClassName>ContentDocument_Test</testClassName>
+    <testClassName>FeedItemController_Test</testClassName>
+    <testClassName>IFv2_BackToOfficeOutOfOfficeBatchV2test</testClassName>
+    <testClassName>IFv2_FieldSetFormControllerTest</testClassName>
+    <testClassName>IFv2_HeaderControllerTest</testClassName>
+    <testClassName>IFv2_ICORequestCreationTest</testClassName>
+    <testClassName>IFv2_SAPCalloutHandlerTest</testClassName>
+    <testClassName>IFv2_TriggerHandlerTest</testClassName>
+</ApexTestSuite>

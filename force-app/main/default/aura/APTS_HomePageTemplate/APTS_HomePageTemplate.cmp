@@ -1,0 +1,39 @@
+<aura:component implements="lightning:appHomeTemplate">
+    <aura:attribute name="column1" type="Aura.Component[]" />
+    <aura:attribute name="column2" type="Aura.Component[]" />
+    <aura:attribute name="column3" type="Aura.Component[]" />
+    <aura:attribute name="column4" type="Aura.Component[]" />
+    <aura:attribute name="column5" type="Aura.Component[]" />
+    <aura:attribute name="column6" type="Aura.Component[]" />
+    <aura:attribute name="column7" type="Aura.Component[]" />
+    
+    <div >
+        <lightning:layout horizontalAlign="spread" verticalAlign="stretch" pullToBoundary="medium">
+            <lightning:layoutItem size="5" class="paddingleft75rem width32per paddingbottom0px" flexibility="auto">
+                {!v.column1}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1" class="paddingleft7px width12per" flexibility="auto">         
+                {!v.column2}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1" class="paddingleft7px width12per" flexibility="auto">         
+                {!v.column3}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="1" class="paddingleft7px width12per" flexibility="auto">         
+                {!v.column4}
+            </lightning:layoutItem>
+            <lightning:layoutItem size="4" class="paddingleft7px width30per" flexibility="auto">
+                
+                {!v.column5}
+            </lightning:layoutItem>
+        </lightning:layout>
+        <lightning:layout horizontalAlign="spread" verticalAlign="stretch" pullToBoundary="small">
+            <lightning:layoutItem class="paddingleft7px paddingtop0px paddingright3px" size="8" flexibility="auto">
+                {!v.column6}
+            </lightning:layoutItem>
+            <lightning:layoutItem class="paddingleft7px paddingtop0px" size="4" flexibility="auto" 
+                                  padding="around-small">
+                {!v.column7}
+            </lightning:layoutItem>
+        </lightning:layout>
+    </div> 
+</aura:component>

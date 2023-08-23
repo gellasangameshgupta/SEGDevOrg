@@ -1,0 +1,168 @@
+<!--  Page Name       :SEGTS_CloneTestSPecComponent
+      Purpose         :Component used to Create New Version of a Test spec on Click of "Create New Version" Button
+      Created By      :RBEI
+      Created Date    :Feb 2019 --> 
+<aura:component controller="SEGTS_Ctrl_CreateNewVersionComponent" access="global" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader">
+	<aura:handler name="init" action="{!c.getTestSpecs}" value="{!this}" />
+    <aura:attribute name="testSpec" type="List" />
+    <ltng:require styles="{!$Resource.SEGTS_CloneTestSpec_Resource}" />
+    <Center><h1 class ="SecHeader"><b>Create New Version</b></h1></Center>
+    <div class="slds-p-around--small">    
+    <div class="slds-page-header" style="cursor: pointer;" onclick="{!c.sectionOne}">
+      <section >
+        <div class="slds-float--left " >
+            <lightning:icon class="slds-show" aura:id="articleOne" iconName="utility:chevrondown"  size="x-small" />
+            <lightning:icon class="slds-hide" aura:id="articleOne" iconName="utility:chevronright" size="x-small" alternativeText="Indicates dash"/>
+        </div>
+        <div class="slds-m-left--medium">&nbsp;Basic Information</div>
+      </section>
+    </div>
+        <div class="slds-show slds-p-around--small" aria-hidden="false" aura:id="articleOne">
+    	<aura:iteration items="{!v.testSpec}" var="t">
+            <lightning:recordEditForm recordId="{!t.id}" recordTypeId="{!t.RecordTypeId}" objectApiName="Test_Specification__c">
+                    <div class="slds-grid" style="height:50px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input aura:id="nameVal" messageWhenValueMissing="Complete this field "  value="{!t.Name}" label="Test Spec Nr."  required="true"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input value="{!t.Version_No__c}" label="Version No" readonly="true"/>
+                        </div>
+                </div><br/>
+                    <div class="slds-grid" style="height:50px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:inputField fieldName="Starter__c" value="{!t.Starter__c}"  aura:id="starter" onchange="{!c.getOppProcess}"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:inputField fieldName="Test_Spec_Type__c" value="{!t.Test_Spec_Type__c}" aura:id="TestSPecType" onchange="{!c.getOppProcess}"/>
+                        </div>    
+                </div><br/>
+                    <div class="slds-grid" style="height:50px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input aura:id="nameVal" messageWhenValueMissing="Complete this field " value="{!t.Test_Specification__c}" label="Test Specification" required="true"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input value="{!t.Status__c}" label="Test Spec. Status" readonly="true"/>
+                        </div>    
+                </div><br/>
+                    <div class="slds-grid" style="height:50px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:inputField fieldName="Starter_Type__c" value="{!t.Starter_Type__c}" aura:id="StarterType" onchange="{!c.getOppProcess}"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input value="{!t.Information__c}" label="Information"/>
+                        </div>    
+                    </div>
+                </lightning:recordEditForm>
+              </aura:iteration>
+        </div>
+        </div> 
+    
+<div class="slds-p-around--small">
+     <div class="slds-page-header" style="cursor: pointer;" onclick="{!c.sectionTwo}">
+      <section >
+        <div class="slds-float--left " >
+            <lightning:icon class="slds-show" aura:id="articleTwo" iconName="utility:chevrondown"  size="x-small" />
+            <lightning:icon class="slds-hide" aura:id="articleTwo" iconName="utility:chevronright" size="x-small" alternativeText="Indicates dash"/>
+        </div>
+        <div class="slds-m-left--medium">&nbsp;Characteristics</div>
+      </section>
+    </div>
+	<div class="slds-show slds-p-around--small" aria-hidden="false" aura:id="articleTwo">	
+    <aura:iteration items="{!v.testSpec}" var="t">
+            	<lightning:recordEditForm recordId="{!t.id}" recordTypeId="{!t.RecordTypeId}" objectApiName="Test_Specification__c">
+    				  <div class="slds-grid" style="height:50px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<ui:inputCheckbox value="{!t.FLC__c}" label="FLS"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<ui:inputcheckbox value="{!t.NB__c}" label="NL"/>
+                        </div>    
+                    </div><br/>
+                     <div class="slds-grid" style="height:50px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input aura:id="nameVal" messageWhenValueMissing="Complete this field " value="{!t.Char_Curve_1__c}" label="Char. Curve 1" required="true"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input value="{!t.Temp_1_C__c}" label="Temp 1[°C]"/>
+                        </div>    
+                    </div><br/>
+                    <div class="slds-grid" style="height:50px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input value="{!t.Char_Curve_2__c}" label="Char. Curve 2"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input value="{!t.Temp_2_C__c}" label="Temp 2[°C]"/>
+                        </div>    
+                    </div><br/>
+                    <div class="slds-grid" style="height:50px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input aura:id="nameVal" messageWhenValueMissing="Complete this field " value="{!t.i__c}" label="i" required="true"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:inputField fieldName="Stand__c" value="{!t.Stand__c}" aura:id="Stand" onchange="{!c.getOppProcess}" />
+                        </div>    
+                    </div><br/>
+                    <div class="slds-grid" style="height:50px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input value="{!t.Solenoid__c}" label="Solenoid"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input value="{!t.Relation_amount__c}" label="Product Quantity"/>
+                        </div>    
+                    </div><br/>
+                     <div class="slds-grid">
+                        <div class="slds-col slds-size_1-of-1 slds-p-around_medium">
+                        	<lightning:inputfield fieldName="Additional_Features__c" value="{!t.Additional_Features__c}" aura:id="ADDfe" onchange="{!c.getOppProcess}"/>
+                        </div>
+                    </div>    
+                </lightning:recordEditForm>
+              </aura:iteration>
+    		</div>
+        </div>
+  <div class="slds-p-around--small">
+     <div class="slds-page-header" style="cursor: pointer;" onclick="{!c.sectionThree}">
+      <section >
+        <div class="slds-float--left " >
+            <lightning:icon class="slds-show" aura:id="articleThree" iconName="utility:chevrondown"  size="x-small" />
+            <lightning:icon class="slds-hide" aura:id="articleThree" iconName="utility:chevronright" size="x-small" alternativeText="Indicates dash"/>
+        </div>
+        <div class="slds-m-left--medium">&nbsp;Additional Information</div>
+      </section>
+    </div>
+      <div class="slds-p-left_large slds-p-right_medium" aria-hidden="false" aura:id="articleThree">
+      <aura:iteration items="{!v.testSpec}" var="t">
+            	<lightning:recordEditForm onload="{!c.showRequiredFields}" recordId="{!t.id}" recordTypeId="{!t.RecordTypeId}" objectApiName="Test_Specification__c">
+    				<div class="slds-grid" style="height:100px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:input aura:id="nameVal" messageWhenValueMissing="Complete this field " value="{!t.Change_Nr__c}" label="Change Nr." required="true"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:textarea value="{!t.Change__c}" label="Change" class="tallTextArea"/>
+                        </div>    
+                    </div><br/>
+                    <div class="slds-grid" style="height:50px">
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:textarea value="{!t.Remarks__c}" label="Remarks" class="tallTextArea"/>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                        	<lightning:inputField fieldName="SAP_Doc__c" messageWhenValueMissing="Complete this field " value="{!t.SAP_Doc__c}" class="customRequired none" aura:id="sapdoc" onchange="{!c.getOppProcess}" required="true"/>
+                        </div>    
+                     </div>
+                 </lightning:recordEditForm>
+            </aura:iteration>
+      </div>
+        </div>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <footer class="slds-modal__footer">
+        <lightning:button class="slds-button slds-button_neutral" variant="neutral" label="Cancel" name="cancel" onclick="{!c.cancel}" />
+         <lightning:button class="slds-button slds-button_brand" variant="brand" label="Save" name="Save" onclick="{!c.save}" />
+                    
+      </footer>
+    
+         
+</aura:component>

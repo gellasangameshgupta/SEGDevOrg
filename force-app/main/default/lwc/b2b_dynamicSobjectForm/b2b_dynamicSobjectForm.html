@@ -1,0 +1,50 @@
+<!--
+* 
+* @ Name    :   b2b_dynamicSobjectForm
+* @ Purpose :   This component is used to display a dynamic form with fields from a fieldset
+* @ Author  :   Pradeep Chary
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   01-05-2023      |  pradeep.chary@absyz.com      |  1.0          |  Initial Version
+*
+-->
+<template>
+    <div class="slds-box slds-theme_default">
+        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__figure">
+                <lightning-icon icon-name="standard:task2" alternative-text="Quick Actions"
+                    title="Quick Actions"></lightning-icon>
+            </div>
+            <div class="slds-media__body">
+                <h2 class="slds-card__header-title">
+                    <span>Quick Actions</span>
+                </h2>
+            </div>
+        </header>
+        <template if:true={blnIsSpinner}>
+            <div class="spinner-holder">
+                <lightning-spinner alternative-text="Loading" variant="brand" size="medium"></lightning-spinner>
+            </div>
+        </template>
+        <template if:true={blnIsLoaded}>
+            <template for:each={fields} for:item="field">
+                <div key={field.strApiName} class="slds-var-p-vertical_small">
+                    <c-b2b_dynamic-sobject-field obj-field={field}
+                        oninputchange={handleInputChange}></c-b2b_dynamic-sobject-field>
+                </div>
+            </template>
+            <lightning-layout class="slds-var-p-horizontal_xx-small slds-var-p-vertical_small">
+                <lightning-layout-item >
+                    <lightning-button-group>
+                        <lightning-button label="Save" variant="brand" onclick={handleSaveClick}></lightning-button>
+                        <lightning-button label="Cancel" onclick={handleDefaultClick}></lightning-button>
+                    </lightning-button-group>
+                </lightning-layout-item>
+                <lightning-layout-item alignment-bump="left">
+                    <c-b2b_download-order-summary order-summary-id={recordId}></c-b2b_download-order-summary>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+    </div>
+</template>

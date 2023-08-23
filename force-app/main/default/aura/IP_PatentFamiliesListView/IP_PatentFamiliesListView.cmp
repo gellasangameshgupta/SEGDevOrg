@@ -1,0 +1,11 @@
+<aura:component implements="force:appHostable" >
+	<lightning:listView aura:id="listViewPatentFamily"
+    objectApiName="Case"
+    listName="All_Patent_Families"
+    rows="50"
+    showSearchBar="true"
+    showActionBar="true"
+    enableInlineEdit="true"
+    showRowLevelActions="true"
+/>
+</aura:component>

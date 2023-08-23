@@ -1,0 +1,36 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,lightning:isUrlAddressable,force:appHostable"
+                controller="IP_CreateChildIPRightController">
+    <aura:attribute name="items" type="Object"/>
+    <aura:attribute name="pictureSrc" type="String"
+                    default="https://s3-us-west-1.amazonaws.com/sfdc-demo/image-placeholder.png"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+    </aura:html>
+    <!--Lightning Tree-->
+    <lightning:card>
+        <div class="slds-box">
+            <div class="slds-text-heading_small"><div class="slds-p-bottom_small">
+                <b>Family Tree</b></div></div>            
+            <div class="slds-box">
+                <lightning:tree items="{!v.items}" onselect="{!c.handleSelect}">
+                    
+                </lightning:tree>
+                <!--Lightning Spinner-->
+                <div>
+                    <lightning:spinner alternativeText="Processing.." title="Processing.." aura:id="spnr" variant="brand" size="large" />
+                </div>
+            </div>
+        </div>
+    </lightning:card>
+</aura:component>

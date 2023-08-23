@@ -1,0 +1,18 @@
+.THIS .customIcon div{
+    vertical-align: top !important;
+}
+.THIS .title{
+    color:#005286;
+    font-size:140%;
+}
+.THIS .nolabel .slds-form-element__label{
+    display: none; 
+    visibility: hidden;
+}
+.THIS .sppoints .slds-textarea {
+    height:150px !important;
+}
+
+/*.THIS .slds-form-element__help {
+    display: none;
+}*/

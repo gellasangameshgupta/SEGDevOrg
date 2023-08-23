@@ -1,0 +1,116 @@
+<aura:component implements="force:appHostable" controller="IP_InventionDisclosureController">
+    <aura:attribute name="listofcases" type="case[]"/>
+    
+    <aura:attribute name="sortedBy" type="String" />
+    <aura:attribute name="sortDirection" type="String" default="asc" />
+    <aura:attribute name="defaultSortDirection" type="String" default="asc" />
+    <aura:attribute name="startPage" type="Integer" />
+    <aura:attribute name="endPage" type="Integer"/>
+    <aura:attribute name="totalRecordsCount" type="Integer"/>
+    <aura:attribute name="fillOrUploadFormrow" type="boolean" default="false"/>
+    
+    <aura:attribute name="startPageNoms" type="Integer" />
+    <aura:attribute name="endPageNoms" type="Integer"/>
+    <aura:attribute name="totalRecordsCountNoms" type="Integer"/>
+    <aura:attribute name="pageSizeNoms" type="Integer" 
+                    description="number of records to be display on per page"/>
+    <aura:attribute name="layoutSize" type="integer" default="12"/>
+    <aura:attribute name="layoutSize2" type="integer" default="1"/>
+    <aura:attribute name="currentPage" type="integer" default="1"/>
+    <aura:attribute name="currentPage1" type="integer" default="1"/>
+    <aura:attribute name="currentPage2" type="integer" default="1"/>
+    <aura:attribute name="currentPage3" type="integer" default="1"/>
+    <aura:attribute name="totalPagesCount" type="integer"/>
+    <aura:attribute name="PaginationList" type="List"/> 
+    <aura:attribute name="totalPagesCountNoms" type="integer"/>
+    <aura:attribute name="PaginationListNoms" type="List"/> 
+    <aura:attribute name="columns" type="List"/>
+    <aura:attribute name="columnsNoms" type="List"/>
+    <aura:attribute name="listOfAchs" type="List"/>
+    <aura:attribute name="selectedAchs" type="List"/>
+    <aura:attribute name="listOfNoms" type="List"/>
+    <aura:attribute name="listOfShos" type="List"/>
+    <aura:attribute name="listOfWins" type="List"/>
+    <aura:attribute name="listOfAchsAllRecs" type="List"/>
+    <aura:attribute name="Pagechange" type="Boolean" default="false"/>
+    <aura:attribute name="Pagechange2" type="Boolean" default="false"/>
+    <aura:attribute name="Pagechange3" type="Boolean" default="false"/>
+    <aura:attribute name="selectedCandidates" type="List" default="[]"/>
+    <aura:attribute name="selectedCandidates2" type="List" default="[]"/>
+    <aura:attribute name="selectedCandidates3" type="List" default="[]"/>    
+    <aura:attribute name="pageSizeList" type="list"/>
+    <aura:attribute name="refineFilter" type="Boolean" default="false"/>
+    <aura:attribute name="myInvention" type="boolean"/>
+    <aura:attribute name="myInventionRec" type="case"/>
+    <aura:attribute name="isDisabled" type="boolean" default="false"/>
+    
+    <aura:attribute name="filter" type="string"/>
+    <aura:attribute name="FilteredData" type="List"/>
+    <aura:attribute name="pageNumber" type="Integer" default="0"/>
+    <aura:attribute name="pageSize" type="Integer" default="10"/>
+    <aura:attribute name="maxsize" type="Integer" default="10"/>
+    <aura:attribute name="isLastPage" type="Boolean" default="false"/>
+    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:if isTrue="{!v.myInvention}">
+        <c:IP_MyInventionView fillOrUploadFormrow="{!v.fillOrUploadFormrow}" isDisabled="{!v.isDisabled}" myInvention="{!v.myInvention}" myInventionRec="{!v.myInventionRec}"/>
+        <aura:set attribute="else">
+            <lightning:card>
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <span class="slds-icon_container slds-icon-standard-opportunity" title="opportunity">
+                                        
+                                        <span class="slds-assistive-text">opportunity</span>
+                                    </span>
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate" title="Search header">Search My Inventions</span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dataTableCustom">
+                    <div class="slds-float_right" style="width:20%">
+                        <lightning:input  aura:id="enter-search" name="enter-search" type="search" onchange="{!c.filter}" value="{!v.filter}" placeholder="Search..."/> 
+                    </div>
+                    <br/><br/><br/>
+                    <lightning:datatable aura:id="achsTable"
+                                         keyField="Id"
+                                         data="{!v.FilteredData}"
+                                         columns="{!v.columns}"
+                                         hideCheckboxColumn="true"
+                                         onrowaction="{!c.handleRowAction}"
+                                         sortedBy="{!v.sortedBy}"
+                                         sortedDirection="{!v.sortDirection}"
+                                         defaultSortDirection="{!v.defaultSortDirection}"
+                                         onsort="{!c.handleColumnSorting}"
+                                         /><br/>
+                    <lightning:layout horizontalAlign="spread">
+                        <lightning:layoutItem flexibility="auto" padding="around-small">
+                            Page {!v.pageNumber+1} | Showing records from {!(((v.pageNumber)*v.pageSize)+1) + ' to ' + (v.maxsize)+' '}  out of {!v.listofcases.length +' '} 
+                        </lightning:layoutItem>
+                        <lightning:layoutItem flexibility="auto" padding="around-small">
+                            <lightning:button label="Prev" iconName="utility:chevronleft" iconPosition="left"
+                                              onclick="{!c.handlePrev}" disabled="{!v.pageNumber == 0}"/>
+                            <lightning:button label="Next" iconName="utility:chevronright" iconPosition="right"
+                                              disabled="{!v.isLastPage}" onclick="{!c.handleNext}"/>
+                        </lightning:layoutItem>
+                    </lightning:layout>
+                </div> 
+            </lightning:card>
+        </aura:set>
+    </aura:if>
+</aura:component>

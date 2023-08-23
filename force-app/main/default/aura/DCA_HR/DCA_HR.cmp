@@ -1,0 +1,702 @@
+<aura:component controller="DCA_HR_Controller" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+    
+    <!-- datatable attributes -->
+    <aura:attribute name="columns" type="List" default="[]"/>
+    <aura:attribute name="columnsSAP" type="List" default="[]"/>
+    <aura:attribute name="columnsESS" type="List" default="[]"/>
+    <aura:attribute name="columnseTime" type="List" default="[]"/>
+    <aura:attribute name="columnsSPM" type="List" default="[]"/>
+    <aura:attribute name="columnsEsevice" type="List" default="[]"/>
+    <aura:attribute name="data" type="List" default="[]"/>
+    <aura:attribute name="dataTableSchema" type="Object"/>
+    <aura:attribute name="keyField" type="String" default="Id"/>
+    <aura:attribute name="initialRows" type="Integer" default="5"/>
+    <aura:attribute name="selectedRowsCount" type="Integer" default="0"/>
+    <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true"/>
+    <aura:attribute name="rowsToLoad" type="Integer" default="50"/>
+    <aura:attribute name="loadMoreOffset" type="Integer" default="20"/>
+    <aura:attribute name="totalNumberOfRows" type="Integer" default="300"/>
+    <aura:attribute name="loadMoreStatus" type="String" default=""/>
+    
+    <aura:attribute name="StatusPicklist" type="String[]" />
+    <aura:attribute name="ShowDCAUpdate" type="boolean" default="false"/>
+    <aura:attribute name="selectedData" type="List" />
+    <aura:attribute name="rowsForUpdate" type="Object[]"/>
+    <aura:attribute name='DCA_Update'  Type='Contact'  default="{ 'sobjectType': 'Contact',
+                                                                'DCA_Status__c':'',
+                                                                'DCA_ApprovalComment__c':'',
+                                                                'Id':'',
+                                                                }"/> 
+    <aura:attribute name="sortBy" type="String"/>
+    <aura:attribute name="sortDirection" type="String"/>
+    <aura:attribute name="sortBySubmitted" type="String"/>
+    
+    
+    <aura:attribute name="HRApp" type="String" default="SFSF EC"/>
+    
+    <aura:attribute name="searchName" type="String" description="search input"/>
+    <aura:attribute name="searchStatus" type="String" description="search input"/>
+    <aura:attribute name="searchRole" type="String" description="search input"/>
+    
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:if isTrue="{!v.Spinner}">
+        <div class="slds-spinner_container slds-is-fixed" aura:id="spinnerId">
+            <div class="slds-spinner--brand slds-spinner slds-spinner--large slds-is-fixed" role="alert">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+            
+        </div>
+    </aura:if>
+
+    
+    <lightning:tabset variant="scoped">
+        <lightning:tab label="SFSF EC" onactive="{! c.handleActiveSFSFEC}" >
+            
+                           
+            <div class="slds-form-element slds-form-element_horizontal" style ="background-color: aliceblue;border-radius: 10px;">
+                <lightning:layout class="slds-align_absolute-center" multipleRows="true" >
+                 <lightning:buttonGroup >
+                     <lightning:button variant="brand"
+                                              label="Approve"
+                                              title="Approve"
+                                              onclick="{! c.ApproveModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Reject"
+                                              title="Reject"
+                                              onclick="{! c.RejectModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Delete User"
+                                              title="Delete User"
+                                              onclick="{! c.DeleteModal }"/>
+                 </lightning:buttonGroup>
+            </lightning:layout>
+            </div>
+             
+            <div class="slds-p-bottom_small slds-p-left_xx-large">
+                <lightning:layout horizontalAlign="auto" multipleRows="true" >
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small"  flexibility="auto"  >
+                        <lightning:input value="{!v.searchName}"
+                                         placeholder="Search First/Last Name.."
+                                         aura:id="searchField1"
+                                         label="First/Last Name"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchStatus}"
+                                         placeholder="Search Status.."
+                                         aura:id="searchField2"
+                                         label="Status"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small  slds-p-top_x-small slds-p-bottom_small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchRole}"
+                                         placeholder="Search Role.."
+                                         aura:id="searchField3"
+                                         label="Role"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-right_small  slds-p-bottom_small slds-p-top_x-large" flexibility="auto"  >
+                        <lightning:buttonGroup class="slds-grid_Horizontal-stretch"  >  
+                            <lightning:button 
+                                              onclick="{!c.Search}"
+                                              variant="brand"
+                                              label="Search"
+                                              iconName="utility:search"/> &nbsp; &nbsp;
+                            <lightning:button 
+                                              onclick="{!c.ClearFilters}"
+                                              variant="brand"
+                                              label="Clear Filters"
+                                              iconName="utility:clear"/>&nbsp; &nbsp;
+                            
+                        </lightning:buttonGroup>
+                        
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+                
+            </div>
+            
+            <div class="slds-is-relative">
+                <!-- toolbox -->
+                <!--       
+        <div class="slds-m-vertical_small">
+            <h1 class="slds-m-vertical_small">Total Rows: {! v.data.length }</h1>
+            <h1 class="slds-m-vertical_small">Selected Rows: {! v.selectedRowsCount }</h1>
+
+           
+        </div>
+-->
+                <!-- the container element determine the height of the datatable -->
+                <div style="height: 300px">
+                    <lightning:datatable
+                                         aura:id = "SFSFEC"
+                                         columns="{! v.columns }"
+                                         data="{! v.data }"
+                                         keyField="{! v.keyField }"
+                                         showRowNumberColumn="true"
+                                         onrowselection="{!c.getSelectedRec}"
+                                         onrowaction="{! c.handleRowAction }"
+                                         selectedRows="{! v.selectedData }"
+                                         sortedBy="{!v.sortBy}"
+                                         sortedDirection="{!v.sortDirection}"
+                                         defaultSortDirection="{!v.defaultSortDirection}"
+                                         onsort="{!c.handleSort}"
+                                         enableInfiniteLoading="{! v.enableInfiniteLoading }"
+                                         loadMoreOffset="{! v.loadMoreOffset }"
+                                         onloadmore="{! c.loadMoreData }"
+                                         />
+                </div>
+                
+            </div>
+            
+        </lightning:tab>
+        <lightning:tab label="SAP GV GDMS" onactive="{! c.handleActiveSAPGV }">
+            
+             <div class="slds-form-element slds-form-element_horizontal" style ="background-color: aliceblue;border-radius: 10px;">
+                <lightning:layout class="slds-align_absolute-center" multipleRows="true" >
+                 <lightning:buttonGroup >
+                     <lightning:button variant="brand"
+                                              label="Approve"
+                                              title="Approve"
+                                              onclick="{! c.ApproveModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Reject"
+                                              title="Reject"
+                                              onclick="{! c.RejectModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Delete User"
+                                              title="Delete User"
+                                              onclick="{! c.DeleteModal }"/>
+                 </lightning:buttonGroup>
+            </lightning:layout>
+            </div>
+            
+            <div class="slds-p-bottom_small slds-p-left_xx-large">
+                <lightning:layout horizontalAlign="auto" multipleRows="true" >
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchName}"
+                                         placeholder="Search First/Last Name.."
+                                         aura:id="searchField1"
+                                         label="First/Last Name"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchStatus}"
+                                         placeholder="Search Status.."
+                                         aura:id="searchField2"
+                                         label="Status"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small  slds-p-top_x-small slds-p-bottom_small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchRole}"
+                                         placeholder="Search Role.."
+                                         aura:id="searchField3"
+                                         label="Role"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-right_small  slds-p-bottom_small slds-p-top_x-large" flexibility="auto"  >
+                        <lightning:buttonGroup >  
+                            <lightning:button 
+                                              onclick="{!c.Search}"
+                                              variant="brand"
+                                              label="Search"
+                                              iconName="utility:search"/> &nbsp; &nbsp;
+                            <lightning:button 
+                                              onclick="{!c.ClearFilters}"
+                                              variant="brand"
+                                              label="Clear Filters"
+                                              iconName="utility:clear"/>
+                        </lightning:buttonGroup>
+                        
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+                
+            </div>
+            
+            <div class="slds-is-relative">
+                <!-- toolbox -->
+                <!--       
+        <div class="slds-m-vertical_small">
+            <h1 class="slds-m-vertical_small">Total Rows: {! v.data.length }</h1>
+            <h1 class="slds-m-vertical_small">Selected Rows: {! v.selectedRowsCount }</h1>
+
+           
+        </div>
+-->
+                <!-- the container element determine the height of the datatable -->
+                <div style="height: 300px">
+                    <lightning:datatable
+                                         aura:id = "SAPGVGDMS"
+                                         columns="{! v.columnsSAP }"
+                                         data="{! v.data }"
+                                         keyField="{! v.keyField }"
+                                         showRowNumberColumn="true"
+                                         onrowselection="{!c.getSelectedRec}"
+                                         selectedRows="{! v.selectedData }"
+                                         sortedBy="{!v.sortBy}"
+                                         sortedDirection="{!v.sortDirection}"
+                                         defaultSortDirection="{!v.defaultSortDirection}"
+                                         onsort="{!c.handleSort}"
+                                         enableInfiniteLoading="{! v.enableInfiniteLoading }"
+                                         loadMoreOffset="{! v.loadMoreOffset }"
+                                         onloadmore="{! c.loadMoreData }"
+                                         />
+                </div>
+                
+            </div>
+            
+        </lightning:tab>
+        <lightning:tab label="ESS PORTAL" onactive="{! c.handleActiveESSPORTAL}">
+            
+             <div class="slds-form-element slds-form-element_horizontal" style ="background-color: aliceblue;border-radius: 10px;">
+                <lightning:layout class="slds-align_absolute-center" multipleRows="true" >
+                 <lightning:buttonGroup >
+                     <lightning:button variant="brand"
+                                              label="Approve"
+                                              title="Approve"
+                                              onclick="{! c.ApproveModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Reject"
+                                              title="Reject"
+                                              onclick="{! c.RejectModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Delete User"
+                                              title="Delete User"
+                                              onclick="{! c.DeleteModal }"/>
+                 </lightning:buttonGroup>
+            </lightning:layout>
+            </div>
+            
+            <div class="slds-p-bottom_small slds-p-left_xx-large">
+                <lightning:layout horizontalAlign="auto" multipleRows="true" >
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchName}"
+                                         placeholder="Search First/Last Name.."
+                                         aura:id="searchField1"
+                                         label="First/Last Name"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchStatus}"
+                                         placeholder="Search Status.."
+                                         aura:id="searchField2"
+                                         label="Status"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small  slds-p-top_x-small slds-p-bottom_small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchRole}"
+                                         placeholder="Search Role.."
+                                         aura:id="searchField3"
+                                         label="Role"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-right_small  slds-p-bottom_small slds-p-top_x-large" flexibility="auto"  >
+                        <lightning:buttonGroup >  
+                            <lightning:button 
+                                              onclick="{!c.Search}"
+                                              variant="brand"
+                                              label="Search"
+                                              iconName="utility:search"/> &nbsp; &nbsp;
+                            <lightning:button 
+                                              onclick="{!c.ClearFilters}"
+                                              variant="brand"
+                                              label="Clear Filters"
+                                              iconName="utility:clear"/>
+                        </lightning:buttonGroup>
+                        
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+                
+            </div>
+            
+            <div class="slds-is-relative">
+                <!-- toolbox -->
+                <!--       
+        <div class="slds-m-vertical_small">
+            <h1 class="slds-m-vertical_small">Total Rows: {! v.data.length }</h1>
+            <h1 class="slds-m-vertical_small">Selected Rows: {! v.selectedRowsCount }</h1>
+
+           
+        </div>
+-->
+                <!-- the container element determine the height of the datatable -->
+                <div style="height: 300px">
+                    <lightning:datatable
+                                         aura:id = "ESSPORTAL"
+                                         columns="{! v.columnsESS }"
+                                         data="{! v.data }"
+                                         keyField="{! v.keyField }"
+                                         showRowNumberColumn="true"
+                                         onrowselection="{!c.getSelectedRec}"
+                                         selectedRows="{! v.selectedData }"
+                                         sortedBy="{!v.sortBy}"
+                                         sortedDirection="{!v.sortDirection}"
+                                         defaultSortDirection="{!v.defaultSortDirection}"
+                                         onsort="{!c.handleSort}"
+                                         enableInfiniteLoading="{! v.enableInfiniteLoading }"
+                                         loadMoreOffset="{! v.loadMoreOffset }"
+                                         onloadmore="{! c.loadMoreData }"
+                                         />
+                </div>
+                
+            </div>
+            
+        </lightning:tab>
+        
+        <lightning:tab label="eTime" onactive="{! c.handleActiveeTime}">
+            
+             <div class="slds-form-element slds-form-element_horizontal" style ="background-color: aliceblue;border-radius: 10px;">
+                <lightning:layout class="slds-align_absolute-center" multipleRows="true" >
+                 <lightning:buttonGroup >
+                     <lightning:button variant="brand"
+                                              label="Approve"
+                                              title="Approve"
+                                              onclick="{! c.ApproveModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Reject"
+                                              title="Reject"
+                                              onclick="{! c.RejectModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Delete User"
+                                              title="Delete User"
+                                              onclick="{! c.DeleteModal }"/>
+                 </lightning:buttonGroup>
+            </lightning:layout>
+            </div>
+            
+            <div class="slds-p-bottom_small slds-p-left_xx-large">
+                <lightning:layout horizontalAlign="auto" multipleRows="true" >
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchName}"
+                                         placeholder="Search First/Last Name.."
+                                         aura:id="searchField1"
+                                         label="First/Last Name"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchStatus}"
+                                         placeholder="Search Status.."
+                                         aura:id="searchField2"
+                                         label="Status"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small  slds-p-top_x-small slds-p-bottom_small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchRole}"
+                                         placeholder="Search Role.."
+                                         aura:id="searchField3"
+                                         label="Role"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-right_small  slds-p-bottom_small slds-p-top_x-large" flexibility="auto"  >
+                        <lightning:buttonGroup >  
+                            <lightning:button 
+                                              onclick="{!c.Search}"
+                                              variant="brand"
+                                              label="Search"
+                                              iconName="utility:search"/> &nbsp; &nbsp;
+                            <lightning:button 
+                                              onclick="{!c.ClearFilters}"
+                                              variant="brand"
+                                              label="Clear Filters"
+                                              iconName="utility:clear"/>
+                        </lightning:buttonGroup>
+                        
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+                
+            </div>
+            
+            <div class="slds-is-relative">
+                <!-- toolbox -->
+                <!--       
+        <div class="slds-m-vertical_small">
+            <h1 class="slds-m-vertical_small">Total Rows: {! v.data.length }</h1>
+            <h1 class="slds-m-vertical_small">Selected Rows: {! v.selectedRowsCount }</h1>
+
+           
+        </div>
+-->
+                <!-- the container element determine the height of the datatable -->
+                <div style="height: 300px">
+                    <lightning:datatable
+                                         aura:id = "eTime"
+                                         columns="{! v.columnseTime }"
+                                         data="{! v.data }"
+                                         keyField="{! v.keyField }"
+                                         showRowNumberColumn="true"
+                                        onrowselection="{!c.getSelectedRec}"
+                                         selectedRows="{! v.selectedData }"
+                                         sortedBy="{!v.sortBy}"
+                                         sortedDirection="{!v.sortDirection}"
+                                         defaultSortDirection="{!v.defaultSortDirection}"
+                                         onsort="{!c.handleSort}"
+                                         enableInfiniteLoading="{! v.enableInfiniteLoading }"
+                                         loadMoreOffset="{! v.loadMoreOffset }"
+                                         onloadmore="{! c.loadMoreData }"
+                                         />
+                </div>
+                
+            </div>
+            
+        </lightning:tab>
+        
+        <lightning:tab label="SPM" onactive="{!c.handleActiveSPM}" >
+            
+             <div class="slds-form-element slds-form-element_horizontal" style ="background-color: aliceblue;border-radius: 10px;">
+                <lightning:layout class="slds-align_absolute-center" multipleRows="true" >
+                 <lightning:buttonGroup >
+                     <lightning:button variant="brand"
+                                              label="Approve"
+                                              title="Approve"
+                                              onclick="{! c.ApproveModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Reject"
+                                              title="Reject"
+                                              onclick="{! c.RejectModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Delete User"
+                                              title="Delete User"
+                                              onclick="{! c.DeleteModal }"/>
+                 </lightning:buttonGroup>
+            </lightning:layout>
+            </div>
+            
+            <div class="slds-p-bottom_small slds-p-left_xx-large">
+                <lightning:layout horizontalAlign="auto" multipleRows="true" >
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchName}"
+                                         placeholder="Search First/Last Name.."
+                                         aura:id="searchField1"
+                                         label="First/Last Name"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchStatus}"
+                                         placeholder="Search Status.."
+                                         aura:id="searchField2"
+                                         label="Status"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small  slds-p-top_x-small slds-p-bottom_small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchRole}"
+                                         placeholder="Search Role.."
+                                         aura:id="searchField3"
+                                         label="Role"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-right_small  slds-p-bottom_small slds-p-top_x-large" flexibility="auto"  >
+                        <lightning:buttonGroup >  
+                            <lightning:button 
+                                              onclick="{!c.Search}"
+                                              variant="brand"
+                                              label="Search"
+                                              iconName="utility:search"/> &nbsp; &nbsp;
+                            <lightning:button 
+                                              onclick="{!c.ClearFilters}"
+                                              variant="brand"
+                                              label="Clear Filters"
+                                              iconName="utility:clear"/>&nbsp; &nbsp;
+                            
+                        </lightning:buttonGroup>
+                        
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+                
+            </div>
+            
+            <div class="slds-is-relative">
+                <!-- toolbox -->
+                <!--       
+        <div class="slds-m-vertical_small">
+            <h1 class="slds-m-vertical_small">Total Rows: {! v.data.length }</h1>
+            <h1 class="slds-m-vertical_small">Selected Rows: {! v.selectedRowsCount }</h1>
+
+           
+        </div>
+-->
+                <!-- the container element determine the height of the datatable -->
+                <div style="height: 300px">
+                    <lightning:datatable
+                                         aura:id = "SPM"
+                                         columns="{! v.columnsSPM }"
+                                         data="{! v.data }"
+                                         keyField="{! v.keyField }"
+                                         showRowNumberColumn="true"
+                                         onrowselection="{!c.getSelectedRec}"
+                                         selectedRows="{! v.selectedData }"
+                                         sortedBy="{!v.sortBy}"
+                                         sortedDirection="{!v.sortDirection}"
+                                         defaultSortDirection="{!v.defaultSortDirection}"
+                                         onsort="{!c.handleSort}"
+                                         enableInfiniteLoading="{! v.enableInfiniteLoading }"
+                                         loadMoreOffset="{! v.loadMoreOffset }"
+                                         onloadmore="{! c.loadMoreData }"
+                                         />
+                </div>
+                
+            </div>
+            
+        </lightning:tab>
+        
+        <lightning:tab label="e Service Ticketing" onactive="{! c.handleActiveeServiceTicketing}" >
+            
+                           
+            <div class="slds-form-element slds-form-element_horizontal" style ="background-color: aliceblue;border-radius: 10px;">
+                <lightning:layout class="slds-align_absolute-center" multipleRows="true" >
+                 <lightning:buttonGroup >
+                     <lightning:button variant="brand"
+                                              label="Approve"
+                                              title="Approve"
+                                              onclick="{! c.ApproveModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Reject"
+                                              title="Reject"
+                                              onclick="{! c.RejectModal }"/>&nbsp; &nbsp;
+                            <lightning:button variant="brand"
+                                              label="Delete User"
+                                              title="Delete User"
+                                              onclick="{! c.DeleteModal }"/>
+                 </lightning:buttonGroup>
+            </lightning:layout>
+            </div>
+             
+            <div class="slds-p-bottom_small slds-p-left_xx-large">
+                <lightning:layout horizontalAlign="auto" multipleRows="true" >
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small"  flexibility="auto"  >
+                        <lightning:input value="{!v.searchName}"
+                                         placeholder="Search First/Last Name.."
+                                         aura:id="searchField1"
+                                         label="First/Last Name"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchStatus}"
+                                         placeholder="Search Status.."
+                                         aura:id="searchField2"
+                                         label="Status"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small  slds-p-top_x-small slds-p-bottom_small" flexibility="auto"  >
+                        <lightning:input value="{!v.searchRole}"
+                                         placeholder="Search Role.."
+                                         aura:id="searchField3"
+                                         label="Role"/>
+                    </lightning:layoutItem>
+                    
+                    <lightning:layoutItem class="slds-p-left_small slds-p-right_small  slds-p-bottom_small slds-p-top_x-large" flexibility="auto"  >
+                        <lightning:buttonGroup class="slds-grid_Horizontal-stretch"  >  
+                            <lightning:button 
+                                              onclick="{!c.Search}"
+                                              variant="brand"
+                                              label="Search"
+                                              iconName="utility:search"/> &nbsp; &nbsp;
+                            <lightning:button 
+                                              onclick="{!c.ClearFilters}"
+                                              variant="brand"
+                                              label="Clear Filters"
+                                              iconName="utility:clear"/>&nbsp; &nbsp;
+                            
+                        </lightning:buttonGroup>
+                        
+                    </lightning:layoutItem>
+                    
+                </lightning:layout>
+                
+            </div>
+            
+            <div class="slds-is-relative">
+                <!-- toolbox -->
+                <!--       
+        <div class="slds-m-vertical_small">
+            <h1 class="slds-m-vertical_small">Total Rows: {! v.data.length }</h1>
+            <h1 class="slds-m-vertical_small">Selected Rows: {! v.selectedRowsCount }</h1>
+
+           
+        </div>
+-->
+                <!-- the container element determine the height of the datatable -->
+                <div style="height: 300px">
+                    <lightning:datatable
+                                         aura:id = "eServiceTicketing"
+                                         columns="{! v.columnsEsevice }"
+                                         data="{! v.data }"
+                                         keyField="{! v.keyField }"
+                                         showRowNumberColumn="true"
+                                         onrowselection="{!c.getSelectedRec}"
+                                         onrowaction="{! c.handleRowAction }"
+                                         selectedRows="{! v.selectedData }"
+                                         sortedBy="{!v.sortBy}"
+                                         sortedDirection="{!v.sortDirection}"
+                                         defaultSortDirection="{!v.defaultSortDirection}"
+                                         onsort="{!c.handleSort}"
+                                         enableInfiniteLoading="{! v.enableInfiniteLoading }"
+                                         loadMoreOffset="{! v.loadMoreOffset }"
+                                         onloadmore="{! c.loadMoreData }"
+                                         />
+                </div>
+                
+            </div>
+            
+        </lightning:tab>
+    </lightning:tabset>
+    
+     <aura:if isTrue="{!v.ShowDCAUpdate}">
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModal }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Update Status</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        {!v.DCA_Update.DCA_Status__c}
+                        <lightning:select label="Status" disabled="true" value="{!v.DCA_Update.DCA_Status__c}" >
+                            
+                            <aura:iteration items="{!v.StatusPicklist}" var="opt">
+                                <option value="{!opt}">{!opt}</option>
+                            </aura:iteration>
+                            
+                        </lightning:select>    
+                       
+                            <lightning:input type="text"  label="Status Change Comment" name="Comment" value="{!v.DCA_Update.DCA_ApprovalComment__c}"/>
+                        
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModal }"/>
+                        
+                        <lightning:button variant="brand"
+                                          label="Submit"
+                                          title="Submit"
+                                          onclick="{! c.SubmitDCA }"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    
+</aura:component>

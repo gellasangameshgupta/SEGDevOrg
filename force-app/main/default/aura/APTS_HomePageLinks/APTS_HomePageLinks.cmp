@@ -1,0 +1,50 @@
+<aura:component implements="flexipage:availableForAllPageTypes" controller="APTS_ListViewIdGeneric">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="myAgreementsList" type="String"/>
+    <aura:attribute name="clausesList" type="String"/>
+    
+<div style="background-color:white;border-radius: 5px;padding: 10px !important;height: 181px;" class="mainDiv" >
+<p  style="width:100%;text-align:center">
+    
+	<div class="slds-grid slds-wrap" style="padding-top: 16px;padding-bottom: 15px;">
+	    <div class="slds-col slds-size_1-of-5">
+            <a aura:id="NDA Wizard" class="HideLine" onclick="{!c.gotoMyDashBoard}">
+                <lightning:icon iconName="standard:dashboard" class="iconstyle" size="large" alternativeText="NDA Wizard"/>
+                <br/>
+                <span class="osOutputLabel">My<br/>Dashboard</span>
+            </a>
+        </div>
+        <div class="slds-col slds-size_1-of-5">
+            <a aura:id="NDA Wizard" class="HideLine" onclick="{!c.gotoMyAgreements}">
+                <lightning:icon iconName="standard:record" class="iconstyle" size="large" alternativeText="NDA Wizard"/>
+                <br/>
+                <span class="osOutputLabel">My<br/>Agreements</span>
+            </a>
+        </div>
+        <div class="slds-col slds-size_1-of-5">
+            <a aura:id="NDA Wizard" class="HideLine" onclick="{!c.MyQueueAgreements}">
+                <lightning:icon iconName="standard:record_lookup" class="iconstyle" size="large" alternativeText="New Agreement"/>
+                <br/>
+                <span class="osOutputLabel">My<br/>Queue</span>
+            </a>
+        </div>
+        <div class="slds-col slds-size_1-of-5">
+            <a aura:id="NDA Wizard" class="HideLine" onclick="{!c.NewAgreement}">
+                <lightning:icon iconName="standard:record_create" class="iconstyle" size="large" alternativeText="New Agreement"/>
+                <br/>
+                <span class="osOutputLabel">New<br/>Agreement</span>
+            </a>
+        </div>
+        <div class="slds-col slds-size_1-of-5">
+            <a aura:id="NDA Wizard" class="HideLine" onclick="{!c.createWizard}">
+                <lightning:icon iconName="standard:contract" class="iconstyle" size="large" alternativeText="NDA Wizard"/>
+                <br/>
+                <span class="osOutputLabel">Store<br/>Executed Agreement</span>
+            </a>
+        </div>
+        
+        
+    </div>
+</p>
+</div>
+</aura:component>

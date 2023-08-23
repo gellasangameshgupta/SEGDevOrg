@@ -1,0 +1,58 @@
+<!--
+* 
+* @ Name    :   b2b_shopMeOrder
+* @ Purpose :   A basic controller for creating ShopMe Orders.
+* @ Author  :   Prathiksha Suvarna
+*
+*   Date            |  Developer Name                 |  Version      |  Changes
+* ======================================================================================================
+*   06-01-2023      |  prathiksha.suvarna@absyz.com   |  1.0          |  Initial Version
+*
+-->
+<template>
+    <div class="slds-var-p-around_medium slds-border_bottom slds-border_left slds-border_right slds-border_top">
+        <h2 style="font-size: 21px;">{label.CLB2B00058}</h2><br/>
+            <lightning-card title="ShopMe Orders">
+                <lightning-accordion active-section-name="Regular Orders">
+                    <template if:true={blnRegularOrder}>
+                        <lightning-accordion-section style="font-size: 14px;" name="Regular Orders" label="Regular Orders">
+                            <lightning-layout multiple-rows >
+                                <lightning-layout-item size="4" flexibility="auto" padding="horizontal-small" class="slds-text-align_left">
+                                    <h3 style="font-size: 18px;">Regular Order Number: {objRegularOrder}</h3><br/>
+                                </lightning-layout-item>
+                                <div>
+                                    <lightning-layout-item size="1" flexibility="auto" padding="horizontal-small" class="slds-text-align_right">
+                                        <lightning-button  style= "margin-left:4px" title="VIEW " label="VIEW "
+                                            variant="Neutral" class="b2b-button" data-id="VIEW " onclick={toggleViewRegularOrder}>
+                                        </lightning-button>
+                                    </lightning-layout-item>
+                                </div>
+                            </lightning-layout>                             
+                        </lightning-accordion-section>                                             
+                    </template>
+                    <template if:true={blnPickMeOrder}>                     
+                        <lightning-accordion-section style="font-size: 14px;" name="Pick Me Orders" label="Pick Me Orders">
+                                <lightning-layout multiple-rows >
+                                    <lightning-layout-item size="4" flexibility="auto" padding="horizontal-small" class="slds-text-align_left">
+                                        <h3 style="font-size: 18px;">Pick Me Order Number: {objPickMeOrder}</h3><br/>
+                                    </lightning-layout-item>
+                                    <div>
+                                        <lightning-layout-item size="1" flexibility="auto" padding="horizontal-small" class="slds-text-align_right">
+                                            <lightning-button  style= "margin-right:20px" title="VIEW " label="VIEW "
+                                                variant="Neutral" class="b2b-button" data-id="VIEW " onclick={toggleViewPickMeOrder}>
+                                            </lightning-button>
+                                        </lightning-layout-item>
+                                    </div>
+                                </lightning-layout>
+                        </lightning-accordion-section>
+                    </template>
+                </lightning-accordion>
+            </lightning-card><br/>
+        <h2 style="font-size: 16px;">{label.CLB2B00059}</h2><br/>
+        <template if:true={blnIsButtonVisible}>
+            <lightning-button title="CONTINUE SHOPPING" label="CONTINUE SHOPPING"
+                variant="brand" class="b2b-button" data-id="CONTINUE SHOPPING" onclick={navigationToHomePage}>
+            </lightning-button>
+        </template>      
+    </div>
+</template>

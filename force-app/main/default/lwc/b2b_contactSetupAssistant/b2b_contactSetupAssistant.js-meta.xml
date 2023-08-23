@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="blnShowAccountAvialability" label="Show Account Avialability" type="Boolean" default="false" />
+            <property name="blnShowEnableBuyerAccount" label="Show Enable Buyer Account" type="Boolean" default="false" />  
+            <property name="blnShowAddBuyerGroup" label="Show Add Buyer Group" type="Boolean" default="false" />
+            <property name="blnShowEnableCustomer" label="Show Enable Customer" type="Boolean" default="false" />  
+            <property name="blnShowAddContactPointAddresses" label="Show Add Contact Point Addresses" type="Boolean" default="false" />
+            <property name="blnShowSetSharingRule" label="Show Set Sharing Rule" type="Boolean" default="false" />
+            <property name="blnShowResetPassword" label="Show Reset Password" type="Boolean" default="false" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

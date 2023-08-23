@@ -1,0 +1,22 @@
+<aura:component access="Global" controller="UpdateStatusValue" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,lightning:actionOverride,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:appHostable,force:lightningQuickActionWithoutHeader" >
+    <aura:attribute name="recordId" access="public" type="Id" description="return values for the record Id"/>
+    <aura:handler name="init" value="{!this}" action="{!c.getData}"/>
+    <aura:attribute name="editCondition" type="String" default=""/>
+    <aura:if isTrue="{!v.editCondition== 'EDIT' }">
+      <div class="slds-page-header" style="font-size:20px;">
+         <center>Do you want to Invalid ?</center>
+      </div>
+      <footer>
+          <div class="slds-modal__content slds-p-around_medium">
+             
+              <center><lightning:button variant="brand" label="OK" onclick="{!c.OkCall}"/>
+                  <lightning:button  label="Cancel" onclick="{!c.CancelCall}"/></center>
+          </div>
+      </footer>
+        <aura:set attribute="else">
+                  <ui:message title="Error" severity="error" closable="true">
+                      Insufficient Privileges: You do not have level of  access to invalidate an Approved Test Specification. Please contact Key User for further action.
+				</ui:message>
+    </aura:set>
+        </aura:if>
+</aura:component>

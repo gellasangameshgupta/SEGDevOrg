@@ -1,0 +1,12 @@
+<aura:component controller="IP_InventionImageUploadCtrl" implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+    <aura:attribute name="recordId" type="Id"/>
+    
+    <aura:attribute name="pictureSrc" type="String"
+                    />
+    <lightning:card>
+        <iframe width="1000" height="auto" src="{!$Label.c.IP_InventionImageUpload+v.recordId}" style="border:white;"/>
+       <img src="{!v.pictureSrc}"/>
+    </lightning:card>
+    
+</aura:component>

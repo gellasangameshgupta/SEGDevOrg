@@ -1,0 +1,6 @@
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+    <lightning:card>
+        <iframe aura:id="vfFrame" width="500" height="auto" src="{!$Label.c.IP_IPFileUploadURL+'?idfid='+v.recordId}" style="border:white;"/>
+    </lightning:card>
+</aura:component>

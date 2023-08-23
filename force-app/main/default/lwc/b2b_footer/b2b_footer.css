@@ -1,0 +1,21 @@
+.b2b-footer {
+    background-color: #495E70;
+    color: #FFFFFF;
+    font-size: 16px;
+    padding: 3rem 0;
+    line-height: 16px;
+}
+
+.b2b-text-color {
+    color: #FFFFFF;
+}
+
+.b2b-logo {
+    max-width: 130px;
+}
+
+.b2b-icon {
+    height: 30px;
+    width: 30px;
+    fill: #FFFFFF;
+}

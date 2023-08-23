@@ -1,0 +1,83 @@
+<!--
+* 
+* @ Name    :   aqt_quantityTargetPriceTable
+* @ Purpose :   This is a component is used Generate Quote page
+* @ Author  :   Khushmeet Kaur
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   24-02-2022      |  khushmeet.kaur@absyz.com     |  1.0          |  Initial Version
+*
+-->
+<template>
+    <template if:true={blnSpinner}>
+        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+    </template>
+
+    <!--Table-->
+    <lightning-layout horizontal-align="start"
+        class="slds-border_top slds-border_bottom slds-color__background_gray-4 slds-var-p-vertical_x-small">
+        <lightning-layout-item class="slds-var-p-left_large">
+            <!-- Input checkbox to Select All -->
+            <lightning-input type="checkbox" title="Select" variant="label-hidden" onchange={handleAllSelectionChange}>
+            </lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" large-device-size="11">
+            <lightning-layout>
+                <div class="slds-var-p-horizontal_x-small slds-truncate"
+                    style="border-right: 1px solid #B0ADAB;font-weight:bold;width:35%;text-align:center">
+                    <span>Part Number</span>
+                </div>
+                <div class="slds-var-p-horizontal_x-small slds-truncate"
+                    style="border-right: 1px solid #B0ADAB;font-weight:bold;width:35%">
+                    <span>Quantity Requested</span>
+                </div>
+                <div class="slds-var-p-horizontal_x-small slds-truncate"
+                    style="border-right: 1px solid #B0ADAB;font-weight:bold;width:35%">
+                    <span>Target Price</span>
+                </div>
+            </lightning-layout>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-layout horizontal-align="start" class="slds-border_bottom">
+        <lightning-layout-item class="slds-var-p-left_large slds-var-p-vertical_x-small">
+        </lightning-layout-item>
+        <lightning-layout-item size="12" large-device-size="12">
+            <template for:each={searchedProductData} for:item="productFoundData" for:index="intRowIndex">
+                <lightning-layout key={productFoundData.ProductId} class="slds-var-p-vertical_x-small">
+                    <lightning-input type="checkbox" title="Select" variant="label-hidden" name={productFoundData.Id}
+                        checked={isParentChecked} onchange={handleSelectionChange} data-id={intRowIndex}
+                        index={intRowIndex}>
+                    </lightning-input>
+
+                    <div key={productFoundData.ProductId} style="width:30%;text-align:center">
+                        <div class="slds-truncate">
+                            {productFoundData.PartNumber}
+                        </div>
+                    </div>
+                    <div key={productFoundData.ProductId} style="width:30%;padding-right:1%">
+                        <div class="slds-truncate slds-var-p-horizontal_x-small slds-truncate">
+                            <lightning-input data-id={intRowIndex} variant="label-hidden" type="number"
+                                onchange={handleQuantityChange} value={productFoundData.Quantity}>
+                            </lightning-input>
+                        </div>
+                    </div>
+                    <div key={productFoundData.ProductId} style="width:30%;padding-left:1%">
+                        <div class="slds-truncate slds-var-p-horizontal_x-small slds-truncate">
+                            <lightning-input data-id={intRowIndex} variant="label-hidden" type="number"
+                                onchange={handleTargetPriceChange} value={productFoundData.TargetPrice}>
+                            </lightning-input>
+                        </div>
+                    </div>
+                </lightning-layout>
+            </template>
+        </lightning-layout-item>
+    </lightning-layout>
+    <br />
+    <div class="slds-align_absolute-center" style="height:5rem">
+        <lightning-button variant="Neutral" label="Remove Selected" title="Remove Selected"
+            onclick={handleRemoveSelectedData} class="slds-var-m-left_xx-small"></lightning-button>
+        <lightning-button variant="brand" label={strButtonLabel} title={strButtonLabel} onclick={handleAddProduct}
+            class="slds-var-m-left_xx-small"></lightning-button>
+    </div>
+</template>

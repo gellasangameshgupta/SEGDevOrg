@@ -1,0 +1,51 @@
+<!--
+* 
+* @ Name    :   b2b_orderControlButton
+* @ Purpose :   This component is used to display Cancel/Return Order button on Orders page in portal
+* @ Author  :   Pradeep Chary
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   28-05-2021      |  pradeep.chary@absyz.com      |  1.0          |  Initial Version
+*
+-->
+<template>
+    <!-- Body -->
+    <div class="slds-var-p-around_medium slds-border_bottom slds-border_left slds-border_right slds-border_top">
+        <template if:true={blnIsButtonVisible}>
+            <lightning-button if:true={blnIsReturnButtonVisible} title="RETURN ORDER" label="RETURN ORDER"
+                variant="brand" class="b2b-button" data-id="RETURN ORDER" onclick={toggleReturnModal}>
+            </lightning-button>
+            <lightning-button if:true={blnIsCancelButtonVisible} title="CANCEL ORDER" label="CANCEL ORDER"
+                variant="brand" class="b2b-button" data-id="CANCEL ORDER" onclick={toggleCancelModal}>
+            </lightning-button>
+        </template>
+        <template if:false={blnIsButtonVisible}>
+            <h2 style="font-size: 16px;">{strStatusMessage}</h2>
+        </template>
+    </div>
+
+    <!-- Modal-->
+    <c-b2b_modal bln-show-modal={blnIsReturnModalOpen} bln-show-footer=true bln-show-close-icon=true
+        bln-show-loading={blnShowLoading} str-modal-size="small" str-header-text="Return Order"
+        str-negative-button-label="Close" str-positive-button-label="Confirm" onpositive={handlePositiveReturnAction}
+        onnegative={toggleReturnModal} onclose={toggleReturnModal}>
+        <div slot="body">
+            <lightning-textarea class="slds-var-p-bottom_large" name="ReasonForReturn" required value=""
+                placeholder="Enter reason for Return" label="Reason for Return"
+                message-when-value-missing="Please provide reason for return."></lightning-textarea>
+            <span>{label.CLB2B00022}</span>
+        </div>
+    </c-b2b_modal>
+    <c-b2b_modal bln-show-modal={blnIsCancelModalOpen} bln-show-footer=true bln-show-close-icon=true
+        bln-show-loading={blnShowLoading} str-modal-size="small" str-header-text="Cancel Order"
+        str-negative-button-label="Close" str-positive-button-label="Confirm" onpositive={handlePositiveCancelAction}
+        onnegative={toggleCancelModal} onclose={toggleCancelModal}>
+        <div slot="body">
+            <lightning-textarea class="slds-var-p-bottom_large" name="ReasonForCancel" required value=""
+                placeholder="Enter reason for cancellation" label="Reason for cancellation"
+                message-when-value-missing="Please provide reason for cancellation."></lightning-textarea>
+            <span>{label.CLB2B00024}</span>
+        </div>
+    </c-b2b_modal>
+</template>

@@ -1,0 +1,18 @@
+<template>
+    <lightning-card>
+        
+            <div class="slds-p-around_x-small">
+                <label class="slds-form-element__label" for="Status">Status</label>
+                <div class="slds-select_container">
+                    <select class="slds-select" onchange={handlechange}>
+                        <template for:each ={list_Options} for:item ="item">
+                            <option key={item} value={item}>{item}</option>
+                        </template>
+                    </select>
+                </div>
+                <div class="slds-p-around_x-small button slds-m-top_small">
+                    <lightning-button type="submit" variant="brand" label="Save" onclick={handlesave}></lightning-button>
+                </div>
+            </div>
+    </lightning-card>
+</template>

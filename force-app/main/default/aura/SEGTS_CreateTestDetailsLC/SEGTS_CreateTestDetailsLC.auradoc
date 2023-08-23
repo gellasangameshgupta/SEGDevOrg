@@ -1,0 +1,9 @@
+<aura:documentation>
+	<aura:description>Documentation</aura:description>
+	<aura:example name="ExampleName" ref="exampleComponentName" label="Label">
+	  Page Name       :SEGTS_CreateTestDetailsLC
+      Purpose         :Component used to Create Test details for a Test spec on Click of "Create" Button
+      Created By      :RBEI
+      Created Date    :Feb 2019
+	</aura:example>
+</aura:documentation>

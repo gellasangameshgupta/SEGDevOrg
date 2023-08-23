@@ -1,0 +1,59 @@
+<!--
+* 
+* @ Name    :   b2b_deleteUserButton
+* @ Purpose :   This component is used to display delete user button on profile page in portal
+* @ Author  :   Monal Kumar
+*
+*   Date            |  Developer Name             |  Version      |  Changes
+* ======================================================================================================
+*   02-06-2021      |  monal.kumar@absyz.com      |  1.0          |  Initial Version
+*
+-->
+<template>
+    <div class="slds-box">
+        <!-- Exception Handling -->
+        <template if:true={blnError}>
+            <div class="slds-notify_alert slds-theme_alert-texture slds-theme_error slds-var-p-bottom_medium"
+                role="alert">
+                <lightning-layout horizontal-align="spread" vertical-align="center">
+                    <lightning-layout-item>
+                        <lightning-icon icon-name="utility:error" size="x-small" variant="inverse"
+                            alternative-text="error">
+                        </lightning-icon>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="horizontal-small">
+                        <h2>ERROR: {strErrorMessage}</h2>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+        </template>
+        <!-- Spinner -->
+        <template if:true={blnShowLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+        </template>
+        <!-- Body -->
+        <template if:false={blnShowLoading}>
+            <lightning-button if:true={blnShowButton} title="Delete Profile" label="Delete Profile" variant="brand"
+                class="b2b-button" onclick={handleButtonClick}>
+            </lightning-button>
+            <div if:true={strStatusMessage}>
+                <h2 class="slds-align_absolute-center">
+                    {strStatusMessage}
+                </h2>
+            </div>
+        </template>
+    </div>
+
+    <!-- Modal-->
+    <c-b2b_modal bln-show-modal={blnIsModalOpen} bln-show-footer=true bln-show-close-icon=true str-modal-size="small"
+        bln-show-loading={blnShowLoading} str-header-text="Delete Profile" str-negative-button-label="Close"
+        str-positive-button-label="Confirm" onpositive={handlePositiveAction} onnegative={handleNegativeAction}
+        onclose={handleNegativeAction}>
+        <div slot="body">
+            <lightning-textarea class="slds-var-p-bottom_large" name="ReasonForDeletion" required value=""
+                placeholder="Enter reason for deletion" label="Reason for Deletion"
+                message-when-value-missing="Please provide reason for deletion."></lightning-textarea>
+            <span>{label.CLB2B00023}</span>
+        </div>
+    </c-b2b_modal>
+</template>

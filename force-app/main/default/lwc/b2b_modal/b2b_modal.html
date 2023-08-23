@@ -1,0 +1,72 @@
+<!--
+* 
+* @ Name    :   b2b_modal
+* @ Purpose :   Generic Modal Component
+* @ Author  :   Pradeep Chary
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   24-05-2021      |  pradeep.chary@absyz.com      |  1.0          |  Initial Version
+*
+-->
+<template>
+    <template if:true={blnShowModal}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_medium"
+            aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1">
+            <template if:true={blnShowLoading}>
+                <lightning-spinner alternative-text="Loading" size="large" variant="brand"></lightning-spinner>
+            </template>
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <template if:true={blnShowCloseIcon}>
+                        <lightning-button-icon icon-name="utility:close" variant="bare-inverse" alternative-text="Close"
+                            class="slds-modal__close" onclick={handleClose}>
+                        </lightning-button-icon>
+                    </template>
+                    <slot name="header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{strHeaderText}
+                        </h2>
+                    </slot>
+                </header>
+                <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+                    <slot name="body">
+
+                    </slot>
+                </div>
+                <template if:true={blnShowFooter}>
+                    <footer class="slds-modal__footer">
+                        <slot name="footer">
+
+                        </slot>
+                        <template if:true={strCheckboxLabel}>
+                            <div class="slds-float_left">
+                                <lightning-input type="checkbox" label={strCheckboxLabel} onchange={handleCheckbox}
+                                    checked></lightning-input>
+                            </div>
+                        </template>
+                        <template if:true={strOptionalButtonLabel}>
+                            <div class="slds-float_left">
+                                <lightning-button label={strOptionalButtonLabel} title={strOptionalButtonLabel}
+                                    icon-position="right" class="slds-var-p-left_x-small" onclick={handleOptionalButton}
+                                    disabled={blnDisableOptionalButton}>
+                                </lightning-button>
+                            </div>
+                        </template>
+                        <template if:true={strNegativeButtonLabel}>
+                            <lightning-button label={strNegativeButtonLabel} title={strNegativeButtonLabel}
+                                icon-position="right" class="slds-var-p-left_x-small" onclick={handleNegative}>
+                            </lightning-button>
+                        </template>
+                        <template if:true={strPositiveButtonLabel}>
+                            <lightning-button label={strPositiveButtonLabel} title={strPositiveButtonLabel}
+                                icon-position="right" variant="brand" onclick={handlePositive}
+                                class="slds-var-p-left_small" disabled={blnDisablePositiveButton} >
+                            </lightning-button>
+                        </template>
+                    </footer>
+                </template>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

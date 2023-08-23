@@ -1,0 +1,15 @@
+<aura:component controller="IFv2_HeaderController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	<aura:attribute name="userList" type="User[]"/>
+    <aura:attribute name="selectedUser" type="String"/>
+    <aura:attribute name = "selectedId" type = "string" description = "holds the selected record ID"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.retrieveUsers}"/>
+    
+    <lightning:select aura:id="userSelect"
+                      label="Select User"
+                      value="{!v.selectedId}">
+        <aura:iteration items="{!v.userList}" var="user">
+            <option value="{!user.Id}" selected="{!user.selected}">{!user.Name}</option>
+        </aura:iteration>
+    </lightning:select>
+</aura:component>

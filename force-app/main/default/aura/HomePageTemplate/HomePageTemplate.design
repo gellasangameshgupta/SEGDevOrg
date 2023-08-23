@@ -1,0 +1,11 @@
+<design:component label="Custom Home Page Template">
+    <flexipage:template >
+      <flexipage:region name="column1" defaultWidth="Medium" />
+      <flexipage:region name="column2" defaultWidth="Small" />
+      <flexipage:region name="column3" defaultWidth="Small" />
+      <flexipage:region name="column4" defaultWidth="Medium" />
+      <!--<flexipage:region name="column5" defaultWidth="Large" />
+      <flexipage:region name="column6" defaultWidth="Medium" />
+      <flexipage:region name="column7" defaultWidth="Medium" />-->
+  </flexipage:template>   
+</design:component>

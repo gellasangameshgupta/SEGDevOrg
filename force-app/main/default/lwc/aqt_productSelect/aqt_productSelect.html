@@ -1,0 +1,26 @@
+<!--
+* 
+* @ Name    :   aqt_productSelect
+* @ Purpose :   This is a component for product not found, product found and product search
+* @ Author  :   Khushmeet Kaur
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   28-02-2022      |  khushmeet.kaur@absyz.com     |  1.0          |  Initial Version
+*
+-->
+
+<template>
+    <template if:true={blnSpinner}>
+        <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+    </template>
+
+    <div class="slds-var-p-horizontal_large slds-var-p-vertical_x-small">
+        <c-aqt_select-product-details obj-search-product-result={objSearchProductResult}
+            str-generate-quote-label="Generate Quote" str-selected-account-id={strSelectedAccountId}
+            str-selected-account-name={strSelectedAccountName} str-selected-contact-id={strSelectedContactId}
+            str-selected-contact-name={strSelectedContactName} ongeneratequote={handleGenerateQuote}
+            ongeneratepdf={handleGeneratePDF} onpreviousscreen={handlePreviousScreen}>
+        </c-aqt_select-product-details>
+    </div>
+</template>

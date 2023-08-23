@@ -1,0 +1,35 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <aura:attribute name="grouplist" type="CollaborationGroup"/>
+    <aura:attribute name="rowIndex" type="String"/>
+    <aura:attribute name="check" type="boolean" default="false"/>
+    
+    <aura:registerEvent name="sendToParent" type="c:sendToParent2"/> 
+    <aura:registerEvent name="appEvent" type="c:shareevent"/> 
+    <tr id="{!index}">
+        <td> 
+            {!v.rowIndex + 1}
+        </td>
+        <th scope="row"><div class="slds-truncate" title="{!v.grouplist.Id}">{!v.grouplist.Name}</div></th>
+        
+        
+        <td><div class="slds-truncate" >{!v.grouplist.CollaborationType}</div></td>
+        <td>
+            
+            
+            
+    			<ui:inputCheckbox value="{!v.check}" text="{!v.grouplist}" change="{!c.Change}" aura:id="check"/>
+            
+            
+            
+        </td> 
+        
+        
+        
+                
+        
+        
+        
+        
+    </tr>
+</aura:component>

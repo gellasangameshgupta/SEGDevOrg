@@ -1,0 +1,66 @@
+<aura:component controller="IP_RequestforInformationController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" 
+                access="global">
+    <aura:attribute name="idf" type="Object"/>
+    <aura:attribute name="selectedLookUpRecords" type="sObject[]" default="[]"/>
+    <aura:attribute name="today" type="Date" />
+    <!--<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>-->
+    <aura:attribute name="showSpinner" type="Boolean" description="enables or disables spinner" default="true" />
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       4
+        .slds-modal__content{
+        overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+    </aura:html>
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner />
+    </aura:if>
+    <div class="modal-header slds-modal__header">
+        <h2 class="slds-text-heading_medium slds-hyphenate">Legal Evaluation</h2>
+    </div>
+    <!-- Record edit form -->
+    
+    <lightning:recordEditForm aura:id="editForm" recordId="{!v.recordId}" 
+                              objectApiName="Case" 
+                              onload="{!c.handleLoad}"
+                              onsubmit="{!c.handleSubmit}"
+                              onsuccess="{!c.handleSuccess}">
+        <div class="slds-p-around_medium">
+            <lightning:layout multipleRows="true">
+                <lightning:layoutItem size="12">
+                    <lightning:inputField aura:id="field" fieldName="IP_Law_Firm__c" required="true"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12">
+                    <lightning:inputField aura:id="field" fieldName="IP_Search_Comments__c" required="true" style="height:100px !important;"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12">
+                        <lightning:inputField style="display:none;" aura:id="field" fieldName="IP_Date_Search_Requested__c" value="{!v.today}"/>
+                    </lightning:layoutItem>
+            </lightning:layout>
+        </div>
+        <div horizontalAlign="right" class="modal-footer slds-modal__footer">
+            <lightning:button variant="brand" label="Cancel" title="Cancel" type="text" onclick="{!c.handleCancel}"/>
+            <lightning:button variant="brand" label="Submit" title="Submit" type="submit"/>
+        </div>
+    </lightning:recordEditForm>
+    
+    <!--<div class="slds-p-around_medium">
+      <label class="slds-form-element__label" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;">Law Firm</span>&nbsp;<span style="color:red">*</span></label>
+      <c:customLookup objectAPIName="User" IconName="standard:user" lstSelectedRecords="{!v.selectedLookUpRecords}"/><br/>
+    </div>
+    <div class="slds-p-around_medium">
+    <lightning:textarea required="true" label="Search Comments" value="{!v.idf.Search_Comments__c}"/>
+    </div>
+    
+    <div class="modal-footer slds-modal__footer">
+        <lightning:button variant="brand" label="Cancel" onclick="{!c.goBack}"/>
+        <lightning:button variant="brand" label="Save" onclick="{!c.updateRFIcontroller}"/>
+    </div>-->
+    
+</aura:component>

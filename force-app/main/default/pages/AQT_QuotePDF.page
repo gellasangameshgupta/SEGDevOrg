@@ -1,0 +1,214 @@
+<!--
+@description       : Aftermarket Quote PDF File Generation
+@author            : Khushmeet Kaur
+@group             : 
+@last modified on  : 06-08-2022
+@last modified by  : Pradeep Chary
+
+-->
+<apex:page controller="AQT_QuotePDF" readOnly="true" applyHtmlTag="false" sidebar="false" showHeader="false" cache="true"
+           docType="html-5.0" action="{!onLoad}" renderAs="advanced_pdf">
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <style>
+            @page {
+            	margin-bottom: 5mm;
+                margin-left: 5mm;
+                margin-right: 5mm;
+                size: A4 landscape;
+
+                @top-center {
+                    content: element(header);
+                }
+            }
+            table {
+                border-collapse: collapse;
+                font-size: 12px;
+                font-family: SANS-SERIF;
+            	line-height: 25px;
+            }
+            td,
+            th {
+            	border-collapse: collapse;
+            	font-weight: normal;
+            	white-space: inherit;
+                word-wrap: break-word;
+            }
+            .cm_th_25 {
+                width: 25%;
+            }
+            .cmp_header, .cmp_body {
+            	border: 0;
+                width: 100%;
+            }
+            .cmp_header_column_1 {
+            	border-bottom: 0;
+            	border-right: 0;
+            	padding: 10px 0 20px 10px;
+            }
+            .image_style {
+            	border-bottom: 0;
+            	border-left: 0;
+            	padding-top: 10px;
+            	text-align: center;
+            }
+            .text_padding {
+            	padding-left: 5px;
+                padding-right: 5px;
+            }
+            .text-align_right {
+            	text-align: right;
+            }
+            .text_font_bold {
+            	font-weight: bold;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div class="header">
+            <table border="1" class="cmp_header">
+                <tr>
+                    <th class="cmp_header_column_1">
+                        <table>
+                            <tr>
+                                <th>Account Name</th>
+                                <td class="text_padding">{!strAccountName}</td>
+                            </tr>
+                            <tr>
+                                <th>Contact Name</th>
+                                <td class="text_padding">{!strContactName}</td>
+                            </tr>
+                            <tr>
+                                <th>Quotation Number</th>
+                                <td class="text_padding" rendered="{! IF(ISBLANK(list_foundProductData), false, true) }">
+                                    <apex:outputPanel rendered="{! IF(ISBLANK(list_foundProductData), false, true) }">
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{! IF(ISBLANK(objQuoteLineItemRecord), false, true) }">
+                                        {!list_Quotes[0].Name}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Validity</th>
+                                <td class="text_padding">{!list_accounts[0].AQT_Validity__c}</td>
+                            </tr>
+                            <tr>
+                                <th>Incoterm</th>
+                                <td class="text_padding">{!list_accounts[0].AQT_Intercom2010__c}</td>
+                            </tr>
+                            <tr>
+                                <th>Payment Term</th>
+                                <td class="text_padding">{!list_accounts[0].AQT_PaymentTerm__c}</td>
+                            </tr>
+                            <tr>
+                                <th>Reference</th>
+                                <td class="text_padding" rendered="{! IF(ISBLANK(list_foundProductData), false, true) }">
+                                    <apex:outputPanel rendered="{! IF(ISBLANK(list_foundProductData), false, true) }">
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{! IF(ISBLANK(objQuoteLineItemRecord), false, true) }">
+                                        {!list_Quotes[0].Reference__c}
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                        </table>
+                    </th>
+                    <th class="cm_th_25 image_style" valign="top">
+                        <img src="{!$Resource.SEGlogo}" style="height:75px;" />
+                    </th>
+                </tr>
+            </table>
+        </div>
+        <div class="body">
+            <table border="1" class="cmp_body">
+                <tr valign="top">
+                    <th class="text_padding">Customer Partnumber</th>
+                    <th class="text_padding">Offered Partnumber</th>
+                    <th class="text_padding">Product Type</th>
+                    <th class="text_padding">Location</th>
+                    <th class="text_padding">Lead Time (Weeks)</th>
+                    <th class="text_padding">MOQ</th>
+                    <th class="text_padding">Standard List Price</th>
+                    <th class="text_padding">Quantity</th>
+                    <th class="text_padding">Discounted Price - 1 pcs</th>
+                    <th class="text_padding">Discount</th>
+                    <th class="text_padding">Total Amount</th>
+                </tr>
+                <apex:repeat value="{!list_foundProductData}" var="dataAvailable" rendered="{!IF(ISBLANK(list_foundProductData),false,true)}">
+                    <tr class="page-break">
+                        <td class="text_padding">{!dataAvailable.PartNumber}</td>
+                        <td class="text_padding">{!dataAvailable.SEGIAMNumber}</td>
+                        <td class="text_padding">{!dataAvailable.ProductType}</td>
+                        <td class="text_padding">{!dataAvailable.ProductionLocation}</td>
+                        <td class="text_padding text-align_right">{!dataAvailable.LeadTime}</td>
+                        <td class="text_padding text-align_right">{!dataAvailable.MOQ}</td>
+                        <td class="text_padding text-align_right">
+                            <apex:outputText value="EURO{0, number, ###, ###, ###, ##0.00}">
+                                <apex:param value="{!dataAvailable.StandardListPrice}" />
+                            </apex:outputText>
+                        </td>
+                        <td class="text_padding text-align_right">{!dataAvailable.QuantityFinal}</td>
+                        <td class="text_padding text-align_right">
+                            <apex:outputText value="EURO{0, number, ###, ###, ###, ##0.00}">
+                                <apex:param value="{!dataAvailable.EndPrice}" />
+                            </apex:outputText>
+                        </td>
+                        <td class="text_padding text-align_right">{!dataAvailable.Discount}%</td>
+                        <td class="text_padding text-align_right">
+                            <apex:outputText value="EURO{0, number, ###, ###, ###, ##0.00}">
+                                <apex:param value="{!dataAvailable.NetAmount}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                </apex:repeat>
+                <apex:repeat value="{!objQuoteLineItemRecord}" var="dataAvailable" rendered="{!IF(ISBLANK(objQuoteLineItemRecord),false,true)}">
+                    <tr class="page-break">
+                        <td class="text_padding">{!dataAvailable.Partnumber__c}</td>
+                        <td class="text_padding">{!dataAvailable.SEGIAMProductNumber__c}</td>
+                        <td class="text_padding">{!dataAvailable.ProductType__c}</td>
+                        <td class="text_padding">{!dataAvailable.ProductionLocation__c}</td>
+                        <td class="text_padding text-align_right">{!dataAvailable.Product__r.B2B_LeadTimeWeeks__c}</td>
+                        <td class="text_padding text-align_right">{!dataAvailable.Product__r.B2B_MOQ__c}</td>
+                        <td class="text_padding text-align_right">
+                            <apex:outputField value="{!dataAvailable.StandardListPrice__c}" />
+                        </td>
+                        <td class="text_padding text-align_right">{!dataAvailable.Quantity__c}</td>
+                        <td class="text_padding text-align_right">
+                            <apex:outputField value="{!dataAvailable.EndPrice__c}" />
+                        </td>
+                        <td class="text_padding text-align_right">
+                            <apex:outputField value="{!dataAvailable.Discount__c}" />
+                        </td>
+                        <td class="text_padding text-align_right">
+                            <apex:outputField value="{!dataAvailable.TotalAmount__c}" />
+                        </td>
+                    </tr>
+                </apex:repeat>
+                <tr>
+                    <td colspan="9" class="text_padding text-align_right text_font_bold">Total</td>
+                    <td class="text_padding text-align_right text_font_bold">
+                        <apex:outputPanel rendered="{!IF(ISBLANK(list_foundProductData), false, true) }">
+                            <apex:outputText value="{0, number, ###, ###.0}">
+                                <apex:param value="{!decTotalDiscount}" />
+                            </apex:outputText>%
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{! IF(ISBLANK(objQuoteLineItemRecord), false, true) }">
+                            <apex:outputField value="{!objQuoteLineItemRecord[0].Quote__r.TotalDiscount__c}" />
+                        </apex:outputPanel>
+                    </td>
+                    <td class="text_padding text-align_right text_font_bold">
+                        <apex:outputPanel rendered="{!IF(ISBLANK(list_foundProductData), false, true)}">
+                            <apex:outputText value="EURO{0, number, ###, ###, ###, ##0.00}">
+                                <apex:param value="{!decTotalPrice}" />
+                            </apex:outputText>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{! IF(ISBLANK(objQuoteLineItemRecord), false, true) }">
+                            <apex:outputField value="{!objQuoteLineItemRecord[0].Quote__r.NetAmount__c}" />
+                        </apex:outputPanel>
+                    </td>
+                </tr>
+            </table>
+        </div>        
+    </body>
+</apex:page>

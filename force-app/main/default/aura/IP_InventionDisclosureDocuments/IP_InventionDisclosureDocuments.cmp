@@ -1,0 +1,13 @@
+<aura:component implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/> 
+    <lightning:card>
+        <lightning:tabset selectedTabId="one">
+            <lightning:tab label="Attached files" id="one">  
+                <iframe width="1000" height="auto" src="{!$Label.c.IP_IDFFileViewURL+v.recordId}" style="border:white;"/>
+            </lightning:tab>
+            <lightning:tab label="Upload new file" id="two">
+                <iframe aura:id="vfFrame" width="1000" height="auto" src="{!$Label.c.IP_IDFFileUploadURL+'?idfid='+v.recordId}" style="border:white;"/>
+            </lightning:tab>
+        </lightning:tabset>
+    </lightning:card>
+</aura:component>

@@ -1,0 +1,97 @@
+<!--
+* 
+* @ Name    :   aqt_generateSavePDF
+* @ Purpose :   Quick action component to Save PDF on the Quote record
+* @ Author  :   Khushmeet Kaur
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   24-02-2022      |  khushmeet.kaur@absyz.com     |  1.0          |  Initial Version
+*
+-->
+<template>
+    <div style="display: none;">
+        {recordId}
+    </div>
+    <template if:true={spinner}>
+        <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+    </template>
+
+    <div class="main">
+        <div class="slds-text-heading_medium center">Generate and Save PDF</div>
+        <br />
+
+        <template for:each={list_quoteRecord} for:item="quoteRecord" for:index="index">
+            <div class="slds-grid slds-gutters" key={quoteRecord.Id}>
+                <div class="slds-col slds-size_2-of-12"></div>
+                <div class="slds-col slds-size_4-of-12">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">Quote Name</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">{quoteRecord.Name}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_4-of-12">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">Account Name</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">
+                                {quoteRecord.Account__r.Name}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_2-of-12"></div>
+            </div>
+
+            <br key={quoteRecord.Id} />
+
+            <div class="slds-grid slds-gutters" key={quoteRecord.Id}>
+                <div class="slds-col slds-size_2-of-12"></div>
+                <div class="slds-col slds-size_3-of-12">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">Total Amount</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">
+                                <lightning-formatted-number value={quoteRecord.TotalAmount__c} format-style="currency"
+                                    currency-code="EUR">
+                                </lightning-formatted-number>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_3-of-12">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">Total Discount</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">
+                                {quoteRecord.TotalDiscount__c}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_3-of-12">
+                    <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">Net Amount</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">
+                                <lightning-formatted-number value={quoteRecord.NetAmount__c} format-style="currency"
+                                    currency-code="EUR">
+                                </lightning-formatted-number>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_2-of-12"></div>
+            </div>
+        </template>
+        <br />
+        <div class="center">
+            <lightning-button variant="View PDF" label="View PDF" title="View PDF" onclick={handleViewPDF}
+                class="slds-var-m-left_x-small"></lightning-button>
+            <lightning-button label="Save PDF" title="Save PDF" onclick={handleSavePDF} class="slds-var-m-left_x-small">
+            </lightning-button>
+        </div>
+    </div>
+</template>

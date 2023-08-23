@@ -1,0 +1,5 @@
+<design:component>
+    <design:attribute name="rowsToLoad" label="Records to load" description="Number of rows to load at a time" />
+    <design:attribute name="rowsToLoadSub" label="Submitted Records to load" description="Number of rows to load at a time for submitted records" />
+    
+</design:component>

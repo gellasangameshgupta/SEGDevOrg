@@ -1,0 +1,43 @@
+<apex:page controller="ChangeEmailAddressController" showHeader="true" lightningStylesheets="true" sidebar="true">
+<apex:slds />
+    <apex:form id="theForm">
+    
+    <apex:pageMessages id="error"/>
+        
+        <div class="slds-scope">
+                    
+            <div align="center">
+                <apex:image id="theImage" value="{!$Resource.SEGlogo}" width="200" height="200" alt="Description of image here"/>
+            </div>
+            <br/>
+            
+            <div class="slds-media__body">
+                <div class="slds-text-heading_large">
+                    <div class="slds-text-align_center">
+                    Welcome to Insight User Email Change Page</div>
+                </div>
+            </div> 
+            
+        </div>                
+    <apex:sectionHeader title="Change Email Address"/>
+        <apex:pageBlock title="" mode="view">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Update Email in Salesforce" action="{!changeEmailIdOnSF}" reRender="error"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Existing Email" for="Existing Email"/>
+                    <apex:inputText value="{!existingEmail}" id="existingEmail"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="New Email Address" for="New Email Address"/>
+                    <apex:inputText value="{!newEmail}" id="newEmail"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Confirm Email Address" for="Confirm Email Address"/>
+                    <apex:inputText value="{!confirmEmail}" id="confirmEmail"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

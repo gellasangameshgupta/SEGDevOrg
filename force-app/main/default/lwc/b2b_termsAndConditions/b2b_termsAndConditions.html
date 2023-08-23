@@ -1,0 +1,52 @@
+<!--
+* 
+* @ Name    :   b2b_termsAndConditions
+* @ Purpose :   This is a component to display Modal to Accept terms and conditions for a ShopMe User. 
+* @ Author  :   Mridul Nathani
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   18-01-2023      |  mridul.nathani@absyz.com     |  1.0          |  Initial Version
+*
+-->
+<template>
+    <template if:true={blnIsModalOpen}>
+        <!-- Modal/Popup Box LWC starts here -->
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+                    <!-- Button to close the Modal -->
+                    <lightning-button-icon icon-name="utility:close" variant="bare-inverse" alternative-text="Close"
+                        class="slds-modal__close" onclick={closeModal}>
+                    </lightning-button-icon>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{label.CLB2B00063}</h2>
+                </header>
+                <div class="slds-form-element slds-theme_default slds-var-p-around_large">
+                    <div class="slds-form-element__control">
+                        <div class="slds-checkbox">
+                            <abbr class="slds-required" title="required">*</abbr>
+                            <input type="checkbox" name="options" id="checkbox-unique-id-81" onchange={handleCheckbox}
+                                value="checkbox-unique-id-81" aria-describedby="error_01" />
+                            <label class="slds-checkbox__label" for="checkbox-unique-id-81">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">{label.CLB2B00062} <a
+                                        href={label.CLB2B00004} target="_blank">{label.CLB2B00063}</a></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="slds-form-element__help" id="error_01">{label.CLB2B00067}</div>
+                </div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+                    <lightning-button label={label.CLB2B00061} title="Reject" onclick={handleReject}>
+                    </lightning-button>
+                    <lightning-button label={label.CLB2B00060} title="Accept" variant="brand"
+                        disabled={blnIsdisableAccept} onclick={handleAccept}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

@@ -1,0 +1,41 @@
+<template>
+    <lightning-layout class="slds-var-p-around_large">
+        <lightning-layout-item size="1">
+        </lightning-layout-item>
+        <lightning-layout-item size="10">
+            <lightning-layout class="slds-border_bottom">
+                <h1 style="font-size: 30px; font-weight: 200;" class="slds-var-p-around_xx-small">
+                    Success! Quote is generated successfully
+                </h1>
+            </lightning-layout>
+
+            <div class="slds-var-p-vertical_small slds-border_bottom">
+
+                <lightning-layout>
+                    <p style="font-size: 20px; font-weight: 200;" class="slds-var-p-around_x-small">
+                        Quote Number: <a href={quoteId}> {quoteName}</a>
+                    </p>
+                </lightning-layout>
+                <lightning-layout>
+                    <p style="font-size: 20px; font-weight: 200;" class="slds-var-p-around_x-small">
+                        Account: <a href={accountId}>{accountName}</a>
+                    </p>
+                </lightning-layout>
+                <template if:true={requestName}>
+                    <lightning-layout>
+                        <p style="font-size: 20px; font-weight: 200;" class="slds-var-p-around_x-small">
+                            InsightFlow Request Number: <a href={requestId}>{requestName}</a>
+                        </p>
+                    </lightning-layout>
+                </template>
+
+            </div>
+            <lightning-layout horizontal-align="end" class="slds-var-p-around_small">
+                <lightning-button variant="neutral" label="Generate new quote" onclick={handleNewQuote}>
+                </lightning-button>
+            </lightning-layout>
+        </lightning-layout-item>
+        <lightning-layout-item size="1">
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

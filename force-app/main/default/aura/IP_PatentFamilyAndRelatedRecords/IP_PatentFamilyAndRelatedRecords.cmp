@@ -1,0 +1,81 @@
+<!--
+* 
+* @ Name 	:	IP_IPRightFiled
+* @ Purpose : 	Status update to Issued
+* @ Author	: 	Ch V Lakshminarayana
+*
+*   Date	        |  Developer Name                       |  Version      |  Changes
+* ======================================================================================================
+*   12-04-2021      |  venkat.challagolusula@absyz.com		|  1.0          |  Initial Version
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" 
+                access="global" 
+                controller="IP_CreateChildIPRightController">
+
+    <aura:attribute name="IpRight" type="Case" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:html tag="style">
+        .cuf-content {
+            padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+            padding: 0rem !important;
+        }       
+        .slds-modal__content{
+            overflow-y:hidden !important;
+            height:unset !important;
+            max-height:unset !important;
+        }
+    </aura:html>
+
+        
+  
+    <lightning:card>
+         <div class="slds-section slds-is-open" aura:id="IPRightSection">
+        <!--section header-->
+        <h3 class="slds-section__title">
+            <button aria-controls="IPRightId" class="slds-button slds-section__title-action">
+                <span onclick="{!c.toggleSection}" data-auraId="IPRightSection">
+                    <lightning:icon iconName="utility:switch"
+                                    alternativeText="button icon"
+                                    size="x-small"
+                                    class="slds-section__title-action-icon slds-button__icon_left"/>
+                </span>
+                <span class="slds-truncate" title="ParentFamily">Parent Family and Related Records</span>
+            </button>
+        </h3>
+        <!--section body-->
+        <div class="slds-section__content" id="IPRightId">
+        <div class="slds-p-around_medium"><div class="demo-only demo-only--sizing slds-grid slds-wrap">
+		<div class="slds-size_1-of-2"><div class="slds-p-around_large">
+        <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">ParentId</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static"><a href="{!$Label.c.IP_IDFLightningURL+'/'+v.IpRight.ParentId}" target="_new">{!v.IpRight.Parent.IP_Right_ID__c}</a></div>
+                        </div>
+            </div></div> </div><div class="slds-size_1-of-2"><div class="slds-p-around_large">
+        <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">Relationship to Parent</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static">{!v.IpRight.IP_Relationship_to_Parent__c}</div>
+                        </div>
+                    </div> 
+            </div></div>
+        <div class="slds-size_1-of-2"><div class="slds-p-around_large">
+        <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">Invention Disclosure</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static"><a href="{!$Label.c.IP_IDFLightningURL+'/'+v.IpRight.IP_InventionName__c}" target="_new">{!v.IpRight.IP_InventionName__r.IP_IDFNumber__c}</a></div>
+                        </div>
+            </div></div> </div><div class="slds-size_1-of-2"><div class="slds-p-around_large">
+        <div class="slds-form-element slds-form-element_readonly">
+                        <span class="slds-form-element__label">Patent Family</span>
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element__static"><a href="{!$Label.c.IP_IDFLightningURL+'/'+v.IpRight.IP_Patent_Family__c}" target="_new">{!v.IpRight.IP_Patent_Family__r.IP_Patent_Family_ID__c}</a></div>
+                        </div>
+                    </div> 
+            </div></div></div></div></div>
+    </div>
+    </lightning:card>
+</aura:component>

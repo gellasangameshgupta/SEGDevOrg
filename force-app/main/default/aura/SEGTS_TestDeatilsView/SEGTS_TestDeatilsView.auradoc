@@ -1,0 +1,9 @@
+<aura:documentation>
+	<aura:description>Documentation</aura:description>
+	<aura:example name="ExampleName" ref="exampleComponentName" label="Label">
+	  Page Name       :SEGTS_TestDeatilsView
+      Purpose         :Component used to View Test details for a Test spec in the tabular format
+      Created By      :RBEI
+      Created Date    :Feb 2019
+	</aura:example>
+</aura:documentation>

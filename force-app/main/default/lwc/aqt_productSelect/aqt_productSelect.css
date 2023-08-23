@@ -1,0 +1,80 @@
+.vps-container-1 {
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: auto;
+    position: relative;
+}
+
+.vps-container-2 {
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: auto;
+    position: relative;
+}
+
+.vps-container-3 {
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: auto;
+    position: relative;
+}
+
+.vps-container-4 {
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: auto;
+    position: relative;
+}
+
+.vps-container-5 {
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: auto;
+    position: relative;
+}
+
+.vps-scrollable {
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.vps-width-11 {
+    width: 12.5%;
+}
+
+.vps-width-12 {
+    width: 12.5%;
+}
+
+.vps-width-15 {
+    width: 15%;
+}
+
+.vps-width-20 {
+    width: 20%;
+}
+.vps-width-25 {
+    width: 25%;
+}
+
+.vps-width-30 {
+    width: 30%;
+}
+
+.vps-width-40 {
+    width: 40%;
+}
+
+.vps-width-30px {
+    width: 30px;
+}
+.vps-width-50px{
+    width: 50px;
+}
+.vps-width-70px{
+    width: 70px;
+}
+
+.slds-table_header-fixed_container.slds-scrollable_x{
+    overflow-x: hidden !important;
+}

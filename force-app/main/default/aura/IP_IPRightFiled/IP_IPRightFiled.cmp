@@ -1,0 +1,59 @@
+<!--
+* 
+* @ Name 	:	IP_IPRightFiled
+* @ Purpose : 	Status update to Issued
+* @ Author	: 	Ch V Lakshminarayana
+*
+*   Date	        |  Developer Name                       |  Version      |  Changes
+* ======================================================================================================
+*   12-04-2021      |  venkat.challagolusula@absyz.com		|  1.0          |  Initial Version
+-->
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <!-- attributes -->
+    <aura:attribute name="showSpinner" type="Boolean" description="enables or disables spinner" default="true" />
+    <aura:attribute name="saverecord" type="string" />
+    <aura:html tag="style">
+        .cuf-content {
+            padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+            padding: 0rem !important;
+        }       
+        .slds-modal__content{
+            overflow-y:hidden !important;
+            height:unset !important;
+            max-height:unset !important;
+        }
+    </aura:html>
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner />
+    </aura:if>
+    <div class="modal-header slds-modal__header">
+        <h2 class="slds-text-heading_medium slds-hyphenate">Patent's Filing</h2>
+    </div>
+    <!-- Record edit form -->
+    
+    <lightning:recordEditForm aura:id="editForm" recordId="{!v.recordId}" 
+                              objectApiName="Case" 
+                              onload="{!c.handleLoad}"
+                              onsubmit="{!c.handleSubmit}"
+                              onsuccess="{!c.handleSuccess}"
+                              onerror="{!c.handleError}">
+        <lightning:messages aura:id="ErrorMessage"/>
+        <div class="slds-p-around_medium">
+        <lightning:layout multipleRows="true">
+            <lightning:layoutItem size="12">
+                <lightning:inputField aura:id="field" fieldName="IP_Filing_Date__c" required="true" class="slds-form-element_stacked"/>
+            </lightning:layoutItem>
+            <lightning:layoutItem size="12">
+                <lightning:inputField aura:id="field" fieldName="IP_Application_Number__c" class="slds-form-element_stacked"/>
+            </lightning:layoutItem>
+        </lightning:layout>
+        </div>
+       <div horizontalAlign="right" class="modal-footer slds-modal__footer">
+            <lightning:button variant="brand" label="Cancel" title="Cancel" type="text" onclick="{!c.handleCancel}"/>
+            <lightning:button variant="brand" label="Submit" title="Submit" type="submit"/>
+        </div>
+    </lightning:recordEditForm>
+    
+</aura:component>

@@ -1,0 +1,33 @@
+<aura:component controller="IP_RequestforInformationController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" 
+                access="global">
+    <aura:attribute name="RFIComments" type="String"/>
+    <aura:attribute name = "isOpen" type = "boolean" default="true" description = "opens the modal popup"/>
+    <aura:attribute name = "comments" type = "String" description = "stores the comments entered"/>
+    <aura:attribute name = "recordId" type = "String" description = "holds the record ID"/>
+    <aura:attribute name = "buttonName" type = "string" description = "holds the name of the button to be displayed"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:html tag="style">
+        .cuf-content {
+            padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+            padding: 0rem !important;
+        }       
+        .slds-modal__content{
+            overflow-y:hidden !important;
+            height:unset !important;
+            max-height:unset !important;
+        }
+    </aura:html>
+    <div class="modal-header slds-modal__header">
+        <h2 class="slds-text-heading_medium slds-hyphenate">Request for Information</h2>
+    </div>
+    <div class="slds-p-around_medium">
+    <lightning:textarea label="Comments in RFI" value="{!v.RFIComments}"/>
+    </div>
+    <div class="modal-footer slds-modal__footer">
+        <lightning:button variant="brand" label="Cancel" onclick="{!c.goBack}"/>
+        <lightning:button variant="brand" label="Submit" onclick="{!c.updateRFIcontroller}"/>
+    </div>
+           
+</aura:component>

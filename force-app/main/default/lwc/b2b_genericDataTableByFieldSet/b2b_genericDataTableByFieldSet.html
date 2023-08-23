@@ -1,0 +1,63 @@
+<!--
+* 
+* @ Name    :   b2b_genericDataTableByFieldSet
+* @ Purpose :   This is a component for displaying the product applications in the product detail page
+* @ Author  :   Monal Kumar
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   15-05-2021      |  monal.kumar@absyz.com        |  1.0          |  Initial Version
+*
+-->
+
+<template>
+    <!-- Spinner -->
+    <template if:true={blnShowSpinner}>
+        <lightning-spinner alternative-text="Loading" variant="brand" size="medium"></lightning-spinner>
+    </template>
+
+    <!-- Header -->
+    <template if:true={headerVisible}>
+        <div class="slds-media__body">
+            <h2 class="slds-card__header-title">
+                <span>{strLabelObjectName} Records ({strRecordCount})</span>
+            </h2>
+        </div>
+    </template>
+
+    <!-- Exception Handling -->
+    <template if:true={blnError}>
+        <div class="slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+            <lightning-layout horizontal-align="spread" vertical-align="center">
+                <lightning-layout-item>
+                    <lightning-icon icon-name="utility:error" size="x-small" variant="inverse" alternative-text="error">
+                    </lightning-icon>
+                </lightning-layout-item>
+                <lightning-layout-item padding="horizontal-small">
+                    <h2>ERROR: {strErrorMessage}</h2>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </template>
+
+    <template if:true={blnShowResults}>
+        <!-- Body -->
+        <div class="slds-var-p-top_x-small b2b-table-container" onscroll={handleScroll}>
+            <!-- Data table -->
+            <lightning-datatable key-field="Id" data={list_TableData} columns={list_Columns}
+                onrowaction={handleRowAction} hide-checkbox-column min-column-width=100>
+            </lightning-datatable>
+        </div>
+    </template>
+
+    <!-- Details view in Modal -->
+    <c-b2b_modal bln-show-modal={blnModalContainer} bln-show-footer=true bln-show-close-icon=true str-modal-size="small"
+        str-header-text={strLabelObjectName} str-negative-button-label="Close" onpositive={handlePositiveAction}
+        onnegative={handleNegativeAction} onclose={handleNegativeAction}>
+        <div slot="body">
+            <lightning-record-form record-id={strSelectedRowId} object-api-name={strSFDCobjectApiName}
+                layout-type="Full" columns="2" mode="readonly">
+            </lightning-record-form>
+        </div>
+    </c-b2b_modal>
+</template>

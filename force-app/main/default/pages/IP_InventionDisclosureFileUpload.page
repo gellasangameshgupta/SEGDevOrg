@@ -1,0 +1,220 @@
+<apex:page lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+ <apex:includeLightning />
+ <apex:includeScript value="{!$Resource.IP_Crypyo_JS}"/>  
+ <script type="text/javascript">__sfdcSessionId = '{!$Api.Session_Id}';</script>
+ <script src="/soap/ajax/48.0/connection.js" type="text/javascript"></script>
+    
+    <script>
+        window.$Label = window.$Label || {};
+        $Label.IP_SEGPrivateKey = '{!JSENCODE($Label.IP_SEGPrivateKey)}';
+        $Label.IP_IDFLightningURL = '{!JSENCODE($Label.IP_IDFLightningURL)}';
+        var lexOrigin = $Label.IP_IDFLightningURL;
+        var isPatent = false;
+        var recordId;
+        window.addEventListener("message", function(event) {
+            console.log('LexOrigin: ',lexOrigin);
+            console.log('event origin: ',event.origin);
+            if (event.origin !== lexOrigin) {
+                // Not the expected origin: reject message!
+                return;
+            }
+            
+            // Handle message
+            if(event.data!=undefined && !event.data.__grammarly){
+                if(event.data.includes(",")){
+                    recordId = event.data.split(",")[0];
+                    // uploadAttachmentFromVisualForcePage(event.data.split(",")[0]);
+                     isPatent = true;
+                       
+                }else{
+                    uploadAttachmentFromVisualForcePage(event.data);
+                }
+            }
+        }, false); 
+   </script>
+    
+    <apex:slds />
+    <div class="slds-scope">
+        <div class="demo-only" style="float:left;">
+            <div class="slds-form-element" >
+                <span class="slds-form-element__label" id="file-selector-primary-label"></span>
+                <div class="slds-form-element__control" >
+                    <div class="slds-file-selector slds-file-selector_images slds-align_absolute-center">
+                        <input class="slds-file-selector__input slds-assistive-text"  multiple="true"  type="file" name="files[]" id="file-upload-input-01" aria-labelledby="file-selector-primary-label file-selector-secondary-label" onchange="fileselection();"/>
+                        <label class="slds-file-selector__body" for="file-upload-input-01" id="file-selector-secondary-label">
+                            <span class="slds-file-selector__button slds-button slds-button_neutral">
+                                <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/apexpages/slds/latest/assets/icons/action-sprite/svg/symbols.svg#upload"/>
+                                </svg>Select Files &amp; Upload</span>
+                        </label><br/><br/><br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="slds-scope" id="uploadbutton" style="text-align: left !important;">
+      <button class="slds-button slds-button_brand" onclick="uploadAttachmentFromVisualForcePage();">Upload</button> 
+    </div>
+    <br/>
+    <div class="" style="text-align: right !important;width:100%;">
+        <div class="slds-grid slds-gutters">
+            <div id="fileList" align="right"></div>
+        </div>
+    </div>
+    <script>
+       var idfidnew = '';
+       if(getUrlVars()["idfid"]){
+           document.getElementById("uploadbutton").style.display='block';
+           idfidnew = getUrlVars()["idfid"];
+        }else{
+            document.getElementById("uploadbutton").style.display='none';
+        }
+       function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            vars[key] = value;
+        });
+        return vars;
+       }
+       var filenamenew;
+       function fileselection(){
+            var attachFiles = document.getElementById('file-upload-input-01').files;
+            console.log('attachFiles length in selection -- ',attachFiles.length);
+            var filenametext='';
+            for(var i=0; i<attachFiles.length; i++){
+                var attachFile = attachFiles[i];
+                filenamenew = attachFile.name;
+                console.log('print filenamenew--',filenamenew);
+                filenametext += filenamenew+'\n';
+                console.log('print filenametext--',filenametext);
+            }
+            document.getElementById("fileList").innerText = filenametext;
+            console.log('posting attachment event from vf');
+            var lexOriginnew = $Label.IP_IDFLightningURL;
+            parent.postMessage("attached", lexOriginnew);
+        }
+        
+    function uploadAttachmentFromVisualForcePage(idfid) {
+        console.log('inside uploadAttachmentFromVisualForcePage'); 
+        
+        var attachFiles = document.getElementById('file-upload-input-01').files;
+        console.log('attachFiles length -- ',attachFiles.length,' print files --',attachFiles);
+        
+        var index = 0;
+        if(attachFiles && attachFiles.length>0){
+            // function to be called recursively for each file
+            readNext();
+            
+            function readNext() {
+                var attachFile = attachFiles[index++];
+                var fr = new FileReader();
+                fr.onload = function(e) {
+                    
+                    var filenamenew = attachFile.name;
+                    console.log('inside reader--');
+                    console.log('for file --',filenamenew);
+                    var filebodynew = e.target.result;
+                    var encrypted = CryptoJS.AES.encrypt(filebodynew, $Label.IP_SEGPrivateKey);
+                    var encryptedfilename = CryptoJS.AES.encrypt(filenamenew, $Label.IP_SEGPrivateKey);
+                    var attachment = new sforce.SObject('contentVersion');
+                    attachment.Title = encryptedfilename.toString();
+                    attachment.VersionData = encrypted.toString();
+                    attachment.PathOnClient=encryptedfilename.toString();
+                    var result = sforce.connection.create([attachment]);
+                    if (result[0].getBoolean("success") && result[0].id!=null) {
+                        console.log('124 line');
+                        var contentDocumentId = sforce.connection.query("select id,ContentDocumentId from ContentVersion where id='"+result[0].id+"'");
+                        console.log('Content Document Id: ', contentDocumentId);
+                        var attachmentLink = new sforce.SObject('contentDocumentLink');
+                        console.log('Attachment Link: ', attachmentLink);
+                        attachmentLink.ShareType='V';
+                        if(idfidnew!=''){
+                            attachmentLink.LinkedEntityId=idfidnew;
+                            console.log('Inside 132', idfidnew);
+                            console.log('Inside 133', attachmentLink.LinkedEntityId);
+                        }else{
+                            attachmentLink.LinkedEntityId=idfid;
+                            console.log('Inside 136', attachmentLink.LinkedEntityId);
+                        }
+                        attachmentLink.ContentDocumentId=contentDocumentId.getArray("records")[0].ContentDocumentId;
+                        console.log('Inside 139', attachmentLink.ContentDocumentId);
+                        var createCDL = sforce.connection.create([attachmentLink]);
+                        console.log('Inside 141', createCDL);
+                        
+                    }
+                    if (index < attachFiles.length) {
+                        // Start loading the next one
+                        console.log('index 3--', index);
+                        readNext();
+                    }
+                    else{
+                        console.log('Inside else at 150');
+                        var lexOriginnew = $Label.IP_IDFLightningURL;
+                         if(isPatent == true){
+                             console.log('Inside if at 153');
+                             // sendEmail();
+                             parent.postMessage("Success", lexOriginnew);
+                         }else{
+                             console.log('Inside else at 157');
+                             parent.postMessage("Success", lexOriginnew);
+                         }
+                    }
+                };
+                fr.readAsBinaryString(attachFile);
+            }
+        }
+        else{
+            console.log('Inside else at 166');
+            var lexOriginnew = $Label.IP_IDFLightningURL;
+            parent.postMessage('NA', lexOriginnew);
+        }
+    }
+   
+    
+    /*function sendEmail(){
+        var contentDocumentLinks = sforce.connection.query("select id, ContentDocumentId from ContentDocumentLink where LinkedEntityId='"+recordId+"'");
+        console.log('contentDocumentLinksQuery--',contentDocumentLinks);
+        var contentdocId = [];
+        if(contentDocumentLinks!=undefined && parseInt(contentDocumentLinks.size)>0){
+            for(var i=0; i<contentDocumentLinks.getArray('records').length; i++){
+                contentdocId.push(contentDocumentLinks.getArray('records')[i].ContentDocumentId);
+            }
+            
+            var contentversions = [];
+            var contentVersionQuery = 'select id, Title, PathOnClient, FileType, ContentDocumentId,VersionData from ContentVersion where ContentDocumentId IN (\'' + contentdocId.join('\',\'') + '\') order by createddate desc';
+            console.log('contentVersionQuery--',contentVersionQuery);
+            var contentversions = sforce.connection.query(contentVersionQuery);
+            console.log('contentversions--',contentversions);
+            if(contentversions.getArray('records').length>0){
+                var decryptedtitleval = CryptoJS.AES.decrypt(contentversions.getArray('records')[0].Title, $Label.SEGPrivateKey);
+                var decryptedpathval = CryptoJS.AES.decrypt(contentversions.getArray('records')[0].PathOnClient, $Label.SEGPrivateKey);
+                contentversions.getArray('records')[0].Title = decryptedtitleval.toString(CryptoJS.enc.Utf8);
+                contentversions.getArray('records')[0].PathOnClient = decryptedpathval.toString(CryptoJS.enc.Utf8);
+                var decryptedval = CryptoJS.AES.decrypt(contentversions.getArray('records')[0].VersionData, $Label.SEGPrivateKey);
+                contentversions.getArray('records')[0].VersionData = decryptedval.toString(CryptoJS.enc.Utf8);
+                
+                console.log('title--',contentversions.getArray('records')[0].Title);
+                console.log('PathOnClient--',contentversions.getArray('records')[0].PathOnClient);
+                
+                
+                var singleRequest = new sforce.SingleEmailMessage();
+                var fileAttachment = new sforce.EmailFileAttachment();
+				fileAttachment.body = contentversions.getArray('records')[0].VersionData;
+				fileAttachment.name = contentversions.getArray('records')[0].Title;
+                console.log('fileAttachment--',fileAttachment);
+                
+                
+                singleRequest.replyTo = "madhuravani.b@absyz.com";
+                singleRequest.subject = 'Patent Decision related Documents';
+                singleRequest.plainTextBody = 'Patent Decision Documents';//contentversions.getArray('records')[0].VersionData;
+                singleRequest.toAddresses = ["madhuravani.b@absyz.com"]; 
+                // singleRequest.fileAttachments = [fileAttachment]; 
+                 console.log('singleRequest--',singleRequest);
+                var sendMailRes = sforce.connection.sendEmail([singleRequest]);
+                console.log('sendMailRes--',sendMailRes);
+            }
+        }
+    }*/
+    </script>
+</apex:page>

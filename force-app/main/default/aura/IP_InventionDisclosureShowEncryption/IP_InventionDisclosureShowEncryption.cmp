@@ -1,0 +1,45 @@
+<aura:component controller="IP_InventionDisclosureController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" 
+                access="global">
+    <aura:attribute name="caserecord" type="object"/>
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <div class="slds-box">
+    <lightning:layout horizontalAlign="center" class="slds-p-around_small" multipleRows="true">
+        <lightning:layoutItem size="2" padding="around-small">
+            <label class="slds-form-element__label" for="horizontal-input-id-01">Explanation of Special Points</label>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="4" padding="around-small">
+            {!v.caserecord.IP_Explanation_of_Special_Points__c}
+        </lightning:layoutItem>
+        <lightning:layoutItem size="2" padding="around-small">
+            <label class="slds-form-element__label" for="horizontal-input-id-01">Who Initiated the Subject</label>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="4" padding="around-small">
+            {!v.caserecord.IP_Who_Initiated_the_Subject__c}
+        </lightning:layoutItem>
+      <!--  <lightning:layoutItem size="1" padding="around-small">
+            <label class="slds-form-element__label" for="horizontal-input-id-01">Product Type</label>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="5" padding="around-small">
+            {!v.caserecord.Product_Type__c}
+        </lightning:layoutItem>
+        <lightning:layoutItem size="1" padding="around-small">
+            <label class="slds-form-element__label" for="horizontal-input-id-01">Product SubCategories</label>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="5" padding="around-small">
+            {!v.caserecord.Product_Subcategories__c}
+        </lightning:layoutItem>
+        <lightning:layoutItem size="1" padding="around-small">
+            <label class="slds-form-element__label" for="horizontal-input-id-01">Comments on RFI</label>
+        </lightning:layoutItem>
+        <lightning:layoutItem size="5" padding="around-small">
+            {!v.caserecord.Comment_on_RFI__c}
+        </lightning:layoutItem>
+        <lightning:layoutItem size="1" padding="around-small">
+           
+        </lightning:layoutItem>
+        <lightning:layoutItem size="5" padding="around-small">
+           
+        </lightning:layoutItem>-->
+    </lightning:layout>
+    </div>
+</aura:component>

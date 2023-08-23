@@ -1,0 +1,106 @@
+<!--
+* 
+* @ Name    :   customLookup
+* @ Purpose :   This is a custom lookup field component
+* @ Author  :   Khushmeet Kaur
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   24-02-2022      |  khushmeet.kaur@absyz.com      |  1.0          |  Initial Version
+*
+-->
+<template>
+    <div class="slds-form-element" onpointerleave={handleMouseLeave} data-source="lookupContainer">
+        <label class="slds-form-element__label">
+            <template if:true={blnRequired}>
+                <span class="required">*</span>
+            </template>
+            {strLabel}
+        </label>
+        <div class="slds-form-element__control">
+            <div class="slds-combobox_container">
+                <template if:false={isValueSelected}>
+                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-close">
+                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                            role="none">
+                            <lightning-input type="search" data-source="searchInputField" onclick={handleClick}
+                                onchange={handleOnChange} value={searchKey} variant="label-hidden"
+                                onkeypress={handleClick} oninput={handleClick} placeholder={searchPlaceholder}>
+                            </lightning-input>
+                        </div>
+                        <div id="listbox-id-1"
+                            class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
+                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                <template if:false={lookupResultSpinner}>
+                                    <template for:each={list_records} for:item="record">
+                                        <li key={record.Id} onclick={handleOnSelect} data-id={record.Id}
+                                            role="presentation" data-name={record.Name}>
+                                            <span class="slds-lookup__item-action slds-lookup__item-action--label"
+                                                role="option">
+                                                <lightning-icon icon-name={iconName} alternative-text={strlabel}
+                                                    size="small" title={strlabel}></lightning-icon>
+                                                <span class="slds-truncate"
+                                                    style="padding-left:5px;">{record.Name}</span>
+                                            </span>
+                                        </li>
+                                    </template>
+                                </template>
+                                <template if:true={lookupResultSpinner}>
+                                    <li role="presentation" class="slds-listbox__item">
+                                        <div class="slds-align_absolute-center slds-var-p-top_medium">
+                                            <div role="status"
+                                                class="slds-spinner slds-spinner_brand slds-spinner_x-small slds-spinner_inline">
+                                                <span class="slds-assistive-text">Loading</span>
+                                                <div class="slds-spinner__dot-a"></div>
+                                                <div class="slds-spinner__dot-b"></div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </template>
+                                <template if:true={blnNoResultFound}>
+                                    <li role="presentation" class="slds-listbox__item">
+                                        <div aria-disabled="true" id="option6"
+                                            class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                            role="option">
+                                            <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                            <span class="slds-media__body">
+                                                <span class="slds-truncate" title="No results found">
+                                                    No results found
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </template>
+                <template if:true={isValueSelected}>
+                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click">
+                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right"
+                            role="none">
+                            <span class="slds-icon_container slds-combobox__input-entity-icon" title={strlabel}>
+                                <lightning-icon icon-name={iconName} alternative-text={strlabel} size="small"
+                                    title={strlabel}></lightning-icon>
+                                <span class="slds-assistive-text">{strlabel}</span>
+                            </span>
+                            <button type="button"
+                                class="slds-input_faux slds-combobox__input slds-combobox__input-value"
+                                aria-labelledby="combobox-label-id-33 combobox-id-5-selected-value"
+                                id="combobox-id-5-selected-value" aria-controls="listbox-id-5" aria-expanded="false"
+                                aria-haspopup="listbox">
+                                <span class="slds-truncate" id="combobox-value-id-20">{selectedName}</span>
+                            </button>
+                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                                title="Remove selected option" onclick={handleRemovePill}>
+                                <lightning-icon icon-name="utility:close" alternative-text="Remove selected option"
+                                    size="x-small" title="Remove selected option"></lightning-icon>
+                                <span class="slds-assistive-text">Remove selected option</span>
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</template>

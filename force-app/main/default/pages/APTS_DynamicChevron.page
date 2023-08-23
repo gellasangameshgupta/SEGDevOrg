@@ -1,0 +1,7 @@
+<apex:page standardController="Apttus__APTS_Agreement__c" extensions="APTS_DynamicChevronController">
+    <c:APTS_AgreementProcess labels="{!optionsStr}"
+        shortlabels="{!shortLabelsStr}" 
+        selected="{!Apttus__APTS_Agreement__c.Apttus__Status_Category__c }"
+        selectedSub="{!Apttus__APTS_Agreement__c.Apttus__Status__c}"
+    />
+</apex:page>

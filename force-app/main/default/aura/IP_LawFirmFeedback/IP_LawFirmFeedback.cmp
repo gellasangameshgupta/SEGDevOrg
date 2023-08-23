@@ -1,0 +1,69 @@
+<!--
+* 
+* @ Name 	:	IP_LawFirmFeedback
+* @ Purpose : 	Updates the Law Firm fields
+* @ Author	: 	Madhura Vani
+*
+*   Date	        |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   26-03-2021      |  madhuravani.b@absyz.com		|  1.0          |  Initial Version
+-->
+
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <!-- attributes -->
+    <aura:attribute name="showSpinner" type="Boolean" description="enables or disables spinner" default="true" />
+    <aura:attribute name="saverecord" type="string" />
+    <aura:attribute name="IsUpdated" type="Boolean" default="flase" />
+    <aura:attribute name="isAttachmentValid" type="String" default="blank"/>
+    <aura:attribute name="saveWithFile" type="boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.fetchmessages}"/>
+    <aura:handler name="change" value="{!v.saveWithFile}" action="{!c.handleSaveWithFile}" />
+    
+    <aura:html tag="style">
+        .cuf-content {
+        padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+        padding: 0rem !important;
+        }       
+        .slds-modal__content{
+        overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        }
+    </aura:html>
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner />
+    </aura:if>
+    <div class="modal-header slds-modal__header">
+        <h2 class="slds-text-heading_medium slds-hyphenate">Law Firm Feedback</h2>
+    </div>
+    <!-- Record edit form -->
+    
+    <lightning:recordEditForm aura:id="editForm" recordId="{!v.recordId}" 
+                              objectApiName="Case" 
+                              onload="{!c.handleLoad}"
+                              onsubmit="{!c.handleSubmit}"
+                              onsuccess="{!c.handleSuccess}">
+        <div class="slds-p-around_medium">
+            <lightning:layout multipleRows="true">
+                <lightning:layoutItem size="12">
+                    <lightning:inputField aura:id="field" fieldName="IP_Comments_to_OC__c" required="true"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12" >
+                    <lightning:inputField style="display:none;" aura:id="field" fieldName="IP_Legal_Relevance__c"/>
+                </lightning:layoutItem>
+                <lightning:layoutItem size="12" >
+                    <lightning:inputField style="display:none;" aura:id="field" fieldName="IP_Is_Law_Firm_Feedback_Updated__c" value="{!v.IsUpdated}"/>
+                </lightning:layoutItem>
+                <label class="slds-form-element__label" style="margin-right: 0.5rem;"><span style="color:#005286;font-size:13px;font-weight: 600;">Attachments</span></label><br/>
+                <iframe Id="vfFrame" width="200" height="auto" src="{!$Label.c.IP_IDFFileUploadURL+'?idfid='+v.recordId}" style="border:white;text-align:left;"/>
+            </lightning:layout> 
+        </div>
+        <div horizontalAlign="right" class="modal-footer slds-modal__footer">
+            <lightning:button variant="brand" label="Cancel" title="Cancel" type="text" onclick="{!c.handleCancel}"/>
+            <lightning:button variant="brand" label="Submit" title="Submit" type="submit"/>
+        </div>
+    </lightning:recordEditForm>
+</aura:component>

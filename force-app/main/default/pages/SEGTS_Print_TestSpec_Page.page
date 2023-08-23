@@ -1,0 +1,335 @@
+<!----------------------------------------------------------------------------
+    Page Name       :SEGTS_Print_TestSpec_Page
+    Purpose         :Print Test Spec record Details
+    Created By      :RBEI
+    Created Date    :Dec 2018
+------------------------------------------------------------------------------->
+<apex:page standardController="Test_Specification__c"  Extensions="SEGTS_Print_TestSpec_CTRL" applyHtmlTag="false" standardStylesheets="false" showHeader="false"  renderAs="PDF" >
+  <head>
+    <style type="text/css" media="print">
+        @page {
+            padding-top:1px;
+            margin-top: 220px; 
+            margin-bottom:220px;
+            
+            size:A4;
+            @top-left {
+            	content: element(header);
+            }            
+            @bottom-left {
+            	content: element(footer);
+            }
+        }       
+              
+        td.myowncss {
+            border-collapse: collapse;
+            border-top:1px;
+       		font-size:13px;
+            font-family:sans-serif;
+            border:0.5px solid black;
+            table-layout:fixed;
+            background-color: #ffffff;    
+            text-align:left;   
+            padding-left:7px;           
+        }
+          
+         .pageNumber:before
+         {
+            content: "Page " counter(page)  " of " counter(pages);
+         }
+
+        tr.mycustomtr{
+        	page-break-inside: avoid !important;
+        }
+          
+        td.cssfirsttd {
+            border-collapse: collapse;
+            border-top:1px;
+            font-family:sans-serif;
+            border:0.5px solid black;
+            table-layout:fixed;
+            background-color: #ffffff;  
+            text-align:center;  
+            font-size:13px;  
+        }
+
+          
+        table.mycustom  {
+            font-size:13px;
+            border-collapse: collapse;
+        }
+
+        table.mycustom, table.mycustom th, table.mycustom td {
+	        border: 0.5px solid black;
+        }
+
+        table.maininfo{
+            margin-top:0px;
+            table-layout:auto;
+            font-size:13px;
+            font-family:sans-serif;
+            background-color: #ffffff; 
+            border:0.5px solid black;
+        }
+        
+        .thcss{
+            font-size:13px;
+            border:0.5px solid black;   
+        }
+        
+        div.Header {
+            position: running(header);
+        }
+        
+        div.footer {
+            display: block;
+            padding: 5px;
+            position: running(footer);
+        }
+        
+        h2 {
+            font-size: 1.35em; /* 30px/16=1.875em  1.35em*/
+        }
+        slds-truncate {
+            text-overflow: inherit;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word; 
+        }                    
+      </style>
+  </head>
+  <apex:form > 
+    <div class="Header">
+        <p style="font-family:sans-serif;font-size:14px" align="Right"><b>"{!StatusWithVersion}"</b></p>
+                <table Style="font-family:sans-serif;  border: 2px solid black;" width="100%" class="mycustom">
+                    <tr>
+                        <td Style="border: 2px solid black;">
+                            <h1>
+                                <center><h1>SEGTS</h1></center>
+                            </h1>
+                        </td>
+                        <td Style="border: 2px solid black;">
+                            <center><h2 style=" margin:0px; ">SEG Test Specification</h2></center><br/>
+                                <Strong><center>Working document</center>
+                            <center>Printout will not be exchanged automatically with next revision level</center></Strong><br/>
+                        </td>
+                        
+                        <td Style="border: 2px solid black;" >
+                            <center>{!Test_Specification__c.Owner.Name}<br/>
+                                    <apex:outputtext value="{0,date,dd/MM/yyyy HH:MM}">
+                                        <apex:param value="{!Test_Specification__c.CreatedDate}"/>
+                                    </apex:outputtext>
+                                    <div><span class="pageNumber"/></div>
+                            </center>
+                        </td>
+                    </tr>
+                    
+                     <tr>
+                            <td style="word-wrap:break-word;padding-left:5px; border: 2px solid black;">
+                                <Strong>Test Spec Nr. :</Strong>&nbsp;{!testSpec.Name}
+                            </td>
+                            <td colspan="2" style="padding-left:5px; border: 2px solid black;">
+                                <Strong>Version No.</Strong>:&nbsp;{!testSpec.Version_No__c}
+                            </td>
+                      </tr>
+                </table>               
+   </div>   
+      <div class="footer">
+       <p style="font-family:sans-serif;font-size:10px;margin-bottom:-220px;text-align:center">© SEG Automotive. All rights reserved, including all rights of use and disposal, exploitation, reproduction, editing, distribution, as well as in the event of application for industrial property rights. Information contained are subject to confidentiality.</p>
+     </div>
+    
+<table cellspacing="5" width="100%" class="maininfo">        
+          <tr>
+                            <td style="width:17%">
+                                <Strong>Test Spec Type</Strong>
+                            </td>
+                            
+                            <td style="width:40%">
+                                :&nbsp;{!testSpec.Test_Spec_Type__c}
+                            </td>
+                            
+                            <td style="width:15%">
+                                <Strong>Version No.</Strong>
+                            </td>
+                            <td style="width:20%">
+                                :&nbsp;{!testSpec.Version_No__c}
+                            </td>                
+                      </tr>
+         <tr >
+            <td style="vertical-align:top">
+                 <Strong>Information</Strong>
+            </td>
+            <td  colspan="10" style="word-wrap:break-word;">
+                :&nbsp;{!testSpec.Information__c}
+            </td>
+        </tr>        
+         <tr>
+          <td style="width:19%; vertical-align:top">
+                <Strong>Test Specification</Strong>
+            </td>
+            <td style="width:40%">
+                :&nbsp;{!testSpec.Test_Specification__c}
+            </td>              
+        </tr>  
+        <tr>
+            <td><Strong>Starter</Strong></td>
+            <td> :&nbsp;{!testSpec.Starter__c}</td>
+             <td colspan="20"><Strong>Starter Type : </Strong>{!testSpec.Starter_Type__c}</td>
+        </tr>  
+        <tr>
+            <td><Strong>Solenoid</Strong></td>
+            <td> :&nbsp;{!testSpec.Solenoid__c}</td>
+             <td><Strong>i</Strong>&nbsp;:&nbsp;{!testSpec.i__c}</td>
+        </tr>
+        
+        <tr>
+            <td><Strong>Flux Bars</Strong> </td>
+            <td> :&nbsp;{!testSpec.FLS_PDF__c} </td>
+             <td><Strong>NBR</Strong>&nbsp;:&nbsp;{!testSpec.NB_PDF__c}</td>
+        </tr>
+        
+        <tr>
+            <td><Strong>Product Status</Strong></td>
+            <td>:&nbsp;{!testSpec.Stand__c} </td>
+            <td colspan="2">
+                <Strong>Product Quantity</Strong>&nbsp;:&nbsp;{!testSpec.Relation_amount__c}
+            </td>
+        </tr>
+        
+         <tr>
+            <td><Strong>Char. Curve 1</Strong></td>
+            <td>:&nbsp;{!testSpec.Char_Curve_1__c}</td>    
+           
+            <td colspan="2">
+                <Strong>Temp. 1 [°C]</Strong>&nbsp;:&nbsp;{!testSpec.Temp_1_C__c}
+             </td>  
+        </tr>
+    
+        <tr>
+            <td><Strong>Char. Curve 2</Strong></td>
+            <td>:&nbsp;{!testSpec.Char_Curve_2__c}</td>
+            <td colspan="2">
+                <Strong>Temp. 2 [°C]</Strong>&nbsp;:&nbsp;{!testSpec.Temp_2_C__c}
+            </td>
+        </tr>        
+        <tr >
+            <td style="vertical-align:top">
+                 <Strong>Additional Feature</Strong>
+            </td>
+            <td  colspan="10" style="word-wrap:break-word;">
+                :&nbsp;{!testSpec.Additional_Features__c}
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="vertical-align:top">
+                <Strong>Remarks</Strong>
+            </td>
+            <td colspan="10" style="word-wrap:break-word;">
+                :&nbsp;{!testSpec.Remarks__c}
+            </td>
+        </tr>
+        
+        <tr>
+            <td style="vertical-align:top">
+                <Strong>Change Nr.</Strong>
+            </td>
+            <td colspan="10" style="word-wrap:break-word;">
+                :&nbsp;{!testSpec.Change_Nr__c}
+            </td>
+        </tr>
+       
+        <tr>
+            <td style="vertical-align:top">
+                <Strong>Change</Strong>
+            </td>
+            <td colspan="10" style="word-wrap:break-word;">
+                :&nbsp;{!testSpec.Change__c}
+            </td>
+        </tr>
+</table>
+      <div style="page-break-before: avoid;">&nbsp; </div> 
+<h3 style="font-family:sans-serif;font-size:15px;margin-top:5px">Test Specification</h3>
+<table  width="100%" style="font-family:sans-serif;border-collapse:collapse;" class="mycustom">
+<thead style="display: table-header-group">
+    <tr>
+        <th width="4%" style="text-align:center">&nbsp;#</th>
+        <th width="20%">&nbsp;Designation</th>
+        <th width="10%">&nbsp;Variable</th>
+        <th width="15%">&nbsp;Condition</th>
+        <th width="20%">&nbsp;Value/Tolerance</th>
+        <th width="10%">&nbsp;Unit</th>
+        <th width="203px">&nbsp;Remarks</th>
+     </tr>
+     </thead>
+     <tbody>
+      <apex:variable value="{!0}" var="num" />
+     <apex:repeat value="{!lstWrapperSection}" var="v" id="avoid">
+     <table style="page-break-inside:Auto !important;display: block !important;break-inside: Auto;-webkit-column-break-inside: avoid;width:100%;"> 
+    
+         <tr style="background-color:#CDCCD2;font-weight:bold;display: table; width:100%;">
+             <td width="4%" class="thcss" style="text-align:center">&nbsp;{!v.secorderno}</td>
+             <td colspan="6" class="thcss" style="font-size:13px;font-family:sans-serif">&nbsp;{!v.secname}</td>
+         </tr>
+             
+         <apex:repeat value="{!v.blockList}" var="b">
+         
+            <tbody style="page-break-inside:avoid !important;width:100%;display: block !important">
+                 <tr style="background-color:#D6DBDF;font-weight:bold;display: table;width:100%" class="mycustomtr">
+                     <td width="4%" style="text-align:center" class="thcss">&nbsp;{!b.blkorderno}</td>
+                     <td colspan="6" class="thcss" style="font-size:13px;font-family:sans-serif;text-transform:capitalize;padding-left:6px">{!b.blkname}</td>
+                 </tr>
+                  <apex:repeat value="{!b.resultListInner}" var="i">
+                      <tr style="page-break-inside:avoid;display: table;width:100%">
+                          <td width="4%" style="text-align:center"  class="cssfirsttd">&nbsp;{!i.Order_No__c}</td>
+                          <td style="word-wrap:break-word;width:20%" class="myowncss">{!i.Designation__c}</td>
+                          <td style="word-wrap:break-word;width:10%" class="myowncss">{!i.Size__c}</td>
+                          <td style="word-wrap:break-word;width:15%" class="myowncss">{!i.Condition__c}</td>
+                          <td style="word-wrap:break-word;width:20%" class="myowncss">{!i.Value_Toleran__c}</td>
+                          <td style="word-wrap:break-word;width:10%" class="myowncss">{!i.Unit__c}</td>
+                          <!--<td>{!i.Interface__c}</td>-->
+                      <td style="word-wrap:break-word;" width="203px" class="myowncss">{!i.Remark__c}</td> 
+                      </tr>
+                    
+                  </apex:repeat> 
+         
+          </tbody>
+         </apex:repeat>
+        
+          </table>      
+      </apex:repeat>
+      </tbody>
+    </table>
+         <div style="page-break-before: avoid;">&nbsp; </div> 
+    <table width="88%"  style="margin-top:5px;font-family:sans-serif;page-break-inside:avoid;" class="mycustom">
+        <tr>
+            <td style="border-left: solid 1px black;border-right: solid 1px black;">&nbsp;Issue Generated by:</td>
+            <td>&nbsp;{!testSpec.Generated_By_PDF__c}</td>
+            <td>&nbsp;On:</td>
+            <td>&nbsp;<apex:outputtext value="{0,date,dd/MM/yyyy}">
+                    <apex:param value="{!testSpec.Generated_On_PDF__c}"/>
+                </apex:outputtext></td>
+        </tr>
+        <tr>
+            <td>&nbsp;Issue Approved by:</td>
+            <td>&nbsp;{!ApprovedBy}</td>
+            <td>&nbsp;On:</td>
+            <td>&nbsp;<apex:outputtext value="{0,date,dd/MM/yyyy}">
+                    <apex:param value="{!testSpec.Approved_On__c}"/>
+                </apex:outputtext></td>
+        </tr>
+        <tr>
+            <td>&nbsp;Issue Invalidated by:</td>
+            <td>&nbsp;{!InvalidatedBy}</td>
+            <td>&nbsp;On:</td>
+            <td>&nbsp;<apex:outputtext value="{0,date,dd/MM/yyyy}">
+                    <apex:param value="{!testSpec.Invalidate_On__c}"/>
+                </apex:outputtext></td>
+        </tr>
+        
+    </table> 
+      <apex:variable value="{!0}" var="num1" />
+      <div style="{!if(num1 < 1, 'page-break-before:avoid;','page-break-before:always;')}">
+          <apex:variable var="num1" value="{!num1+1}"/> &nbsp; </div>  
+    </apex:form>     
+</apex:page>

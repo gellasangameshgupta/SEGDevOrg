@@ -1,0 +1,25 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                controller="APTS_CLM_BASE_ACCELERATOR_RECORDINGS" >
+    
+    <!-- Id of the object on which this component is hosted -->
+    <aura:attribute name="recordId" type="Id" />
+    
+    <!-- The current File object returned by the apex class -->
+    <aura:attribute name="reg" type="Object[]"/>
+    
+    <aura:handler name="init" value="{! this }" action="{! c.init }" />
+
+    <div> 
+        <lightning:card >
+ 		<table>
+            <tr>
+                <aura:iteration var="r" items="{!v.reg}" >
+                <td>
+                    <lightning:formattedUrl value="{!'/sfc/servlet.shepherd/document/download/' + r.Id}" label="{!r.Title}" />        <br />
+                </td>
+                </aura:iteration>   
+            </tr>
+        </table>    
+        </lightning:card>
+    </div>
+</aura:component>

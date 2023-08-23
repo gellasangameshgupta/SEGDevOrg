@@ -1,0 +1,17 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes,force:hasRecordID" controller="TopicNotificationController">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="topic" type="Topic"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />    
+    <div>
+        <h2>
+            <center>                
+                <aura:renderIf isTrue="{!v.topic.Name == 'IT'}">                
+                	Please consider that this is no Support Platform, if IT-Support is needed please contact 
+                    <br/>
+                    
+                	<a href= "mailto:helpdesk@seg-automotive.com">helpdesk@seg-automotive.com </a>    
+                </aura:renderIf>
+            </center>
+        </h2>
+    </div>
+</aura:component>

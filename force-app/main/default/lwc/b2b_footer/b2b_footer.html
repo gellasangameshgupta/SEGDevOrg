@@ -1,0 +1,100 @@
+<!--
+* 
+* @ Name    :   b2b_footer
+* @ Purpose :   This is a component for displaying the footer and its content in the B2B Portal
+* @ Author  :   Aseem Doddamani
+*
+*   Date            |  Developer Name                 |  Version      |  Changes
+* ======================================================================================================
+*   21-05-2021      |  aseem.doddamani@absyz.com      |  1.0          |  Initial Version
+*
+-->
+<template>
+    <div class="slds-var-p-top_medium">
+        <div class="b2b-footer">
+            <!-- Exception Handling -->
+            <template if:true={blnError}>
+                <div class="slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <lightning-layout horizontal-align="spread" vertical-align="center">
+                        <lightning-layout-item>
+                            <lightning-icon icon-name="utility:error" size="x-small" variant="inverse"
+                                alternative-text="error">
+                            </lightning-icon>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="horizontal-small">
+                            <h2>ERROR: {strErrorMessage}</h2>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item size="12" small-device-size="1" medium-device-size="1" large-device-size="1"
+                    class="slds-show_medium">
+                </lightning-layout-item>
+                <lightning-layout-item size="12" small-device-size="12" medium-device-size="10" large-device-size="10">
+                    <lightning-layout horizontal-align="center" vertical-align="top" multiple-rows="true">
+                        <lightning-layout-item size="12" small-device-size="12" medium-device-size="2"
+                            large-device-size="2" class="slds-var-p-around_small">
+                            <!-- strSegLogoUrl = Static resource imported to display the SEG Company logo -->
+                            <img class="b2b-logo" src={strSegLogoUrl} />
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" small-device-size="12" medium-device-size="8"
+                            large-device-size="8" class="slds-var-p-around_small">
+                            <template if:true={blnShowPhoneNumber}>
+                                <div>
+                                    <a class="b2b-text-color">
+                                        {strSupportPhoneNumber}
+                                    </a>
+                                </div>
+                            </template>
+                            <template if:true={blnShowEmail}>
+                                <div class="slds-var-p-vertical_small">
+                                    <a href={strMailToEmail} class="b2b-text-color">
+                                        {strSupportEmail}
+                                    </a>
+                                </div>
+                            </template>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" small-device-size="12" medium-device-size="2"
+                            large-device-size="2" class="slds-var-p-vertical_small" alignment-bump="left">
+                            <template if:true={blnShowSocialLinks}>
+                                <lightning-layout class="slds-var-p-horizontal_small">
+                                    <template if:true={blnSocialMedia}>
+                                        <template for:each={list_SocialMedias} for:item="objSocialMedia">
+                                            <lightning-layout-item key={objSocialMedia.Id}
+                                                class="slds-var-p-horizontal_xx-small">
+                                                <a class="b2b-icon" title={objSocialMedia.MasterLabel}
+                                                    onclick={redirectToSocialLink}
+                                                    data-id={objSocialMedia.ComponentURL__c}>
+                                                    <lightning-icon src={objSocialMedia.ComponentIcon__c}>
+                                                    </lightning-icon>
+                                                </a>
+                                            </lightning-layout-item>
+                                        </template>
+                                    </template>
+                                </lightning-layout>
+                            </template>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                    <lightning-layout horizontal-align="start" vertical-align="center" multiple-rows="true"
+                        class="slds-var-p-vertical_xx-large">
+                        <template for:each={list_Documents} for:item="objDocument">
+                            <lightning-layout-item size="12" small-device-size="12"
+                                medium-device-size={objDocument.GridColumnSize__c}
+                                large-device-size={objDocument.GridColumnSize__c} padding="around-small"
+                                key={objDocument.Id}>
+                                <a href={objDocument.ComponentURL__c} class="b2b-text-color" target="_blank">
+                                    {objDocument.MasterLabel}
+                                </a>
+                            </lightning-layout-item>
+                        </template>
+                    </lightning-layout>
+                </lightning-layout-item>
+                <lightning-layout-item size="12" small-device-size="1" medium-device-size="1" large-device-size="1"
+                    class="slds-show_medium">
+                </lightning-layout-item>
+                <lightning-button label="Click" onclick={handleButton} name="Click"></lightning-button>
+            </lightning-layout>
+        </div>
+    </div>
+</template>

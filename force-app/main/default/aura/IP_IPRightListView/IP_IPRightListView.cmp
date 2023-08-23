@@ -1,0 +1,11 @@
+<aura:component implements="force:appHostable" >
+	<lightning:listView aura:id="listViewIPRight"
+    objectApiName="Case"
+    listName="All_IP_Rights"
+    rows="50"
+    showSearchBar="true"
+    showActionBar="true"
+    enableInlineEdit="true"
+    showRowLevelActions="true"
+/>
+</aura:component>

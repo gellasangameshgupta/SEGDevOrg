@@ -1,0 +1,15 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes" access="global" >
+    
+   
+	<lightning:listView aura:id="listViewDCATasks"
+    objectApiName="Task"
+    listName="Detective_Control"
+    rows="50"
+    showSearchBar="true"
+    showActionBar="true"
+    enableInlineEdit="true"
+    showRowLevelActions="true"
+/>
+
+    
+</aura:component>

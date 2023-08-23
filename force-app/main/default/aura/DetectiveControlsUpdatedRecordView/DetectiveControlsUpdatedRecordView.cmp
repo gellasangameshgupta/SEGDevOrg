@@ -1,0 +1,283 @@
+<aura:component controller="DetectiveControlsAutomationApex" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name="showTimeSlots" type="boolean" default="false"/>
+    <aura:attribute name="ShowDCAUpdate" type="boolean" default="false"/>
+    <aura:attribute name="showSubmitted" type="boolean" default="false"/>
+    <aura:attribute name="showProcessing" type="boolean" default="false" />
+    <aura:attribute name="showProcessing1" type="boolean" default="false" />
+    <aura:attribute name="submittedColumns" type="List" />
+    <aura:attribute name="submittedData" type="Object[]"/>
+    <aura:attribute name="StatusPicklist" type="String[]" />
+    <aura:attribute name="slotColumns" type="List" />
+    <aura:attribute name="slotData" type="Object[]"/>
+    <aura:attribute name="selectedData" type="List" />
+    <aura:attribute name="rowsForUpdate" type="Object[]"/>
+    <aura:attribute name='DCA_Update'  Type='Contact'  default="{ 'sobjectType': 'Contact',
+                                                                'DCA_Status__c':'',
+                                                                'DCA_ApprovalComment__c':'',
+                                                                 'Id':'',
+                                                                 }"/> 
+    <aura:attribute name="sortBy" type="String"/>
+    <aura:attribute name="sortDirection" type="String"/>
+    <aura:attribute name="sortBySubmitted" type="String"/>
+    <aura:attribute name="sortDirectionSubmitted" type="String"/>
+    <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true"/>
+    <aura:attribute name="rowsToLoad" type="Integer" default="10"/>
+    <aura:attribute name="rowsToLoadInit" type="Integer" default="10"/>
+    <aura:attribute name="totalNumberOfRows" type="Integer" default="10"/>
+    <aura:attribute name="loadMoreStatus" type="String" default=""/>
+    
+    <aura:attribute name="enableInfiniteLoadingSub" type="Boolean" default="true"/>
+    <aura:attribute name="rowsToLoadSub" type="Integer" default="10"/>
+    <aura:attribute name="totalNumberOfRowsSub" type="Integer" default="10"/>
+    <aura:attribute name="loadMoreStatusSub" type="String" default=""/>
+    
+    <aura:attribute name="searchName" type="String" description="search input"/>
+    <aura:attribute name="searchAuth" type="String" description="search input"/>
+    <aura:attribute name="searchRole" type="String" description="search input"/>
+
+
+    <aura:attribute name="Spinner" type="boolean" default="false"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:if isTrue="{!v.Spinner}">
+    <div aura:id="spinnerId" class="slds-spinner_container">
+       <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+         <span class="slds-assistive-text">Loading</span>
+         <div class="slds-spinner__dot-a"></div>
+         <div class="slds-spinner__dot-b"></div>
+       </div>
+    </div>
+ </aura:if>
+    
+    <article class="slds-card slds-size_2-of-2 ">
+       
+       
+       
+            <br/>
+        <aura:If isTrue="{!v.showProcessing1}">
+            
+                        <article class="slds-card" style ="background: white; padding-bottom: 5px;; padding-left: 20px;; padding-right: 20px;">
+            <footer class="slds-modal__footer">
+                <div class="slds-form">
+  					<div class="slds-form-element slds-form-element_horizontal">
+                        <!--
+                    <h2 class="slds-card__header-title">
+                        <div class="slds-text-heading_medium">Detective Control Automization</div>
+                    </h2>
+                -->
+              <aura:If isTrue="{!!v.showProcessing}">                                                          
+                        <lightning:button variant="brand"
+                                          label="Approve"
+                                          title="Approve"
+                                          onclick="{! c.ApproveModal }"/>
+                		<lightning:button variant="brand"
+                                          label="Reject"
+                                          title="Reject"
+                                          onclick="{! c.RejectModal }"/>
+                		<lightning:button variant="brand"
+                                          label="Delete User"
+                                          title="Delete User"
+                                          onclick="{! c.DeleteModal }"/>
+                  		<lightning:button variant="brand"
+                                          label="Department Change"
+                                          title="Department Change"
+                                          onclick="{! c.DepartmentChangeModal }"/>
+                </aura:If>
+                <aura:If isTrue="{!v.showProcessing}">
+                		<lightning:button variant="brand"
+                                          label="Processed"
+                                          title="Processed"
+                                          onclick="{! c.ProcessedModal }"/>
+                </aura:If>
+                        <lightning:button class="slds-float_left" variant="neutral" 
+                                          label="View All"
+                                          title="View all"
+                                          onclick="{! c.ViewAllData }"/>
+                    </div>
+                    
+                </div>
+                    </footer>
+                
+            </article>
+        </aura:If>
+
+ 
+               
+            
+                <div class="slds-p-bottom_small slds-p-left_xx-large">
+        <lightning:layout horizontalAlign="auto" multipleRows="true" >
+        	
+            <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+              <lightning:input value="{!v.searchName}"
+                               placeholder="Search First/Last Name.."
+                                 aura:id="searchField1"
+                                 label="First/Last Name"/>
+            </lightning:layoutItem>
+            
+            <lightning:layoutItem class="slds-p-left_small slds-p-bottom_small slds-p-top_x-small" flexibility="auto"  >
+            <lightning:input value="{!v.searchAuth}"
+                                 placeholder="Search Auth Type.."
+                                 aura:id="searchField2"
+                                 label="Auth Type"/>
+            </lightning:layoutItem>
+            
+            <lightning:layoutItem class="slds-p-left_small  slds-p-top_x-small slds-p-bottom_small" flexibility="auto"  >
+                <lightning:input value="{!v.searchRole}"
+                                 placeholder="Search Role.."
+                                 aura:id="searchField3"
+                                 label="Role"/>
+            </lightning:layoutItem>
+            
+            <lightning:layoutItem class="slds-p-left_small slds-p-right_small  slds-p-bottom_small slds-p-top_x-large" flexibility="auto"  >
+                <lightning:buttonGroup >  
+                    <lightning:button 
+                                      onclick="{!c.Search}"
+                                      variant="brand"
+                                      label="Search"
+                                      iconName="utility:search"/> &nbsp; &nbsp;
+                    <lightning:button 
+                                      onclick="{!c.ClearFilters}"
+                                      variant="brand"
+                                      label="Clear Filters"
+                                      iconName="utility:clear"/>
+                </lightning:buttonGroup>
+                
+            </lightning:layoutItem>
+            
+                    </lightning:layout>
+
+    </div>
+             <!--<aura:If isTrue="{!v.showTimeSlots}"> -->
+        <aura:If isTrue="{!v.showProcessing1}">
+            <div class="{!v.showTimeSlots ? 'slds-show' : 'slds-hide'}"> 
+            <div class="slds-p-left_large">
+                    <h2 class="slds-card__header-title">
+                        <div class="slds-text-heading_medium">Records Pending Action</div> 
+                    </h2>
+                <aura:If isTrue="{!not(empty(v.rowsForUpdate))}"> No of records selected:{!v.rowsForUpdate.length}</aura:If>
+               
+                </div>
+            <br/>
+            <article class="slds-card" style ="background: white; padding-bottom: 20px;; padding-left: 20px;; padding-right: 20px;">
+                <lightning:layout horizontalAlign="spread" verticalAlign="center"  multipleRows="true">
+                    <lightning:layoutItem  flexibility="grow" size="12" mediumDeviceSize="12" largeDeviceSize="12"  >
+                        
+                        <div class="force:slds" style="height: 300px">
+                            <lightning:datatable
+                                                 aura:id = "myTable"
+                                                 name="slotTable"
+                                                 keyField="Id"
+                                                 data="{! v.slotData }"
+                                                 columns="{! v.slotColumns }"
+                                                 hideCheckboxColumn="false"
+                                                 minColumnWidth="120"
+                                                 onrowselection="{!c.getSelectedRec}"
+                                                 onrowaction="{! c.handleRowAction }"
+                                                 selectedRows="{! v.selectedData }"
+                                                 sortedBy="{!v.sortBy}"
+                                                 sortedDirection="{!v.sortDirection}"
+                                                 defaultSortDirection="{!v.defaultSortDirection}"
+                                                 onsort="{!c.handleSort}"
+                                                 enableInfiniteLoading="{! v.enableInfiniteLoading }"
+                                                 loadMoreOffset="{! v.loadMoreOffset }"
+                                                 onloadmore="{! c.loadMoreData }"/>
+                            
+                        </div>
+                        
+                        
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </article>
+        </div>
+        </aura:If>
+             
+      <!--  </aura:If> -->
+        
+        
+                <div class="{!v.showSubmitted ? 'slds-show' : 'slds-hide'}"> 
+       <!-- <aura:If isTrue="{!v.showSubmitted}"> -->
+            <br/>
+            <div class="slds-p-left_large">
+                    <h2 class="slds-card__header-title">
+                        <div class="slds-text-heading_medium">Updated Records</div>
+                    </h2>
+                </div>
+            <br/>
+            <article class="slds-card" style ="background: white; padding-bottom: 20px;; padding-left: 20px;; padding-right: 20px;">
+                <lightning:layout horizontalAlign="spread" verticalAlign="center"  multipleRows="true">
+                    <lightning:layoutItem  flexibility="grow" size="12" mediumDeviceSize="12" largeDeviceSize="12"  >
+                        
+                        <div class="force:slds" style="height: 900px">
+                            <lightning:datatable
+                                                 name="slotTable"
+                                                 keyField="id"
+                                                 data="{! v.submittedData }"
+                                                 columns="{! v.submittedColumns }"
+                                                 hideCheckboxColumn="true"
+                                                 minColumnWidth="120"
+                                                 onrowaction="{! c.handleRowAction }"
+                                                 sortedBy="{!v.sortBySubmitted}"
+                                                 sortedDirection="{!v.sortDirectionSubmitted}"
+                                                 defaultSortDirection="{!v.defaultSortDirection}"
+                                                 onsort="{!c.handleSortSubmitted}"
+                                                 enableInfiniteLoading="{! v.enableInfiniteLoadingSub }"
+                                                 loadMoreOffset="{! v.loadMoreOffset }"
+                                                 onloadmore="{! c.loadMoreDataSubmitted }"/>
+                            
+                        </div>
+                    </lightning:layoutItem>
+                </lightning:layout>
+            </article>
+        </div>
+      <!--  </aura:If> -->
+        
+        
+          <aura:if isTrue="{!v.ShowDCAUpdate}">
+            <!-- Modal/Popup Box starts here-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box Header Starts here-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModal }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Update Status</h2>
+                    </header>
+                    <!--Modal/Popup Box Body Starts here-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:select label="Status" disabled="true" value="{!v.DCA_Update.DCA_Status__c}" >
+                            
+                            <aura:iteration items="{!v.StatusPicklist}" var="opt">
+                                <option value="{!opt}">{!opt}</option>
+                            </aura:iteration>
+                            
+                        </lightning:select>    
+                         <aura:If isTrue="{!!v.showProcessing}">
+                       <lightning:input type="text"  label="Status Change Comment" name="Comment" value="{!v.DCA_Update.DCA_ApprovalComment__c}" maxlength="500"/>
+                        </aura:If>
+                        <aura:If isTrue="{!v.showProcessing}">
+                       <lightning:input type="text"  label="Processing Comment" name="Comment" value="{!v.DCA_Update.DCA_ApprovalComment__c}" maxlength="500"/>
+                        </aura:If>
+                    </div>
+                    <!--Modal/Popup Box Footer Starts here-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModal }"/>
+                                                 
+                        <lightning:button variant="brand"
+                                          label="Submit"
+                                          title="Submit"
+                                          onclick="{! c.SubmitDCA }"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+        
+    </article>    
+</aura:component>

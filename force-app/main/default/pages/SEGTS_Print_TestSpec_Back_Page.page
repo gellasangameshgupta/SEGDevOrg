@@ -1,0 +1,16 @@
+<!-------------------------------------------------------------------------------------------------
+    Page Name       :SEGTS_Print_TestSpec_Back_Page
+    Purpose         :This page is using for Back and redirect to the same Test Specification record
+    Created By      :RBEI
+    Created Date    :Dec 2018
+--------------------------------------------------------------------------------------------------->
+<apex:page standardController="Test_Specification__c" extensions="SEGTS_Print_TestSpec_Back_CTRL" applyHtmlTag="false"  lightningStylesheets="true" standardStylesheets="false" showHeader="false">
+        <apex:form >
+            <apex:pageBlock >
+                <apex:pageBlockButtons location="Bottom">
+                    <apex:commandButton value="Back" action="{!Back}"/> <!-- Calling the Back method function in the controller -->
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+        </apex:form>
+        <apex:iframe src="/apex/SEGTS_Print_TestSpec_Page?ID={!cid}" scrolling="true"/>
+</apex:page>

@@ -1,0 +1,62 @@
+<aura:component >
+    <aura:attribute name="insertedChildIPRightList" type="Case[]"/>
+    
+    <div class="slds-scrollable_y"  style="height: 15rem">
+        <table class="slds-table slds-table_bordered slds-table_cell-buffer slds-no-row-hover slds-max-medium-table_stacked-horizontal" role="grid">
+            <thead>
+                <tr  class="slds-text-title_caps">
+                    <th scope="col">
+                        <div class="slds-truncate" title="Country">Country</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Type Of Right">Type Of Right</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Relationship To Parent">Relationship To Parent</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="IP Right ID">IP Right ID</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Law Firm Reference">Law Firm Reference</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Firm Attorney">Law Firm Attorney</div>
+                    </th>
+                    <th scope="col">
+                        <div class="slds-truncate" title="Law Firm">Law Firm</div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.insertedChildIPRightList}" var="ipRight">
+
+                   
+                <tr>
+                    <td>
+                        <ui:outputText value="{!ipRight.IP_Country__c}"/>
+                    </td>
+                    <td>
+                        <ui:outputText value="{!ipRight.IP_Type_of_Right__c}"/>
+                    </td>
+                    <td>
+                        <ui:outputText value="{!ipRight.IP_Relationship_to_Parent__c}"/>
+                    </td>
+                    <td>
+                        <a href="{!$Label.c.IP_IDFLightningURL+'/'+ipRight.Id}" target="_new">{!ipRight.IP_Right_ID__c}</a>
+                    </td>
+                    <td>
+                        <ui:outputText value="{!ipRight.IP_Law_Firm_Reference__c}"/>
+                    </td>
+                    <td>
+                        <ui:outputText value="{!ipRight.IP_Law_Firm__r.Name}"/>
+                    </td>
+                    <td>
+                        <ui:outputText value="{!ipRight.IP_Law_Firm_Text__c}"/>
+                    </td>
+                </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+    </div>
+</aura:component>

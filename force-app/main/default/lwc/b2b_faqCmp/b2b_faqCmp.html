@@ -1,0 +1,122 @@
+<!--
+* 
+* @ Name    :   b2b_faqCmp
+* @ Purpose :   This is a component for FAQs page
+* @ Author  :   Pradeep Chary
+*
+*   Date            |  Developer Name                 |  Version      |  Changes
+* ======================================================================================================
+*   09-06-2021      |  pradeep.chary@absyz.com        |  1.0          |  Initial Version
+*
+-->
+<template>
+    <!-- Spinner -->
+    <template if:true={blnShowSpinner}>
+        <lightning-spinner alternative-text="Loading" variant="brand" size="medium"></lightning-spinner>
+    </template>
+    <!-- Header -->
+    <div>
+        <div class="slds-var-p-vertical_x-small">
+            <span class="b2b-header-font-size">{label.CLB2B00017}</span>
+        </div>
+        <lightning-layout multiple-rows="true" vertical-align="end">
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6"
+                class="slds-var-p-vertical_medium">
+                <lightning-layout vertical-align="end">
+                    <lightning-layout-item>
+                        <lightning-combobox name="topic" label="Topics" value={strInitiallySelected}
+                            options={list_NavigationData} onchange={handleTopicChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item>
+                        <lightning-button label="RESET" onclick={handleReset} class="slds-var-p-left_xx-small">
+                        </lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="6"
+                class="slds-var-p-vertical_medium">
+                <lightning-input onchange={handleOnchange} value={strSearchText} type="search" label={label.CLB2B00019}
+                    variant="label-hidden" placeholder={label.CLB2B00019}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+    <!-- Exception Handling -->
+    <template if:true={blnError}>
+        <div class="slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+            <lightning-layout horizontal-align="spread" vertical-align="center">
+                <lightning-layout-item>
+                    <lightning-icon icon-name="utility:error" size="x-small" variant="inverse" alternative-text="error">
+                    </lightning-icon>
+                </lightning-layout-item>
+                <lightning-layout-item padding="horizontal-small">
+                    <h2>ERROR: {strErrorMessage}</h2>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </template>
+    <!-- Body -->
+    <lightning-layout class="slds-var-p-vertical_large">
+        <lightning-layout-item size="12" small-device-size="12" medium-device-size="12" large-device-size="12">
+
+            <!-- Data table -->
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="TOPIC">TOPIC
+                                <lightning-button-icon class="slds-var-p-left_small" icon-name="utility:sort"
+                                    onclick={handleSort} variant="bare" alternative-text="Sort" title="Sort">
+                                </lightning-button-icon>
+                            </div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"></div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 16px;">
+                    <template for:each={list_DisplayedFAQs} for:item="itemFAQ">
+                        <tr class="slds-hint-parent" key={itemFAQ.strCategory} onclick={handleClick}
+                            data-name={itemFAQ.strDisplayedDescription} data-value={itemFAQ.strSubject}>
+                            <td valign="top" data-label={itemFAQ.strCategory} scope="row" class="b2b-width-25">
+                                <div class="slds-truncate" title={itemFAQ.strCategory}>
+                                    <b>{itemFAQ.strCategory}</b>
+                                </div>
+                            </td>
+                            <td valign="top" data-label={itemFAQ.strSubject} class="b2b-width-68">
+                                <div class="slds-truncate" title="Subject">
+                                    <h2>{itemFAQ.strSubject}</h2>
+                                </div>
+                                <template if:true={itemFAQ.strDisplayedDescription}>
+                                    <div class="slds-truncate slds-var-p-vertical_medium" title="Description"
+                                        style="white-space: pre-wrap">
+                                        <lightning-formatted-rich-text value={itemFAQ.strDisplayedDescription}>
+                                        </lightning-formatted-rich-text>
+                                    </div>
+                                </template>
+                            </td>
+                            <td valign="top">
+                                <template if:false={itemFAQ.strDisplayedDescription}>
+                                    <lightning-icon icon-name="utility:chevronright" alternative-text="Show"
+                                        title="Show" class="b2b-icon b2b-rounded-border" size="x-small">
+                                    </lightning-icon>
+                                </template>
+                                <template if:true={itemFAQ.strDisplayedDescription}>
+                                    <lightning-icon icon-name="utility:chevrondown" alternative-text="Hide" title="Hide"
+                                        class="b2b-icon b2b-rounded-border" size="x-small">
+                                    </lightning-icon>
+                                </template>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+
+            <!-- Data table end -->
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

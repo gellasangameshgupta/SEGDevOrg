@@ -1,0 +1,91 @@
+<!--
+* 
+* @ Name 	:	IP_Scoring
+* @ Purpose : 	Updates the Scoring fields on Inventions
+* @ Author	: 	Madhura Vani
+*
+*   Date	        |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   25-03-2021      |  madhuravani.b@absyz.com		|  1.0          |  Initial Version
+-->
+
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global" >
+    <!-- attributes -->
+    <aura:attribute name="showSpinner" type="Boolean" description="enables or disables spinner" default="true" />
+    <aura:attribute name="saverecord" type="string" />
+    <aura:attribute name="today" type="Date" />
+     <aura:attribute name="loggedInUser" type="string" />
+    <aura:html tag="style">
+        .slds-modal__container{
+        max-width: 80rem !important;
+        width:80% !important;
+        }
+    </aura:html>
+    <aura:if isTrue="{!v.showSpinner}">
+        <lightning:spinner />
+    </aura:if>
+    <div class="modal-header slds-modal__header">
+        <h2 class="slds-text-heading_medium slds-hyphenate">Scoring</h2>
+    </div>
+    <!-- Record edit form -->
+    <div class="slds-scrollable_y slds-p-around_medium">
+        <lightning:recordEditForm aura:id="editForm" recordId="{!v.recordId}" 
+                                  objectApiName="Case" 
+                                  onload="{!c.handleLoad}"
+                                  onsubmit="{!c.handleSubmit}"
+                                  onsuccess="{!c.handleSuccess}">
+            <div class="slds-p-around_medium">
+                <lightning:layout multipleRows="true">
+                    <lightning:layoutItem size="6">
+                        <lightning:inputField aura:id="field" fieldName="Market_Share__c"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <label class="slds-form-element__label" for="text-input-id-1">
+                            Probability of Realisation
+                        </label>
+                        <lightning:helptext content="{!$Label.c.IP_ProbabilityOfRealisation}" />
+                        <lightning:inputField variant="label-hidden" aura:id="field" fieldName="IP_Probability_of_Realisation__c"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <lightning:inputField aura:id="field" fieldName="IP_Technology_Relevance__c"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <lightning:inputField aura:id="field" fieldName="IP_Work_Around_Effort__c"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <lightning:inputField aura:id="field" fieldName="IP_Proof__c"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <lightning:inputField aura:id="field" fieldName="IP_Strategy_Relevance__c"/>
+                    </lightning:layoutItem>
+                    <!--<lightning:layoutItem size="6">
+                        <lightning:inputField aura:id="field" fieldName="IP_Legal_Relevance__c"/>
+                    </lightning:layoutItem>-->
+                    <lightning:layoutItem size="6">
+                        <lightning:inputField aura:id="field" fieldName="IP_Current_Usage__c"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <lightning:inputField aura:id="field" fieldName="IP_Overall_Rating__c" required="true"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <lightning:inputField aura:id="field" fieldName="IP_Comments_for_usage__c"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="12">
+                        <lightning:inputField fieldName="IP_Product_Comments__c"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <lightning:inputField aura:id="field" fieldName="IP_SPPM_Comments__c" required="true"/>
+                    </lightning:layoutItem>
+                    <lightning:layoutItem size="6">
+                        <lightning:inputField style="display:none;" aura:id="field" fieldName="IP_Date_of_Scoring__c" value="{!v.today}"/>
+                        <lightning:inputField style="display:none;" aura:id="field" fieldName="IP_Scoring_Submitted_By__c" value="{!v.loggedInUser}"/>
+                    </lightning:layoutItem>
+                </lightning:layout> 
+            </div>
+            <div horizontalAlign="right" class="modal-footer slds-modal__footer">
+                <lightning:button variant="brand" label="Cancel" title="Cancel" type="text" onclick="{!c.handleCancel}"/>
+                <lightning:button variant="brand" label="Submit" title="Submit" type="submit"/>
+            </div>
+        </lightning:recordEditForm>
+    </div>
+</aura:component>

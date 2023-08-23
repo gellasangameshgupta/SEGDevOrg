@@ -1,0 +1,7 @@
+.THIS .inputSize {
+    width:100%; 
+}
+.THIS .slds-form-element__label{
+    display: none; 
+    visibility: hidden;
+}

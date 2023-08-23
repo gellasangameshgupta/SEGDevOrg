@@ -1,0 +1,92 @@
+<!--
+** VF page for saving new User.
+** Created By: Chitranjan Chetkar
+** Created On: 16/05/2018 
+-->
+
+<apex:page standardController="User" extensions="CreateNewUserExtension" lightningStylesheets="true" sidebar="true">
+    <script>
+    function updateUsername() {
+        var emailValue = document.getElementById("{!$Component.selected.pageBlock.selected1.EmailV }").value;
+        document.getElementById("{!$Component.selected.pageBlock.selected1.userV}").value = emailValue;
+    }
+    function updateAlias() {
+        var firstName = document.getElementById("{!$Component.selected.pageBlock.selected1.firstV }").value;
+        var lastName = document.getElementById("{!$Component.selected.pageBlock.selected1.lastV }").value; 
+        document.getElementById("{!$Component.selected.pageBlock.selected1.aliV}").value = firstName.substring(0,3)+ lastName.substring(0,3);
+        document.getElementById("{!$Component.selected.pageBlock.selected1.NickV}").value = firstName+" "+ lastName;
+    }
+    
+    </script>
+    <apex:form id="selected">
+        
+        <apex:pageBlock mode="edit" id="pageBlock">
+            <apex:pageMessages />              
+            <apex:pageBlockSection id="selected1" title="User Information" columns="2" collapsible="false">  
+                
+                <apex:inputField value="{!User.FirstName}" id="firstV"/>
+                <apex:inputField value="{!User.LastName}" onchange="updateAlias()" id="lastV"/>
+                <apex:inputField value="{!User.Email}" onchange="updateUsername()" id="EmailV" /> 
+                <apex:inputField value="{!User.Group_Email__c}"/>
+                <apex:inputField value="{!User.NT_User__c}" />
+                <apex:inputText value="{!User.Username}" id="userV" html-readonly="true"/>
+                <apex:inputText value="{!User.alias}" id="aliV" html-readonly="true"/>
+                <apex:inputText value="{!User.CommunityNickName}" id="NickV" html-readonly="true"/>
+                <apex:inputField value="{!User.ManagerId}"/>
+                <apex:inputField value="{!User.Phone}"/>
+                <apex:inputField value="{!User.MobilePhone}"/>
+            </apex:pageBlockSection>
+                        
+                        <apex:pageBlockSection title="SEG Information" id="selected">
+                            <apex:inputField value="{!User.EmployeeNumber}"/>
+                            <apex:inputField value="{!User.CompanyName}"/>
+                            <apex:inputField value="{!User.Cost_Center__c}"/>
+                            <apex:inputField value="{!User.Department}" required="true"/>
+                            <apex:inputField value="{!User.Floor__c}"/>
+                            <apex:inputField value="{!User.Office_the_person_is_sitting_in__c}"/> 
+                        </apex:pageBlockSection>
+
+						<apex:pageBlockSection title="Mailing Address" id="selected2">                            
+                            <apex:inputField value="{!User.Street}" />
+                            <apex:inputField value="{!User.City}"/>
+                            <apex:inputField value="{!User.State}" />                            
+                            <apex:inputField value="{!User.Country__c}" required="true"/>
+                            <apex:inputField value="{!User.PostalCode}"/> 
+                        </apex:pageBlockSection>
+                        
+                        <apex:pageBlockSection columns="2" showHeader="True" title="License Information" collapsible="True">      
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="License" for="lic"></apex:outputLabel>
+                                <apex:selectList id="mgr" value="{!User.UserType}" size="1" title="Manager">
+                                    <apex:selectOptions value="{!license}"></apex:selectOptions>
+                                    <u> <apex:actionSupport event="onchange" rerender="selectedProfileId"/></u>
+                                </apex:selectList>
+                            </apex:pageBlockSectionItem>    
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Profile" for="pro"></apex:outputLabel>
+                                <apex:selectList value="{!User.ProfileId}" multiselect="false" size="1" id="selectedProfileId">
+                                    <apex:selectOptions value="{!profile}" />
+                                </apex:selectList>
+                            </apex:pageBlockSectionItem>    
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Role" for="rol"></apex:outputLabel>
+                                <apex:selectList value="{!User.UserRoleId}" multiselect="false" size="1">
+                                    <apex:selectOptions value="{!Role}" />
+                                </apex:selectList>
+                            </apex:pageBlockSectionItem>             
+                        </apex:pageBlockSection>
+                        
+                        <apex:pageBlockSection title="Locale Settings" columns="2" collapsible="false">
+                            <apex:inputField value="{!User.EmailEncodingKey}"/>
+                            <apex:inputField value="{!User.TimeZoneSidKey}"/> 
+                            <apex:inputField value="{!User.LocaleSidKey}"/>
+                            <apex:inputField value="{!User.LanguageLocaleKey}"/>
+                        </apex:pageBlockSection> 
+                        
+                        <apex:pageBlockButtons location="bottom" >
+                            <apex:commandButton action="{!Save}" value=" Save "></apex:commandButton>         
+                            <apex:commandButton action="{!cancel}" value="Cancel"></apex:commandButton>
+                        </apex:pageBlockButtons>
+                    </apex:pageBlock>
+                </apex:form>
+            </apex:page>

@@ -1,0 +1,150 @@
+<apex:page lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" Standardcontroller="Case">
+    <apex:includeLightning />
+    <apex:includeScript value="{!$Resource.IP_Crypyo_JS}"/>
+    <script type="text/javascript">__sfdcSessionId = '{!$Api.Session_Id}';</script>
+    <script src="/soap/ajax/48.0/connection.js" type="text/javascript"></script> 
+    
+    <apex:slds />
+    
+    <div class="slds-scope">
+        <div id="fileList"></div>
+    </div>
+    <script>
+    window.$Label = window.$Label || {};
+    $Label.IP_SEGPrivateKey = '{!JSENCODE($Label.IP_SEGPrivateKey)}';
+    //var tempValue = '{!$CurrentPage.parameters.Id}';
+    // console.log('tempValue:: ',tempValue);
+    var recordtypeName = '{!$Label.IP_recordTypeFilter}';
+        var ipRecords = sforce.connection.query("select id from case where recordtype.name = '"+recordtypeName+"'");
+        console.log('ipRecords = ',ipRecords);
+    var tempValue = ipRecords.getArray('records')[0].Id;
+    var contentDocumentLinks = sforce.connection.query("select id, ContentDocumentId from ContentDocumentLink where LinkedEntityId='"+tempValue+"'");
+    console.log('contentDocumentLinksQuery--',contentDocumentLinks);
+    var contentdocId = [];
+    
+    
+    function getLimit(){
+        //var limit = 0;
+        var limitinLabel = {!$Label.IP_MassEncryptLimit};
+        // alert("limitinLabel = "+limitinLabel);
+        var limit = document.getElementById('{!$Component.form1.sec1.op1.LimitInput}');
+        //alert("Limit = "+limit);
+        var recordtypeName = '{!$Label.IP_recordTypeFilter}';
+        var ipRecords = sforce.connection.query("select id from case where Ip_Mass_Migrate__c = False And recordtype.name = '"+recordtypeName+"'Limit "+limitinLabel);
+        console.log('ipRecords = ',ipRecords);
+        console.log('Entity Id  is ',ipRecords.getArray('records')[0].Id);
+        console.log('length is ',ipRecords.getArray('records').length);
+        var listlength = ipRecords.getArray('records').length;
+        for(var j=0; j<listlength; j++)
+        {   console.log('j = ',j);
+            console.log('Entity Id inside loop  is ',ipRecords.getArray('records')[j].Id);
+            var contentDocumentLinks = sforce.connection.query("select id, ContentDocumentId from ContentDocumentLink where LinkedEntityId='"+ipRecords.getArray('records')[j].Id+"'");
+            //console.log('contentDocumentLinksQuery--',contentDocumentLinks);
+            var contentdocId = [];
+            if(contentDocumentLinks!=undefined && parseInt(contentDocumentLinks.size)>0)
+            {
+                for(var i=0; i<contentDocumentLinks.getArray('records').length; i++)
+                {
+                    var contentversions = [];
+                    var docId = contentDocumentLinks.getArray('records')[i].ContentDocumentId;
+                    var contentversions = sforce.connection.query("select id,FirstPublishLocationId, Title, PathOnClient,VersionData, FileType,FileExtension, ContentDocumentId,IP_MigratedFile__c,IP_IsMigratedFileUpload__c from ContentVersion where ContentDocumentId='"+docId+"'");
+                    //console.log('contentversions--',contentversions);
+                    var contentversionsnew = contentversions.getArray('records');
+                    // console.log('contentversionsnew--',contentversionsnew);
+                    if(contentversions!=undefined && parseInt(contentversions.size)>0){
+                        // console.log('inside if--');
+                        for(var k=0; k<contentversions.getArray('records').length; k++){
+                            // console.log('inside for--');
+                            if(contentversions.getArray('records')[k].IP_MigratedFile__c === "true"){
+                                //console.log('inside if2---',contentversions.getArray('records')[k]);
+                                // this.migratedFileRecords(contentversions1.getArray('records')[k]);
+                                var ContentData = contentversions.getArray('records')[k];
+                                //console.log('inside migratedFileRecords---',ContentData);
+                                var encrypted = CryptoJS.AES.encrypt(ContentData.VersionData, $Label.IP_SEGPrivateKey);
+                                var encryptedfilename = CryptoJS.AES.encrypt(ContentData.Title + '.' + ContentData.FileExtension, $Label.IP_SEGPrivateKey);
+                                //console.log('encryptedfilename---',encryptedfilename);
+                                var attachment = new sforce.SObject('contentVersion');
+                                attachment.Title = encryptedfilename.toString();
+                                attachment.VersionData = encrypted.toString();
+                                attachment.PathOnClient=encryptedfilename.toString();
+                                attachment.IP_IsMigratedFileUpload__c = true;
+                                var FirstPublishLocationId = sforce.connection.query("select id,ContentDocumentId,LinkedEntityId from ContentDocumentLink  where ContentDocumentId='"+ContentData.ContentDocumentId+"'");
+                                attachment.FirstPublishLocationId = ContentData.FirstPublishLocationId;
+                                //console.log('PathOnClient--',attachment.PathOnClient);
+                                //console.log('attachment--',attachment);
+                                //console.log('FirstPublishLocationId--', attachment.FirstPublishLocationId);
+                                var LiEntyId = ContentData.FirstPublishLocationId;
+                                var result = sforce.connection.create([attachment]);
+                                //console.log('result---',result);
+                                //console.log('result ID ---',result.Id);
+                                if (result[0].getBoolean("success") && result[0].id!=null) {
+                                    // console.log('resultId'+result[0].id);
+                                    var contentDocumentId = sforce.connection.query("select id,ContentDocumentId,FirstPublishLocationId  from ContentVersion where id='"+result[0].id+"'");
+                                    //console.log('CD ID inside if---',contentDocumentId);
+                                    var attachmentLink = new sforce.SObject('contentDocumentLink');
+                                    attachmentLink.ShareType='V';
+                                    var linkedEntyId = sforce.connection.query("select id,ContentDocumentId,LinkedEntityId from ContentDocumentLink  where ContentDocumentId='"+contentDocumentId.getArray("records")[0].ContentDocumentId+"'");
+                                    ////console.log('LD ID inside if---',linkedEntyId);
+                                    //console.log('LiEntyId ID inside if---',LiEntyId);
+                                    //console.log('linkedEntyId.getArray("records")[0].LinkedEntityId---',linkedEntyId.getArray("records")[0].LinkedEntityId);
+                                    //console.log('contentDocumentId.getArray("records")[0].ContentDocumentId---',contentDocumentId.getArray("records")[0].ContentDocumentId);
+                                    attachmentLink.LinkedEntityId=LiEntyId;
+                                    //console.log('attachmentLink.LinkedEntityId',attachmentLink.LinkedEntityId);
+                                    attachmentLink.ContentDocumentId=contentDocumentId.getArray("records")[0].ContentDocumentId;
+                                    // var createCDL = sforce.connection.create([attachmentLink]);
+                                    //console.log('createCDL---',createCDL);
+                                    // console.log('createCDLId'+createCDL[0].id);
+                                }
+                                var cvForDeletion = [];
+                                var cdForDeletion = [];
+                                var cdlForDeletion = [];
+                                
+                                if(ContentData.Id !== null && ContentData.Id !== ' ') {
+                                    //idsForDeletion.push(ContentData.ContentDocumentId);
+                                    // console.log('verson id for del--',ContentData.Id);
+                                    // console.log('document id for del--',ContentData.ContentDocumentId);
+                                    cvForDeletion.push(ContentData.Id);
+                                    cdForDeletion.push(ContentData.ContentDocumentId);
+                                }
+                                var cdlQuery = 'select id, ContentDocumentId from ContentDocumentLink where ContentDocumentId IN (\'' + cdForDeletion.join('\',\'') + '\')';
+                                var cdlQueryRes = sforce.connection.query(cdlQuery);
+                                
+                                for(var i=0; i<cdlQueryRes.getArray('records').length; i++){
+                                    cdlForDeletion.push(cdlQueryRes.getArray('records')[i].id);
+                                }
+                                
+                                //console.log('cvForDeletion--',cvForDeletion);
+                                //console.log('cdlForDeletion--',cdlForDeletion);
+                                //console.log('cdForDeletion--',cdForDeletion);
+                                
+                                var deletedCD = sforce.connection.deleteIds(cdForDeletion);
+                                //console.log('deleted CD---',cdForDeletion);
+                                //  }
+                            }
+                        }
+                    }
+                }
+            }
+          var processedIPRecord = new sforce.SObject('case');
+         processedIPRecord = ipRecords.getArray('records')[j];
+         processedIPRecord.Ip_Mass_Migrate__c = true;
+         console.log('Processed record '+processedIPRecord);
+         resultUpdate = sforce.connection.update([processedIPRecord]);
+        }
+        
+        
+    }
+    </script>
+    
+    <apex:form id="form1">
+        
+        <apex:sectionHeader title="Mass Encrypt Migrated files" subtitle="Files to be processed " id="sec1"/>
+        <apex:outputPanel styleClass="rules" id="op1">
+            <apex:outputText value="Value stored in Demo custom label is : "/>
+            <apex:outputText value="{!$Label.IP_MassEncryptLimit}" style="font-weight:bold"/><br />{!$Label.IP_recordTypeFilter}
+            <!--please select the number of files to be processed
+<apex:inputText value="{!LimitValue}" label=" limit = " id="LimitInput"/>-->
+            <apex:CommandButton value="Encrypt" onclick="getLimit()"  />
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,600 @@
+/************************************************************************************************************************************************
+    Class Name      :SEGTS_Ctrl_CreateNewVersionComponent 
+    Test Class      :SEGTS_Ctrl_CreateNewVersionComponent_Tes
+    Purpose         :This class is used with component for creating a New Version of a existing Test Spec on click on "Create New Version" Button
+    Created By      :RBEI
+    Created Date    :Feb 2019
+*************************************************************************************************************************************************/
+public class SEGTS_Ctrl_CreateNewVersionComponent {
+     @AuraEnabled
+    public static List<Test_Specification__c> getTestSpec(Id pageId) {
+        List<Test_Specification__c> testSpec;
+        Test_Specification__c t;
+        if(pageId!=null)
+        {    
+            testSpec = [Select id,Name,Test_Spec_Type__c,Test_Specification__c,Designation__c,Condition__c,Additional_Features__c,Generated_On_PDF__c,Generated_By_PDF__c,
+                                                    Status__c,Stand__c,Starter_Type__c,Version_No__c,FLC__c,NB__c,Information__c,Change_Nr__c,Char_Curve_1__c,
+                                                    Char_Curve_2__c, Change__c,Temp_1_C__c,Temp_2_C__c,Remarks__c,Solenoid__c,Relation_amount__c,SAP_Doc__c,CreatedById,LastModifiedById,
+                                                   Invalidated_By__c,i__c,RecordTypeId,Generated_By__c,OwnerId,Starter__c from Test_Specification__c Where ID =:pageId];
+        } 
+        if(testSpec!=null && testSpec.size()>0)
+        {    
+            t=[Select id,Version_No__c from Test_Specification__c where Name=:testSpec[0].Name Order by Version_No__c desc limit 1];
+        }    
+        if(t.Version_No__c!=null)
+        {
+            testSpec[0].Version_No__c=t.Version_No__c+1;
+            //testSpec[0].Name='';
+            testSpec[0].Status__c='Draft';
+            //testSpec[0].Change__c = '';
+        }    
+        System.debug('testSpec---'+testSpec);
+        return testSpec;
+    }
+    @AuraEnabled
+    public static ID saveTestSpec(List<Test_Specification__c> testSpec,ID parentId)
+    {
+        Map<String,String> resultMap = new Map<String,String>();
+        
+        List<Test_Specification__c> parentList=new List<Test_Specification__c>();
+        List<Test_Specification__c> secList=new List<Test_Specification__c>();
+        List<Test_Specification__c> blkList=new List<Test_Specification__c>(); 
+        List<Test_Specification__c> resultList=new List<Test_Specification__c>();
+        Set<Id> sectionId = new Set<Id>();
+        for(Test_Specification__c t:testSpec)
+        {
+            Test_Specification__c parent=new Test_Specification__c();
+            parent.Name=t.Name;
+            parent.Version_No__c=t.Version_No__c;
+            parent.Starter__c=t.Starter__c;
+            parent.Test_Specification__c=t.Test_Specification__c;
+            parent.Change__c=t.Change__c;
+            parent.Change_Nr__c=t.Change_Nr__c;
+            parent.Char_Curve_1__c=t.Char_Curve_1__c;
+            parent.Char_Curve_2__c=t.Char_Curve_2__c;
+            parent.FLC__c=t.FLC__c;
+            parent.i__c=t.i__c;
+            parent.NB__c=t.NB__c;
+            parent.Relation_amount__c=t.Relation_amount__c;
+            parent.Remarks__c=t.Remarks__c;
+            parent.SAP_Doc__c=t.SAP_Doc__c;
+            parent.Solenoid__c=t.Solenoid__c;
+            parent.Stand__c=t.Stand__c;
+            parent.Starter_Type__c=t.Starter_Type__c;
+            parent.Status__c=t.Status__c;
+            parent.Temp_1_C__c=t.Temp_1_C__c;
+            parent.Temp_2_C__c=t.Temp_2_C__c;
+            parent.Information__c=t.Information__c;
+            parent.Test_Spec_Type__c=t.Test_Spec_Type__c;
+            parent.Test_Specification__c=t.Test_Specification__c;
+            parent.Version_No__c=t.Version_No__c;
+            parent.Additional_Features__c=t.Additional_Features__c;
+            parent.Generated_By__c=userInfo.getUserId();
+            parent.Version_Generated_By__c=UserInfo.getUSerId();
+            parent.Version_Generated_On__c=System.Today();
+            parentList.add(parent);
+        }
+        insert parentList;
+        System.debug('parentList---'+parentList);
+        Map<Test_Specification__c,Test_Specification__c> sectionMap = new Map<Test_Specification__c,Test_Specification__c>();
+        for(Test_Specification__c t:[Select id,Name,Test_Section_Header__c,Order_No__c from Test_Specification__c where Parent_Test_Specification__c=:parentId])
+        {
+            Test_Specification__c section=t.clone(false,true);
+            section.Parent_Test_Specification__c=parentList[0].id;
+            section.Name=t.Test_Section_Header__c;
+            section.Order_No__c=t.Order_No__c;
+            secList.add(section);
+            sectionId.add(t.id);
+            sectionMap.put(t,section);
+            System.debug('sectionMap::::::'+sectionMap);
+        }
+        insert secList;
+        set<ID> blckId=new Set<Id>();
+        Map<Test_Specification__c,Test_Specification__c> blockMap = new Map<Test_Specification__c,Test_Specification__c>();
+        for(Test_Specification__c blk:[Select id,Test_Block_Header__c,Parent_Test_Specification__c,Order_No__c  from Test_Specification__c where Parent_Test_Specification__c in:sectionId])
+        {
+            for(Test_Specification__c sec:sectionMap.keyset())
+            {
+                if(sec.id==blk.Parent_Test_Specification__c)
+                {
+                    Test_Specification__c block=blk.clone(false,true);
+                    Test_Specification__c section=sectionMap.get(sec);
+                    block.Parent_Test_Specification__c=section.id;
+                    block.Name=blk.Test_Block_Header__c;
+                    block.Order_No__c=blk.Order_No__c;
+                    blkList.add(block);
+                    blckId.add(blk.id);
+                    blockMap.put(blk,block);
+                }
+            }
+        }
+        insert blkList; 
+        for(Test_Specification__c re:[select id,Parent_Test_Specification__c,Designation__c,Order_No__c,Condition__c,Unit__c,
+                                      Interface__c,Remark__c,Size__c,Value_Toleran__c from Test_Specification__c where Parent_Test_Specification__c in:blckId])
+        {
+            for(Test_Specification__c blk:blockMap.keyset())
+            {
+                if(blk.id==re.Parent_Test_Specification__c)
+                {
+                    Test_Specification__c results=re.clone(false,true);
+                    Test_Specification__c block=blockMap.get(blk);
+                    results.Parent_Test_Specification__c=block.id;
+                    results.Name=re.Designation__c;
+                    results.Designation__c=re.Designation__c;
+                    results.Order_No__c=re.Order_No__c;
+                    results.Condition__c=re.Condition__c;
+                    //added unit mapping - INC0101885
+                    results.Unit__c=re.Unit__c;
+                    results.Interface__c=re.Interface__c;
+                    results.Remark__c=re.Remark__c;
+                    results.Size__c=re.Size__c;
+                    results.Value_Toleran__c =re.Value_Toleran__c;
+                    resultList.add(results);
+                }
+            }
+        }
+        insert resultList;
+         for(Test_Specification__c trslts:resultList)
+            {
+                Test_Specification__c  prnt=new Test_Specification__c();
+                prnt.id=parentList[0].Id;
+                if(trslts.Interface__c=='Auslaufzeit')
+                {
+                    if(String.isEmpty(prnt.Auslaufzeit__c))
+                    {
+                        prnt.Auslaufzeit__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Belast')
+                {
+                    if(String.isEmpty(prnt.Belast__c))
+                    {
+                        prnt.Belast__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Beschl')
+                {
+                    if(String.isEmpty(prnt.Beschl__c))
+                    {
+                        prnt.Beschl__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Dauer1')
+                {
+                    if(String.isEmpty(prnt.Dauer1__c))
+                    {
+                        prnt.Dauer1__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Dauer2')
+                {
+                    if(String.isEmpty(prnt.Dauer2__c))
+                    {
+                        prnt.Dauer2__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Dauer3')
+                {
+                    if(String.isEmpty(prnt.Dauer3__c))
+                    {
+                        prnt.Dauer3__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Drehzahl')
+                {
+                    if(String.isEmpty(prnt.Drehzahl__c))
+                    {
+                        prnt.Drehzahl__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Feld12A')
+                {
+                    if(String.isEmpty(prnt.Feld12A__c))
+                    {
+                        prnt.Feld12A__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Feld12B')
+                {
+                    if(String.isEmpty(prnt.Feld12B__c))
+                    {
+                        prnt.Feld12B__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Feld12C')
+                {
+                    if(String.isEmpty(prnt.Feld12C__c))
+                    {
+                        prnt.Feld12C__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='I1')
+                {
+                    if(String.isEmpty(prnt.I1__c))
+                    {
+                        prnt.I1__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='I1_min')
+                {
+                    if(String.isEmpty(prnt.I1_min__c))
+                    {
+                        prnt.I1_min__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='I2')
+                {
+                    if(String.isEmpty(prnt.I2__c))
+                    {
+                        prnt.I2__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='I2_min')
+                {
+                    if(String.isEmpty(prnt.I2_min__c))
+                    {
+                        prnt.I2_min__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='I3')
+                {
+                    if(String.isEmpty(prnt.I3__c))
+                    {
+                        prnt.I3__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Kenntemp')
+                {
+                    if(String.isEmpty(prnt.Kenntemp__c))
+                    {
+                        prnt.Kenntemp__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Leerlauf')
+                {
+                    if(String.isEmpty(prnt.Leerlauf__c))
+                    {
+                        prnt.Leerlauf__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='M1')
+                {
+                    if(String.isEmpty(prnt.M1__c))
+                    {
+                        prnt.M1__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='M2')
+                {
+                    if(String.isEmpty(prnt.M2__c))
+                    {
+                        prnt.M2__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='M3')
+                {
+                    if(String.isEmpty(prnt.M3__c))
+                    {
+                        prnt.M3__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Memo16a')
+                {
+                    if(String.isEmpty(prnt.Memo16a__c))
+                    {
+                        prnt.Memo16a__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Memo16b')
+                {
+                    if(String.isEmpty(prnt.Memo16b__c))
+                    {
+                        prnt.Memo16b__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Memo16c')
+                {
+                    if(String.isEmpty(prnt.Memo16c__c))
+                    {
+                        prnt.Memo16c__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Memo17a')
+                {
+                    if(String.isEmpty(prnt.Memo17a__c))
+                    {
+                        prnt.Memo17a__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Memo17b')
+                {
+                    if(String.isEmpty(prnt.Memo17b__c))
+                    {
+                        prnt.Memo17b__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Memo17c')
+                {
+                    if(String.isEmpty(prnt.Memo17c__c))
+                    {
+                        prnt.Memo17c__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Memo17d')
+                {
+                    if(String.isEmpty(prnt.Memo17d__c))
+                    {
+                        prnt.Memo17d__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Messspannung')
+                {
+                    if(String.isEmpty(prnt.Messspannung__c))
+                    {
+                        prnt.Messspannung__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Messzeit10')
+                {
+                    if(String.isEmpty(prnt.Messzeit10__c))
+                    {
+                        prnt.Messzeit10__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Messzeit11')
+                {
+                    if(String.isEmpty(prnt.Messzeit11__c))
+                    {
+                        prnt.Messzeit11__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Messzeit13')
+                {
+                    if(String.isEmpty(prnt.Messzeit13__c))
+                    {
+                        prnt.Messzeit13__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Messzeit5')
+                {
+                    if(String.isEmpty(prnt.Messzeit5__c))
+                    {
+                        prnt.Messzeit5__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Messzeit6')
+                {
+                    if(String.isEmpty(prnt.Messzeit6__c))
+                    {
+                        prnt.Messzeit6__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Messzeit7')
+                {
+                    if(String.isEmpty(prnt.Messzeit7__c))
+                    {
+                        prnt.Messzeit7__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='n1')
+                {
+                    if(String.isEmpty(prnt.n1__c))
+                    {
+                        prnt.n1__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='n1_max')
+                {
+                    if(String.isEmpty(prnt.n1_max__c))
+                    {
+                        prnt.n1_max__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='n2')
+                {
+                    if(String.isEmpty(prnt.n2__c))
+                    {
+                        prnt.n2__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='n2_max')
+                {
+                    if(String.isEmpty(prnt.n2_max__c))
+                    {
+                        prnt.n2_max__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='n3')
+                {
+                    if(String.isEmpty(prnt.n3__c))
+                    {
+                        prnt.n3__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='n3_max')
+                {
+                    if(String.isEmpty(prnt.n3_max__c))
+                    {
+                        prnt.n3_max__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='nl')
+                {
+                    if(String.isEmpty(prnt.nl__c))
+                    {
+                        prnt.nl__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='P14a')
+                {
+                    if(String.isEmpty(prnt.P14a__c))
+                    {
+                        prnt.P14a__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='P14b')
+                {
+                    if(String.isEmpty(prnt.P14b__c))
+                    {
+                        prnt.P14b__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='P15a')
+                {
+                    if(String.isEmpty(prnt.P15a__c))
+                    {
+                        prnt.P15a__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='P15b')
+                {
+                    if(String.isEmpty(prnt.P15b__c))
+                    {
+                        prnt.P15b__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='P16a')
+                {
+                    if(String.isEmpty(prnt.P16a__c))
+                    {
+                        prnt.P16a__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='P16b')
+                {
+                    if(String.isEmpty(prnt.P16b__c))
+                    {
+                        prnt.P16b__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='pruefnr')
+                {
+                    if(String.isEmpty(prnt.pruefnr__c))
+                    {
+                        prnt.pruefnr__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Strom')
+                {
+                    if(String.isEmpty(prnt.Strom__c))
+                    {
+                        prnt.Strom__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Textfeld16')
+                {
+                    if(String.isEmpty(prnt.Textfeld16__c))
+                    {
+                        prnt.Textfeld16__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U1')
+                {
+                    if(String.isEmpty(prnt.U1__c))
+                    {
+                        prnt.U1__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U10')
+                {
+                    if(String.isEmpty(prnt.U10__c))
+                    {
+                        prnt.U10__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U11')
+                {
+                    if(String.isEmpty(prnt.U11__c))
+                    {
+                        prnt.U11__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U2')
+                {
+                    if(String.isEmpty(prnt.U2__c))
+                    {
+                        prnt.U2__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U3')
+                {
+                    if(String.isEmpty(prnt.U3__c))
+                    {
+                        prnt.U3__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U5')
+                {
+                    if(String.isEmpty(prnt.U5__c))
+                    {
+                        prnt.U5__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U5M')
+                {
+                    if(String.isEmpty(prnt.U5M__c))
+                    {
+                        prnt.U5M__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U6')
+                {
+                    if(String.isEmpty(prnt.U6__c))
+                    {
+                        prnt.U6__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U6M')
+                {
+                    if(String.isEmpty(prnt.U6M__c))
+                    {
+                        prnt.U6M__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U7')
+                {
+                    if(String.isEmpty(prnt.U7__c))
+                    {
+                        prnt.U7__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='U7M')
+                {
+                    if(String.isEmpty(prnt.U7M__c))
+                    {
+                        prnt.U7M__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Wert17a')
+                {
+                    if(String.isEmpty(prnt.Wert17a__c))
+                    {
+                        prnt.Wert17a__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='Wert17b')
+                {
+                    if(String.isEmpty(prnt.Wert17b__c))
+                    {
+                        prnt.Wert17b__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                if(trslts.Interface__c=='I3_min')
+                {
+                    if(String.isEmpty(prnt.I3_min__c))
+                    {
+                        prnt.I3_min__c=trslts.Value_Toleran__c;
+                    }    
+                }
+                update prnt;
+            }            
+        resultMap.put('status', 'Success');
+        resultMap.put('message', 'Test Specification successfully Cloned'); 
+            //throw new AuraHandledException('Test Specification successfully Cloned');
+        
+        return parentList[0].id;
+        
+    }
+
+
+}

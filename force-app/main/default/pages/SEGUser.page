@@ -1,0 +1,34 @@
+<!--
+** VF page for holding three user actions: Create User and Reset Password.
+** Created By: Chitranjan Chetkar
+** Created On: 16/05/2018 
+-->
+
+<apex:page controller="SEGUserController" lightningStylesheets="true" sidebar="true">
+    
+    <apex:slds />
+    <apex:form id="theForm"> 
+        <apex:pageBlock > 	     
+            <div class="slds-scope">
+                <br/><br/><br/>
+                
+                <div align="center">
+                    <apex:image id="theImage" value="{!$Resource.SEGUserCreationAPP}" width="420" height="420" alt="Description of image here"/>
+                </div>
+                <br/><br/> 
+                <div class="slds-media__body">
+                    <div class="slds-text-heading_large">
+                        <div class="slds-text-align_center">
+                            Welcome to SEG User Page
+                        </div>
+                    </div> <br/><br/><br/> 
+                    
+                    <div class="slds-text-align_center">
+                        <apex:commandButton action="{!createNewUser}" value="New User" /> 
+                        <apex:commandButton action="{!resetPassword}" value="Reset Password" /> 
+                    </div>
+                </div>
+            </div>    
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

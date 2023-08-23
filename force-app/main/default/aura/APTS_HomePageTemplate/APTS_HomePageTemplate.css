@@ -1,0 +1,45 @@
+.flexipageHeader{
+    display : none;
+}
+.THIS {
+}
+.THIS .paddingleft75rem{
+    padding-left : .75rem !important;
+}
+.THIS .paddingleft7px{
+    padding-left : 7px !important;
+}
+.THIS .paddingright75rem{
+    padding-right : .75rem !important;
+}
+.THIS .paddingleftright0px{
+    padding-left : 0px !important;
+    padding-right : 0px !important;
+}
+.THIS .paddingtop0px{
+    padding-top: 2px;
+}
+.THIS .paddingbottom0px{
+    padding-bottom: 6px;
+}
+.THIS .width43per{
+    width : 42% !important;
+}
+.THIS .width32per{
+    width : 31% !important;
+}
+.THIS .width12per{
+    width : 12% !important;
+}
+.THIS .width33per{
+    width : 32% !important;
+}
+.THIS .width67per{
+    width : 67% !important;
+}
+.THIS .height150px{
+    height : height150px !important;
+}
+.THIS .paddingright3px{
+    padding-right:3px;
+}

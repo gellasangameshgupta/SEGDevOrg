@@ -1,0 +1,42 @@
+<!--
+* 
+* @ Name    :    aqt_quotationTool
+* @ Purpose :    This is a parent component for the quotation tool
+* @ Author  :    Khushmeet Kaur
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   28-02-2022      |  khushmeet.kaur@absyz.com     |  1.0          |  Initial Version
+*
+-->
+<template>
+    <div class="slds-theme_default" style="min-height: 600px;">
+
+        <div class="slds-var-p-horizontal_large slds-var-p-vertical_small slds-border_bottom">
+            <lightning-progress-indicator current-step={intCurrentStep} type="path" variant="base">
+                <lightning-progress-step label="Step 1" value="s1" onblur={hanldeStepBlur} data-id='s1'>
+                </lightning-progress-step>
+                <lightning-progress-step label="Step 2" value="s2" data-id='s2'></lightning-progress-step>
+                <lightning-progress-step label="Step 3" value="s3" data-id='s3'></lightning-progress-step>
+            </lightning-progress-indicator>
+        </div>
+        <template if:true={blnScreen1}>
+            <c-aqt_create-account selected-details={selectedDetails} onproductsearch={handleProductSearch}
+                oneditquotelineitem={handleEditQuoteLineItems}></c-aqt_create-account>
+        </template>
+        <template if:true={blnSelectedProductExist}>
+            <c-aqt_product-select selected-product-data={objSelectedProduct} onload={handleProductSelectLoad}
+                onsuccess={fetchResultData} onpreviousscreen={handlePreviousScreen}>
+            </c-aqt_product-select>
+        </template>
+        <template if:true={blnQuoteLineItemRecord}>
+            <c-aqt_edit-quote-line-item-records obj-edit-line-item-details={objEditLineItemDetails}
+                onload={handleProductSelectLoad} onsuccess={fetchResultData} onpreviousscreen={handlePreviousScreen}>
+            </c-aqt_edit-quote-line-item-records>
+        </template>
+        <template if:true={blnRecordsCreated}>
+            <c-aqt_created-records-data created-records-data={objCreatedRecords}></c-aqt_created-records-data>
+        </template>
+
+    </div>
+</template>

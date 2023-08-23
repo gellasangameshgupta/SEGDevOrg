@@ -1,0 +1,30 @@
+<!----------------------------------------------------------------------------
+    Page Name       :SEGTS_Release_Redirect_Page
+    Purpose         :for clicking "Yes" or "No" button
+    Created By      :RBEI
+    Created Date    :Dec 2018
+------------------------------------------------------------------------------->
+<apex:page standardController="Test_Specification__c"  Extensions="SEGTS_Release_Redirect_CTRL" applyHtmlTag="false"  lightningStylesheets="true" standardStylesheets="false" showHeader="false" >
+   
+
+    
+    <apex:form >
+        <!--<apex:outputPanel rendered="{!refreshPage}">
+           <script>
+              window.top.location='/{!pid}';
+           </script>
+        </apex:outputPanel>-->
+        <apex:pageBlock >
+            <apex:pageBlockButtons location="bottom">
+               <div style="text-align: center" width="100%">
+                     <center><h2> Do you want to Approve?</h2></center>
+                    <apex:commandButton value="Yes" action="{!OK}" 
+                                        style="background-color:midnightblue;color:white;cursor: pointer;"/>
+                    <apex:commandButton value="No" action="{!Cancel}" 
+                                        Style="cursor: pointer;" />
+               </div>
+             </apex:pageBlockButtons>
+        </apex:pageBlock>
+   </apex:form>
+        <apex:iframe src="/apex/SEGTS_Release_Generate_PDF?ID={!pid}" scrolling="true"/>
+</apex:page>

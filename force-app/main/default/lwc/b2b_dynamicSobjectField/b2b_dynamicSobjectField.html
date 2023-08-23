@@ -1,0 +1,45 @@
+<!--
+* 
+* @ Name    :   b2b_dynamicSobjectField
+* @ Purpose :   The child component of b2b_dynamicSobjectForm
+* @ Author  :   Pradeep Chary
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   01-05-2023      |  pradeep.chary@absyz.com      |  1.0          |  Initial Version
+*
+-->
+<template>
+    <template if:true={datatypeString}>
+        <lightning-input type="text" name={objField.strApiName} label={objField.strLabel} value={objField.value}
+            onchange={handleChange}></lightning-input>
+    </template>
+    <template if:true={datatypeNumber}>
+        <lightning-input type="number" name={objField.strApiName} label={objField.strLabel} value={objField.value}
+            onchange={handleChange}></lightning-input>
+    </template>
+    <template if:true={datatypeDate}>
+        <lightning-input type="date" name={objField.strApiName} label={objField.strLabel} value={objField.value}
+            onchange={handleChange}></lightning-input>
+    </template>
+    <template if:true={datatypeDateTime}>
+        <lightning-input type="datetime" name={objField.strApiName} label={objField.strLabel}
+            onchange={handleChange}></lightning-input>
+    </template>
+    <template if:true={datatypePicklist}>
+        <lightning-combobox name={objField.strApiName} label={objField.strLabel} value={objField.value}
+            placeholder="Select" options={objField.list_PicklistValues} onchange={handleChange}></lightning-combobox>
+    </template>
+    <template if:true={datatypeEmail}>
+        <lightning-input type="email" name={objField.strApiName} label={objField.strLabel} value={objField.value}
+            onchange={handleChange}></lightning-input>
+    </template>
+    <template if:true={datatypePhone}>
+        <lightning-input type="tel" name={objField.strApiName} label={objField.strLabel} value={objField.value}
+            onchange={handleChange}></lightning-input>
+    </template>
+    <template if:true={datatypeCheckbox}>
+        <lightning-input type="checkbox" name={objField.strApiName} label={objField.strLabel} value={objField.value}
+            onchange={handleChange}></lightning-input>
+    </template>
+</template>

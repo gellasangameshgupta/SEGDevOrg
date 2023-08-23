@@ -1,0 +1,19 @@
+<!--
+* 
+* @ Name    :   aqt_quoteSubmitForApproval
+* @ Purpose :   This is a component to send the quote record for approval
+* @ Author  :   Khushmeet Kaur
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   01-03-2022      |  khushmeet.kaur@absyz.com     |  1.0          |  Initial Version
+*
+-->
+<template>
+    <template if:true={blnSpinner}>
+        <lightning-spinner alternative-text="Loading" size="medium" variant="brand"></lightning-spinner>
+    </template>
+    <div style="display:none;">
+        {recordId}
+    </div>
+</template>

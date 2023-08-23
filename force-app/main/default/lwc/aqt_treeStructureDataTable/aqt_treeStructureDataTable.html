@@ -1,0 +1,116 @@
+<!--
+*
+* @ Name    :   aqt_treeStructureDataTable
+* @ Purpose :   This component is on the Generate Quote
+* @ Author  :   Khushmeet Kaur
+*
+*   Date            |  Developer Name               |  Version      |  Changes
+* ======================================================================================================
+*   22-03-2022      |  khushmeet.kaur@absyz.com     |  1.0          |  Initial Version
+*
+-->
+<template>
+    <!--Content of the tree structure datatable-->
+    <lightning-layout horizontal-align="start" class="slds-border_bottom">
+        <lightning-layout-item class="slds-var-p-left_large slds-var-p-vertical_x-small">
+            <!-- Checkbox to select the data of the respective row -->
+            <lightning-input type="checkbox" title="Select" variant="label-hidden" name={recordId}
+                checked={isParentChecked} onchange={handleSelectionChange} data-index={index} id={recordId}
+                index={index}>
+            </lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-var-p-vertical_x-small">
+            <div class="vps-width-30px">
+                <lightning-button-icon size="x-small" icon-name={iconName} name={recordId}
+                    class="slds-var-p-around_xx-small" alternative-text="Expand" onclick={handleRecordExpand}>
+                    <label>Expand</label>
+                </lightning-button-icon>
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" large-device-size="11">
+            <lightning-layout class="slds-var-p-vertical_x-small">
+                <template for:each={gridHeader} for:item="field" for:index="index">
+                    <div key={field.apiName} class={columnClass}>
+                        <c-aqt_tree-data-table-cell record={rowDetail} field={field} column-wrap-class={columnWrapClass}
+                            index={index} ondiscountchange={handleDiscountChange}
+                            onapprovalrequired={handleApprovalRequired}>
+                        </c-aqt_tree-data-table-cell>
+                    </div>
+                </template>
+            </lightning-layout>
+
+            <lightning-layout multiple-rows vertical-align="end">
+                <template if:true={showChildData}>
+                    <template for:each={gridChildHeader} for:item="column">
+                        <lightning-layout-item key={column.apiName} size="12" small-device-size="6"
+                            medium-device-size="4" large-device-size="2" padding="around-small">
+                            <lightning-layout class="slds-form-element_readonly">
+                                <lightning-layout-item>
+                                    <span>{column.label}</span>
+                                </lightning-layout-item>
+                                <lightning-layout-item alignment-bump="left" class="slds-var-p-horizontal_small">
+                                    <c-aqt_tree-data-table-cell record={childRecord} field={column} index={index}>
+                                    </c-aqt_tree-data-table-cell>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </lightning-layout-item>
+                    </template>
+                    <lightning-layout vertical-align="center">
+                        <lightning-layout-item class="slds-var-p-vertical_x-small">
+                            <div class="vps-width-30px">
+                                <lightning-button-icon size="x-small" icon-name={iconName}
+                                    class="slds-var-p-around_xx-small" alternative-text="Expand"
+                                    onclick={handleChildRecordExpand}>
+                                    <label>Expand</label>
+                                </lightning-button-icon>
+                            </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-var-p-vertical_x-small">
+                            Expand for Last Price Offered
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+            </lightning-layout>
+
+            <lightning-layout multiple-rows class="slds-var-p-vertical_small">
+                <template if:true={showChildLevel1Data}>
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered"
+                        aria-labelledby="element-with-table-label other-element-with-table-label">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Account Name">Account Name</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Price Offered">Price Offered</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={gridChildData} for:item="columnData">
+                                <tr class="slds-hint-parent" key={columnData.Id}>
+                                    <td data-label="Account Name">
+                                        <div class="slds-truncate" title={columnData.AccountName}>
+                                            {columnData.AccountName}
+                                        </div>
+                                    </td>
+                                    <td data-label="Price Offered">
+                                        <div class="slds-truncate" title={columnData.UnitPrice}>
+                                            <lightning-formatted-number value={columnData.UnitPrice}
+                                                format-style="currency" currency-code="EUR">
+                                            </lightning-formatted-number>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+                <template if:true={blnNoRecordAvailable}>
+                    <div class="slds-align_absolute-center" style="height:3rem;font-weight:bold">No records available
+                    </div>
+                </template>
+            </lightning-layout>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

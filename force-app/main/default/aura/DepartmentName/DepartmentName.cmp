@@ -1,0 +1,7 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes">
+    <aura:attribute name="DepartmentDetails" type="Account" />
+	<aura:handler event="c:DepartmentEvent" action="{!c.handleApplicationEvent}"/>
+	<h2 style="font-family:Titillium Web">
+        <b><center><aura:unescapedHtml value="{!v.DepartmentDetails.Name}"/>  </center></b>
+    </h2>
+</aura:component>

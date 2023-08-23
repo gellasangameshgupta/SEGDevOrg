@@ -1,0 +1,13 @@
+.b2b-cartImageThumbnail {
+    height: 7rem;
+    width: 7rem;
+}
+
+.b2b-cartItemTitle{
+    font-size: 20px; 
+    font-weight:bold;
+}
+
+.b2b-totalAmountfont{ 
+    font-weight:bold;
+}

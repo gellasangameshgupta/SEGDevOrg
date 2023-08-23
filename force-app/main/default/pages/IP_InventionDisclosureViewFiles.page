@@ -1,0 +1,110 @@
+<apex:page lightningStylesheets="true" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <apex:includeLightning />
+   
+    <apex:includeScript value="{!$Resource.IP_Crypyo_JS}"/>
+    <script type="text/javascript">__sfdcSessionId = '{!$Api.Session_Id}';</script>
+    <script src="/soap/ajax/48.0/connection.js" type="text/javascript"></script>
+    <apex:slds />
+        
+        <div class="slds-scope">
+            <div id="fileList"></div>
+            </div>
+            <script>
+                window.$Label = window.$Label || {};
+    $Label.IP_SEGPrivateKey = '{!JSENCODE($Label.IP_SEGPrivateKey)}';
+    
+    var contentDocumentLinks = sforce.connection.query("select id, ContentDocumentId from ContentDocumentLink where LinkedEntityId='"+getUrlVars()["idfid"]+"'");
+    console.log('contentDocumentLinksQuery--',contentDocumentLinks);
+    var contentdocId = [];
+    if(contentDocumentLinks!=undefined && parseInt(contentDocumentLinks.size)>0){
+        for(var i=0; i<contentDocumentLinks.getArray('records').length; i++){
+            contentdocId.push(contentDocumentLinks.getArray('records')[i].ContentDocumentId);
+        }
+        
+        var contentversions = [];
+        var contentVersionQuery = 'select id, Title, PathOnClient, FileType, FileExtension, ContentDocumentId, IP_FileFromEmail__c, IP_IsEmailUpload__c, IP_MigratedFile__c, IP_IsMigratedFileUpload__c from ContentVersion where FileType=\'UNKNOWN\' AND ContentDocumentId IN (\'' + contentdocId.join('\',\'') + '\')';
+        console.log('contentVersionQuery--',contentVersionQuery);
+        var contentversions = sforce.connection.query(contentVersionQuery);
+        console.log('contentversions--',contentversions);
+        var contentversionsnew = contentversions.getArray('records');
+        console.log('contentversionsnew--',contentversionsnew);
+        if(contentversions!=undefined && parseInt(contentversions.size)>0){
+            for(var k=0; k<contentversions.getArray('records').length; k++){
+                var decryptedtitleval = CryptoJS.AES.decrypt(contentversions.getArray('records')[k].Title, $Label.IP_SEGPrivateKey);
+                var decryptedpathval = CryptoJS.AES.decrypt(contentversions.getArray('records')[k].PathOnClient, $Label.IP_SEGPrivateKey);
+                contentversions.getArray('records')[k].Title = decryptedtitleval.toString(CryptoJS.enc.Utf8);
+                contentversions.getArray('records')[k].PathOnClient = decryptedpathval.toString(CryptoJS.enc.Utf8);
+            }
+            var filenametext='';
+            for(var j=0; j<contentversions.getArray('records').length; j++){
+                filenametext=filenametext+'<a href="javascript:void(0)" id="'+j+'" onclick="viewfile(this);">'+contentversions.getArray('records')[j].Title+'</a><br/>';
+            }
+        }
+        document.getElementById("fileList").innerHTML = filenametext;
+    }
+    
+    
+    function getUrlVars() {
+        var vars = {};
+        var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+            vars[key] = value;
+        });
+        return vars;
+    }
+    
+    function viewfile(op){
+        var aTag = document.createElement('a');        
+        var contentversionsnew = contentversions.getArray('records')[op.id];
+        console.log('contentversionsnew in view---',contentversionsnew);
+        var contentVersionQuery = 'select id, Title, PathOnClient, FileType, FileExtension, ContentDocumentId, VersionData, IP_FileFromEmail__c, IP_IsEmailUpload__c, IP_MigratedFile__c, IP_IsMigratedFileUpload__c from ContentVersion where ContentDocumentId IN (\'' + contentversionsnew.ContentDocumentId + '\')';
+        console.log('contentVersionQuery in view---',contentVersionQuery);
+        var contentversionsRec = sforce.connection.query(contentVersionQuery);
+        console.log('contentversionsRec in view--',contentversionsRec);
+        for(var k=0; k<contentversionsRec.getArray('records').length; k++){
+            var decryptedval = CryptoJS.AES.decrypt(contentversionsRec.getArray('records')[k].VersionData, $Label.IP_SEGPrivateKey);
+            console.log('decryptedval--',contentversionsRec.getArray('records')[k].IP_FileFromEmail__c);
+             if(contentversionsRec.getArray('records')[k].IP_IsEmailUpload__c === "true" || contentversionsRec.getArray('records')[k].IP_IsMigratedFileUpload__c === "true"){
+                console.log('if email or migration --');
+                contentversionsRec.getArray('records')[k].VersionData = decryptedval.toString(CryptoJS.enc.Utf8);
+             }else{
+                console.log('else--');
+                contentversionsRec.getArray('records')[k].VersionData =window.btoa(decryptedval.toString(CryptoJS.enc.Utf8));
+              }
+        }
+        //var contentversionsnew1 = contentversionsRec.getArray('records');
+        //console.log('contentversionsnew1 in view---',contentversionsnew1);
+        var names = contentversionsnew.PathOnClient.split('.');
+        if(names[1] === undefined){
+            names[1] = 'txt';
+        }
+        console.log('names[0]---',names[0]);
+        console.log('names[1]---',names[1]);
+        //if(names[1].toLowerCase()=='pdf' || names[1].toLowerCase()=='jpeg' || names[1].toLowerCase()=='png' || names[1].toLowerCase()=='gif' || names[1].toLowerCase()=='svg' || names[1].toLowerCase()=='jpg'){
+        /*if(names[1].toLowerCase()=='jpeg' || names[1].toLowerCase()=='gif' || names[1].toLowerCase()=='svg' || names[1].toLowerCase()=='jpg'){
+            var byteCharacters = atob(contentversionsRec.getArray('records')[0].VersionData); //contentversionsnew1.VersionData
+            var byteNumbers = new Array(byteCharacters.length);
+            for (var i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            var pdfonly;
+            if(names[1].toLowerCase()=='pdf'){
+                pdfonly = 'application/pdf;base64';
+            }else{
+                pdfonly = 'image/'+names[1].toLowerCase()+';base64';
+            }
+            var byteArray = new Uint8Array(byteNumbers);
+            var blob = new Blob([byteArray], {type: pdfonly});
+            var blobURL = URL.createObjectURL(blob);
+            window.open(blobURL,'_blank');
+            //window.open("data:application/pdf;base64, " + contentversionsRec.getArray('records')[0].VersionData,'_blank');
+        }else{*/
+            console.log('else---');
+            aTag.setAttribute('href','data:'+names[1]+';base64,'+contentversionsRec.getArray('records')[0].VersionData);
+            //aTag.setAttribute('href','www.google.com');
+            aTag.setAttribute('download',contentversionsnew.PathOnClient);
+        	aTag.innerText = contentversionsnew.PathOnClient;
+            aTag.click();
+    }
+    </script>
+    
+</apex:page>

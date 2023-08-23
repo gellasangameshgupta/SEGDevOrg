@@ -1,0 +1,28 @@
+.THIS {
+}
+.THIS .HideLine{
+    text-decoration:none !important;
+}
+.THIS .tileHeader{
+    background : red!important;
+        color: white;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px;
+    border-radius: 5px;
+}
+.THIS .centerContent{
+    font-size: 45px;
+}
+.THIS .aligncenter{
+	text-align: center !important;    
+}
+.THIS .tileFooter{
+    border-top: solid 1px grey;
+    font-weight: 400;
+    font-size: .70rem;
+    padding-bottom: 3px;
+    padding-top: 3px;
+    margin-left: 7px;
+    margin-right: 7px;
+}

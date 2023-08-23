@@ -1,0 +1,251 @@
+<!--  Page Name       :SEGTS_TestDeatilsView
+      Purpose         :Component used to View Test details for a Test spec in the tabular format
+      Created By      :RBEI
+      Created Date    :Feb 2019 -->
+<aura:component controller="SEGTS_ctrl_TestDeatilsViewLc" implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    <aura:handler name="init" action="{!c.getTestSpecs}" value="{!this}" />
+    <aura:attribute name="wrapperList" type="List"/>
+    <aura:attribute name="editCondition" type="String" default=""/>
+    
+    <aura:if isTrue="{!not(empty(v.wrapperList))}">
+       
+       <article class="slds-card">
+  		<div class="slds-card__header slds-grid">
+    	<header class="slds-media slds-media_center slds-has-flexi-truncate">
+      <div class="slds-media__figure">
+        <span class="slds-icon_container slds-icon-standard-account" title="account">
+        </span>
+      </div>
+      <div class="slds-media__body">
+        <h2 class="slds-card__header-title">
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap" >
+            <div class="slds-size_1-of-1">        
+                <div align="left" class="slds-box slds-box_x-small" style="position:relative;">
+                    <h6 style="font-size:10px"><i><b>Legend&nbsp;:&nbsp;</b># - Sequence No.; Var.- Variable; Cond.- Condition; V/T - Value/Tolerance;
+                        <b><span style="color: dimgray"> Section;</span><span style="color: slategray"> Block</span></b></i></h6>
+                </div>
+                </div>
+            </div>
+        </h2>
+      </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <aura:if isTrue="{!v.editCondition== 'EDIT' }">    
+      <div class="slds-no-flex">
+        <lightning:button  label="Edit" name="Edit" onclick="{!c.editTestDetails}"/>
+      </div>
+            </aura:if>   
+      
+    </header>
+            
+  </div>
+           
+  
+    
+     <div class="slds-p-top_none">
+    <table class="slds-table slds-table_cell-buffer  slds-table_bordered" style="word-wrap:break-word;
+                                                                                table-layout: fixed;margin-bottom:35px;margin-top:5px">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="slds-size_1-of-8" scope="col">
+                    <div class="slds-truncate" title="Sequence No."><b>#</b></div>
+                </th>
+                <th class="slds-size_1-of-4" scope="col">
+                    <div class="slds-truncate" title="Designation"><b>Designation</b></div>
+                </th>
+                <th class="slds-size_1-of-8" scope="col">
+                    <div class="slds-truncate" title="Variable"><b>Var.</b></div>
+                </th>
+                <th class="slds-size_1-of-8" scope="col">
+                    <div class="slds-truncate" title="Condition"><b>Cond.</b></div>
+                </th>
+                <th class="slds-size_1-of-8" scope="col">
+                    <div class="slds-truncate" title="Value/Tolerance"><b>V/T</b></div>
+                </th>
+                <th class="slds-size_1-of-8" scope="col">
+                    <div class="slds-truncate" title="Unit"><b>Unit</b></div>
+                </th>
+                <th class="slds-size_1-of-4" scope="col">
+                    <div class="slds-truncate" title="Interface"><b>Interface</b></div>
+                </th>
+                <th class="slds-size_1-of-2" scope="col">
+                    <div class="slds-truncate" title="Remarks"><b>Remarks</b></div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <aura:iteration items="{!v.wrapperList}" var="s">
+                <tr class="slds-hint-parent" style="background-color:#CDCCD2;font-weight:bold;">
+                    <td data-label="Sequence No">
+                        <div class="slds-truncate" title="Sequence No.">{!s.secorderno}</div>
+                    </td>
+                    <td data-label="Designation" colspan="7">
+                        <div class="slds-truncate" title="Designation">{!s.secname}</div>
+                    </td>
+                </tr>    
+                <aura:iteration items="{!s.blockList}" var="b">
+                    <tr class="slds-hint-parent" style="background-color:#D6DBDF;font-weight:bold;">
+                        <td data-label="Sequence No">
+                            <div class="slds-truncate" title="Sequence No.">{!b.blkorderno}</div>
+                        </td>
+                        <td data-label="Designation" colspan="7">
+                            <div class="slds-truncate" title="Designation">{!b.blkname}</div>
+                        </td>
+                    </tr>
+                    <aura:iteration items="{!b.resultListInner}" var="i">
+                        <tr class="slds-hint-parent">
+                            <td data-label="Sequence No">
+                                <div class="slds-truncate" title="Sequence No.">{!i.Order_No__c}</div>
+                            </td>
+                            <td data-label="Designation">
+                                <div class="slds-truncate" title="Designation">{!i.Designation__c}</div>
+                            </td>
+                            <td data-label="Size">
+                                <div class="slds-truncate" title="Variable">{!i.Size__c}</div>
+                            </td>
+                            <td data-label="Condition">
+                                <div class="slds-truncate" title="Condition">{!i.Condition__c}</div>
+                            </td>
+                            <td data-label="Value/Tolerance">
+                                <div class="slds-truncate" title="Value/Tolerance">{!i.Value_Toleran__c}</div>
+                            </td>
+                            <td data-label="Unit">
+                                <div class="slds-truncate" title="Unit">{!i.Unit__c}</div>
+                            </td>
+                            <td data-label="Interface">
+                                <div class="slds-truncate" title="Interface">{!i.Interface__c}</div>
+                            </td>
+                            <td data-label="Remarks">
+                                <div class="slds-truncate"  title="Remarks">{!i.Remark__c}</div>
+                            </td>
+                        </tr> 
+                    </aura:iteration>
+                </aura:iteration>    
+                
+            </aura:iteration>
+        </tbody>
+    </table>   
+        </div>   
+    
+  
+</article>
+           
+        
+        
+        <aura:set attribute="else">
+            <article class="slds-card">
+  		<div class="slds-card__header slds-grid">
+    	<header class="slds-media slds-media_center slds-has-flexi-truncate">
+      <div class="slds-media__figure">
+        <span class="slds-icon_container slds-icon-standard-account" title="account">
+        </span>
+      </div>
+      <div class="slds-media__body">
+        <h2 class="slds-card__header-title">
+            <div class="demo-only demo-only--sizing slds-grid slds-wrap" >
+            <div class="slds-size_1-of-1">        
+                <div align="left" class="slds-box slds-box_x-small" style="position:relative;">
+                    <h6 style="font-size:10px"><i><b>Legend&nbsp;:&nbsp;</b># - Sequence No.; Var.- Variable; Cond.- Condition; V/T - Value/Tolerance;
+                        <b><span style="color: dimgray"> Section;</span><span style="color: slategray"> Block</span></b></i></h6>
+                </div>
+                </div>
+            </div>
+        </h2>
+      </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <div class="slds-no-flex">
+        <lightning:button title="Create" label="Create"  onclick="{!c.openTestDeatils}" />
+      </div>
+    </header>
+  </div>
+  
+    
+     <div class="slds-p-top_none">
+    <table class="slds-table slds-table_cell-buffer  slds-table_bordered" style="word-wrap:break-word;
+                                                                                table-layout: fixed;margin-bottom:35px;margin-top:5px">
+        <thead>
+            <tr class="slds-line-height_reset">
+                <th class="slds-size_1-of-8" scope="col">
+                    <div class="slds-truncate" title="Sequence No."><b>#</b></div>
+                </th>
+                <th class="slds-size_1-of-4" scope="col">
+                    <div class="slds-truncate" title="Designation"><b>Designation</b></div>
+                </th>
+                <th class="slds-size_1-of-8" scope="col">
+                    <div class="slds-truncate" title="Variable"><b>Var.</b></div>
+                </th>
+                <th class="slds-size_1-of-8" scope="col">
+                    <div class="slds-truncate" title="Condition"><b>Cond.</b></div>
+                </th>
+                <th class="slds-size_1-of-8" scope="col">
+                    <div class="slds-truncate" title="Value/Tolerance"><b>V/T</b></div>
+                </th>
+                <th class="slds-size_1-of-8" scope="col">
+                    <div class="slds-truncate" title="Unit"><b>Unit</b></div>
+                </th>
+                <th class="slds-size_1-of-4" scope="col">
+                    <div class="slds-truncate" title="Interface"><b>Interface</b></div>
+                </th>
+                <th class="slds-size_1-of-2" scope="col">
+                    <div class="slds-truncate" title="Remarks"><b>Remarks</b></div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <aura:iteration items="{!v.wrapperList}" var="s">
+                <tr class="slds-hint-parent" style="background-color:#CDCCD2;font-weight:bold;">
+                    <td data-label="Sequence No">
+                        <div class="slds-truncate" title="Sequence No.">{!s.secorderno}</div>
+                    </td>
+                    <td data-label="Designation" colspan="7">
+                        <div class="slds-truncate" title="Designation">{!s.secname}</div>
+                    </td>
+                </tr>    
+                <aura:iteration items="{!s.blockList}" var="b">
+                    <tr class="slds-hint-parent" style="background-color:#D6DBDF;font-weight:bold;">
+                        <td data-label="Sequence No">
+                            <div class="slds-truncate" title="Sequence No.">{!b.blkorderno}</div>
+                        </td>
+                        <td data-label="Designation" colspan="7">
+                            <div class="slds-truncate" title="Designation">{!b.blkname}</div>
+                        </td>
+                    </tr>
+                    <aura:iteration items="{!b.resultListInner}" var="i">
+                        <tr class="slds-hint-parent">
+                            <td data-label="Sequence No">
+                                <div class="slds-truncate" title="Sequence No.">{!i.Order_No__c}</div>
+                            </td>
+                            <td data-label="Designation">
+                                <div class="slds-truncate" title="Designation">{!i.Designation__c}</div>
+                            </td>
+                            <td data-label="Size">
+                                <div class="slds-truncate" title="Variable">{!i.Size__c}</div>
+                            </td>
+                            <td data-label="Condition">
+                                <div class="slds-truncate" title="Condition">{!i.Condition__c}</div>
+                            </td>
+                            <td data-label="Value/Tolerance">
+                                <div class="slds-truncate" title="Value/Tolerance">{!i.Value_Toleran__c}</div>
+                            </td>
+                            <td data-label="Unit">
+                                <div class="slds-truncate" title="Unit">{!i.Unit__c}</div>
+                            </td>
+                            <td data-label="Interface">
+                                <div class="slds-truncate" title="Interface">{!i.Interface__c}</div>
+                            </td>
+                            <td data-label="Remarks">
+                                <div class="slds-truncate"  title="Remarks">{!i.Remark__c}</div>
+                            </td>
+                        </tr> 
+                    </aura:iteration>
+                </aura:iteration>    
+                
+            </aura:iteration>
+        </tbody>
+    </table>   
+        </div>   
+    
+  
+</article>            
+        </aura:set>
+    </aura:if>
+    
+        
+</aura:component>

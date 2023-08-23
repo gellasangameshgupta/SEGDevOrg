@@ -1,0 +1,6 @@
+<aura:event type="COMPONENT" description="Event template" >
+
+    <aura:attribute name="checktrue" type="CollaborationGroup"  />
+    <aura:attribute name="checkfalse" type="CollaborationGroup" />
+
+</aura:event>

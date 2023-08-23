@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>51.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property name="strSupportPhoneNumber" label="SEG Contact Details" type="String" default="" />
+            <property name="strSupportEmail" label="SEG Email Details" type="String" default="" />
+            <property name="blnShowPhoneNumber" label="Show Phone Number" type="Boolean" default="false" />
+            <property name="blnShowEmail" label="Show Email" type="Boolean" default="false" />
+            <property name="blnShowSocialLinks" label="Show Social Links" type="Boolean" default="false" />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

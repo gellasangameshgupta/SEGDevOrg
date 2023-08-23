@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" description="Using this event we are passing the selected inventors to the parent component">
+    <aura:attribute name="inventorsList" type="sObject[]"/>
+</aura:event>
